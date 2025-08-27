@@ -1,5 +1,35 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+/* Import fonts */
+
+/* Map Next.js font variables into Tailwind tokens */
+@theme {
+  --font-sans: var(
+    --font-body
+  ); /* use Manrope when you write class="font-sans" */
+  --font-heading: var(--font-heading);
+}
+
+/* Dark variant helper (Tailwind v4) */
+@custom-variant dark (&:is(.dark *));
+
+/* Base typography (optional) */
+h1 {
+  font-family: var(--font-heading);
+}
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+div,
+li,
+a,
+button {
+  font-family: var(--font-body);
+}
 
 @custom-variant dark (&:is(.dark *));
 
@@ -119,4 +149,9 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@theme {
+  --font-sans: var(--font-body);
+  --font-heading: var(--font-heading);
 }
