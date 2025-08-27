@@ -47,7 +47,8 @@ export default function FloorSelect({
       <RadioGroup
         value={selected}
         onValueChange={handleChange}
-        className="grid grid-cols-5 gap-4 sm:grid-cols-5"
+        // was: "grid grid-cols-5 gap-4 sm:grid-cols-5"
+        className="inline-grid grid-cols-[repeat(5,auto)] gap-4 md:gap-6 w-fit mx-auto"
         aria-label="Välj våning"
       >
         {OPTIONS.map((opt) => {

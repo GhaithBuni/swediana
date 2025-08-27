@@ -1,3 +1,4 @@
+// AccessSelect.tsx
 "use client";
 
 import * as React from "react";
@@ -30,33 +31,30 @@ export default function AccessSelect({
   );
   const selected = value ?? internal;
 
-  const handleChange = (v: string) => {
-    const val = v as AccessValue;
-    setInternal(val);
-    onChange?.(val);
-  };
-
   return (
-    <div>
+    // ⬅️ cap width like HomeTypeSelect does
+    <div className="max-w-3xl">
       <h3 className="mb-3 text-lg font-semibold text-primary-foreground">
         Tillgång
       </h3>
 
       <RadioGroup
         value={selected}
-        onValueChange={handleChange}
-        className="grid gap-4 sm:grid-cols-2"
+        onValueChange={(v) => {
+          setInternal(v as AccessValue);
+          onChange?.(v as AccessValue);
+        }}
+        className="grid grid-cols-1 sm:grid-cols-2 gap-6"
       >
         {OPTIONS.map((opt) => {
-          const isSelected = selected === opt.id;
+          const active = selected === opt.id;
           return (
             <label key={opt.id} className="cursor-pointer">
               <RadioGroupItem value={opt.id} className="sr-only" />
-
               <Card
                 className={cn(
-                  "flex flex-col items-center justify-center rounded-xl p-6 text-center transition border",
-                  isSelected
+                  "h-40 rounded-2xl p-6 flex flex-col items-center justify-center text-center transition border",
+                  active
                     ? "bg-black text-white border-black"
                     : "bg-primary/10 text-foreground border-transparent hover:bg-primary/15"
                 )}
@@ -64,9 +62,9 @@ export default function AccessSelect({
                 <Image
                   src={opt.icon}
                   alt={opt.label}
-                  width={100}
-                  height={100}
-                  className="mb-3"
+                  width={64}
+                  height={64}
+                  className="mb-3 object-contain"
                 />
                 <span className="text-sm font-medium">{opt.label}</span>
               </Card>

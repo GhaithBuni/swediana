@@ -1,17 +1,17 @@
 "use client";
+
+import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import React, { useState } from "react";
+
 import HomeTypeSelect from "@/components/ui/HomeTypeSelect";
 import CleaningIncludes from "@/components/CleaningIncludes";
 import FloorSelect from "@/components/FloorSelect";
@@ -42,10 +42,12 @@ const Page = () => {
   const [extra, setExtra] = React.useState<
     Partial<Record<ServiceKey, "JA" | "NEJ">>
   >({});
+
   return (
-    <div>
+    <div className="pt-16">
+      {/* offset for fixed nav h-16 */}
       {/* Heading */}
-      <div className="flex flex-col justify-center items-center m-8">
+      <div className="w-full md:w-4/5 mx-auto px-6 flex flex-col items-center mt-12">
         <h1 className="pb-4 text-4xl text-primary-foreground">
           Boka <span className="font-bold text-primary">Flytthjälp</span>
         </h1>
@@ -55,9 +57,8 @@ const Page = () => {
       </div>
 
       {/* Inputs */}
-      <div className="flex flex-col items-center gap-6">
-        {/* Inputs row */}
-        <div className="flex flex-row gap-4 w-full max-w-5xl px-6">
+      <div className="w-full md:w-4/5 mx-auto px-6 flex flex-col items-center gap-6">
+        <div className="w-full flex gap-4">
           <Input type="number" placeholder="Storlek (m³)" className="w-full" />
           <Input
             type="text"
@@ -70,77 +71,70 @@ const Page = () => {
             className="w-full"
           />
         </div>
-
-        {/* Button below */}
         <Button className="text-white">Fortsätt</Button>
       </div>
 
       {/* Nuvarande plats och booking card */}
-      <section className="max-w-5xl mx-auto px-6 mt-12 mb-24 pb-24">
+      <section className="w-full md:w-4/5 mx-auto px-6 mt-12 mb-24">
         <h2 className="mb-4 text-2xl text-primary-foreground">
           Nuvarande adress
         </h2>
 
         <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_400px] items-start">
-          {/* LEFT: all details for current/new address, floors, access, etc. */}
+          {/* LEFT column: all details */}
           <div className="space-y-10">
-            {/* Nuvarande plats*/}
             <HomeTypeSelect value={homeType} onChange={setHomeType} />
 
-            {/* Example more sections */}
             <section>
-              {/* ...your floor selector... */}
               <FloorSelect value={floor} onChange={setFloor} />
             </section>
-            {/* Entrance */}
+
             <section>
               <AccessSelect value={access} onChange={setAccess} />
             </section>
 
             <section>
-              {/* ...stairs/elevator etc... */}
               <DistanceSlider value={distance} onChange={setDistance} />
             </section>
 
             <div aria-hidden className="md:h-[5vh]" />
 
-            {/* Ny plats*/}
+            {/* Ny plats */}
             <section>
               <h2 className="mb-4 text-2xl text-primary-foreground">
                 Ny adress
               </h2>
-
               <HomeTypeSelect value={homeType} onChange={setHomeType} />
             </section>
 
             <section>
-              {/* ...your floor selector... */}
               <FloorSelect value={floor} onChange={setFloor} />
             </section>
+
             <section>
               <AccessSelect value={access} onChange={setAccess} />
             </section>
 
             <section>
-              {/* ...stairs/elevator etc... */}
               <DistanceSlider value={distance} onChange={setDistance} />
             </section>
 
-            {/**Extra services Section */}
+            {/* Extra services */}
             <section>
               <ExtraServices value={extra} onChange={setExtra} />
             </section>
 
+            {/* Booking details form */}
             <section>
               <BookingDetails />
             </section>
           </div>
 
+          {/* RIGHT column: sticky summary card */}
           <div className="space-y-8">
-            {/* Sticky card will scroll but stop before section ends */}
-            <div className="sticky top-24 self-start">
+            <div className="sticky top-16 self-start">
+              {/* top-16 matches header height */}
               <Card className="relative bg-primary text-white rounded-[28px] overflow-hidden shadow-md">
-                {" "}
                 <div className="absolute inset-x-0 top-0 h-16 bg-primary/20" />
                 <CardHeader className="relative flex flex-col items-center justify-center pt-8">
                   <CardTitle className="text-2xl">Bokning uppgifter</CardTitle>
@@ -149,6 +143,7 @@ const Page = () => {
                     Flytthjälp
                   </CardDescription>
                 </CardHeader>
+
                 <CardContent className="relative divide-y divide-white/30">
                   <div className="flex justify-between items-center py-2 px-4">
                     <p>Extra Badrum</p>
@@ -173,6 +168,7 @@ const Page = () => {
                     </Button>
                   </div>
                 </CardContent>
+
                 <CardFooter className="flex justify-between items-center py-3 px-4 border-t border-white/30">
                   <p>Totalt pris:</p>
                   <p>2800kr</p>
@@ -180,13 +176,12 @@ const Page = () => {
               </Card>
             </div>
 
-            {/* Accordion below card (not sticky) */}
+            {/* Keep content below so the column is tall; remove the huge spacer */}
             <div aria-hidden className="mt-8 md:h-[335vh]" />
             {visible && <CleaningIncludes />}
           </div>
         </div>
       </section>
-      <footer className="bg-gray-100 py-12 mt-24">Footer</footer>
     </div>
   );
 };

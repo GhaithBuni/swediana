@@ -1,37 +1,33 @@
 import Link from "next/link";
-// app/layout.tsx or wherever your root layout is
-// app/layout.tsx or any root layout
 import { Pacifico } from "next/font/google";
 
 const pacifico = Pacifico({ subsets: ["latin"], weight: "400" });
 
 const Footer = () => {
   return (
-    <footer className="bg-[#e6f7f5] text-[#3f3f3f] py-12 px-6 md:px-12">
-      <div className="max-w-6xl mx-auto">
-        <div className="space-y-4 text-center mb-8">
+    <footer className="bg-[#e6f7f5] text-[#3f3f3f]">
+      {/* container matches the nav width */}
+      <div className="w-full md:w-4/5 mx-auto px-6 md:px-8 py-12">
+        {/* Brand + tagline */}
+        <div className="space-y-4 text-center mb-10">
           <h3 className={`text-5xl ${pacifico.className}`}>Swediana AB</h3>
-
-          <p className="max-w-xl  mx-auto text-xl">
+          <p className="max-w-2xl mx-auto text-lg md:text-xl">
             Vi erbjuder högkvalitativa och miljövänliga städtjänster för både
             hem och företag, så att du kan njuta av en ren och fräsch miljö.
           </p>
         </div>
-        {/* Main footer content */}
-        <div className="flex justify-center">
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8 text-xl "> 
-        
 
-          {/* Links sections */}
-          <div className="grid grid-cols-2 gap-8 ">
+        {/* Columns (centered as a group) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center text-center mb-10">
+          {/* Links sections (2 small cols inside) */}
+          <div className="grid grid-cols-2 gap-10">
             <div className="space-y-4">
-              <h4 className="text-2xl">Om oss</h4>
+              <h4 className="text-2xl font-semibold">Om oss</h4>
               <ul className="space-y-2">
                 <li>
                   <Link
                     href="/priser"
-                    className="text- hover:text-[#00ada1] transition-colors"
+                    className="hover:text-[#00ada1] transition-colors"
                   >
                     Priser
                   </Link>
@@ -39,7 +35,7 @@ const Footer = () => {
                 <li>
                   <Link
                     href="/faq"
-                    className=" hover:text-[#00ada1] transition-colors"
+                    className="hover:text-[#00ada1] transition-colors"
                   >
                     FAQ
                   </Link>
@@ -47,7 +43,7 @@ const Footer = () => {
                 <li>
                   <Link
                     href="/kontakt"
-                    className=" hover:text-[#00ada1] transition-colors"
+                    className="hover:text-[#00ada1] transition-colors"
                   >
                     Kontakt oss
                   </Link>
@@ -56,12 +52,12 @@ const Footer = () => {
             </div>
 
             <div className="space-y-4">
-              <h4 className="text-2xl">Våra tjänster</h4>
+              <h4 className="text-2xl font-semibold">Våra tjänster</h4>
               <ul className="space-y-2">
                 <li>
                   <Link
                     href="/flyttstad"
-                    className=" hover:text-[#00ada1] transition-colors"
+                    className="hover:text-[#00ada1] transition-colors"
                   >
                     Flyttstäd
                   </Link>
@@ -69,7 +65,7 @@ const Footer = () => {
                 <li>
                   <Link
                     href="/flytthjalp"
-                    className=" hover:text-[#00ada1] transition-colors"
+                    className="hover:text-[#00ada1] transition-colors"
                   >
                     Flytthjälp
                   </Link>
@@ -77,15 +73,15 @@ const Footer = () => {
                 <li>
                   <Link
                     href="/foretagstad"
-                    className=" hover:text-[#00ada1] transition-colors"
+                    className="hover:text-[#00ada1] transition-colors"
                   >
-                    Företagstäd
+                    Företagsstäd
                   </Link>
                 </li>
                 <li>
                   <Link
                     href="/fonsterputs"
-                    className=" hover:text-[#00ada1] transition-colors"
+                    className="hover:text-[#00ada1] transition-colors"
                   >
                     Fönsterputs
                   </Link>
@@ -96,48 +92,59 @@ const Footer = () => {
 
           {/* Social media */}
           <div className="space-y-4">
-            <h4 className="text-2xl">Social media</h4>
-            <div className="flex space-x-4 ">
+            <h4 className="text-2xl font-semibold">Sociala medier</h4>
+            <div className="flex items-center gap-4">
               <a
                 href="#"
-                className="text-2xl  hover:text-[#00ada1] transition-colors"
                 aria-label="Chat"
+                className="h-10 w-10 rounded-full bg-white/80 flex items-center justify-center shadow hover:shadow-md hover:-translate-y-0.5 transition"
               >
                 💬
               </a>
               <a
                 href="#"
-                className="text-2xl  hover:text-[#00ada1] transition-colors"
                 aria-label="Payment"
+                className="h-10 w-10 rounded-full bg-white/80 flex items-center justify-center shadow hover:shadow-md hover:-translate-y-0.5 transition"
               >
                 💷
               </a>
               <a
                 href="#"
-                className="text-2xl  hover:text-[#00ada1] transition-colors"
                 aria-label="Money"
+                className="h-10 w-10 rounded-full bg-white/80 flex items-center justify-center shadow hover:shadow-md hover:-translate-y-0.5 transition"
               >
                 💸
               </a>
             </div>
           </div>
-        </div>
-        </div>
-        
 
-        {/* Bottom section */}
-        <div className="border-t border-gray-700 pt-6 flex flex-col md:flex-row justify-between items-center">
-          <div className=" text-sm mb-4 md:mb-0">
-            <p>Swediana AB © 2025. All rights reserved</p>
-            <p>Powerd by Drifa</p>
+          {/* Contact / CTA block (optional third column) */}
+          <div className="space-y-4">
+            <h4 className="text-2xl font-semibold">Kontakta oss</h4>
+            <p>support@swediana.se</p>
+            <p>+46 (0) 70 123 45 67</p>
+            <Link
+              href="/boka"
+              className="inline-block rounded-full bg-[#00ada1] text-white px-6 py-2 hover:bg-[#00988f] transition"
+            >
+              Boka nu
+            </Link>
           </div>
-          <div>
+        </div>
+
+        {/* Bottom line */}
+        <div className="border-t border-black/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-3 text-sm">
+          <p className="text-center md:text-left">
+            Swediana AB © 2025. All rights reserved.
+          </p>
+          <div className="flex items-center gap-6">
             <Link
               href="/integritetspolicy"
-              className=" hover:text-[#00ada1] text-sm transition-colors"
+              className="hover:text-[#00ada1] transition-colors"
             >
               Integritetspolicy
             </Link>
+            <span className="text-black/50">Powered by Drifa</span>
           </div>
         </div>
       </div>

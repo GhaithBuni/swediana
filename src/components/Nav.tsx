@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Menu } from "lucide-react";
 
 import {
@@ -9,7 +10,6 @@ import {
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  navigationMenuTriggerStyle,
   NavigationMenuContent,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
@@ -25,66 +25,82 @@ import { Button } from "@/components/ui/button";
 
 const Nav = () => {
   return (
-    <div className="w-full bg-transparent fixed top-0 z-50">
-      <div className="md:w-4/5 mx-auto flex items-center justify-between px-6 md:px-10 py-4 border-b-2 border-white">
+    <header className="w-full bg-transparent fixed top-0 z-50">
+      {/* 100% width on mobile, 80% on md+ */}
+      <div className="w-full md:w-4/5 mx-auto h-16 px-4 md:px-8 flex items-center justify-between gap-4">
         {/* Logo */}
-        <Link href="/" passHref className="flex-shrink-0">
-          <img
+        <Link href="/" className="flex-shrink-0" aria-label="Swediana – Hem">
+          <Image
             src="/logo.svg"
-            alt="Swediana Logo"
-            className="h-8 md:h-15 w-auto"
+            alt="Swediana"
+            width={120}
+            height={32}
+            className="h-8 w-auto"
+            priority
           />
         </Link>
 
-        {/* Desktop menu - Centered */}
-        <div className="hidden md:flex items-center justify-center flex-1 mx-8 mt-5 ">
+        {/* Desktop menu (centered) */}
+        <nav className="hidden md:flex flex-1 justify-center">
           <NavigationMenu>
-            <NavigationMenuList className="flex gap-4 lg:gap-15   ">
+            <NavigationMenuList className="flex items-center gap-8">
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="bg-transparent text-white hover:text-teal-400  hover:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-teal-400 text-xl md:text-1xl ">
+                <NavigationMenuTrigger className="bg-transparent text-white hover:text-teal-400 hover:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-teal-400 text-lg">
                   Tjänster
                 </NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  {/* Add dropdown content here if needed */}
-                  <div className="p-4 w-[200px]">
-                    <p>Dropdown content</p>
-                  </div>
+                <NavigationMenuContent className="p-4 w-64">
+                  <ul className="grid gap-2">
+                    <li>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          href="/services/moving"
+                          className="block rounded-md px-3 py-2 hover:bg-accent"
+                        >
+                          Flytt
+                        </Link>
+                      </NavigationMenuLink>
+                    </li>
+                    <li>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          href="/services/cleaning"
+                          className="block rounded-md px-3 py-2 hover:bg-accent"
+                        >
+                          Städning
+                        </Link>
+                      </NavigationMenuLink>
+                    </li>
+                  </ul>
                 </NavigationMenuContent>
               </NavigationMenuItem>
+
               <NavigationMenuItem>
-                <NavigationMenuLink
-                  asChild
-                  className={navigationMenuTriggerStyle()}
-                >
+                <NavigationMenuLink asChild>
                   <Link
                     href="/omOss"
-                    className="bg-transparent text-white hover:bg-transparent  text-xl md:text-1xl hover:text-teal-400 "
+                    className="px-3 py-2 text-white hover:text-teal-400"
                   >
                     Om oss
                   </Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
+
               <NavigationMenuItem>
-                <NavigationMenuLink
-                  asChild
-                  className={navigationMenuTriggerStyle()}
-                >
+                <NavigationMenuLink asChild>
                   <Link
                     href="/faq"
-                    className="bg-transparent text-white hover:bg-transparent text-xl md:text-1xl  hover:text-teal-400"
+                    className="px-3 py-2 text-white hover:text-teal-400"
                   >
                     FAQ
                   </Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
+
               <NavigationMenuItem>
-                <NavigationMenuLink
-                  asChild
-                  className={navigationMenuTriggerStyle()}
-                >
+                <NavigationMenuLink asChild>
                   <Link
                     href="/kontakt"
-                    className="bg-transparent text-white hover:bg-transparent  text-xl md:text-1xl hover:text-teal-400"
+                    className="px-3 py-2 text-white hover:text-teal-400"
                   >
                     Kontakt
                   </Link>
@@ -92,16 +108,21 @@ const Nav = () => {
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
-        </div>
+        </nav>
 
-        {/* CTA Button - Right aligned */}
-        <div className="hidden md:flex items-center mt-5">
-          <Button className="bg-teal-500 hover:bg-teal-600 text-white  px-12 py-6  shadow-md text-xl md:text-1xl ">
-            Boka nu
+        {/* CTA (right) */}
+        <div className="hidden md:flex">
+          <Button
+            className="bg-teal-500 hover:bg-teal-600 text-white px-6 py-2 text-lg rounded-full shadow-md"
+            asChild
+          >
+            <Link href="/boka" aria-label="Boka nu">
+              Boka nu
+            </Link>
           </Button>
         </div>
 
-        {/* Mobile hamburger */}
+        {/* Mobile menu */}
         <div className="md:hidden">
           <Sheet>
             <SheetTrigger asChild>
@@ -109,49 +130,52 @@ const Nav = () => {
                 variant="outline"
                 size="icon"
                 className="border-white/30 bg-transparent hover:bg-white/10"
+                aria-label="Öppna meny"
               >
                 <Menu className="h-6 w-6 text-white" />
-                <span className="sr-only">Open menu</span>
               </Button>
             </SheetTrigger>
             <SheetContent
               side="right"
               className="w-64 bg-slate-900 border-l border-white/20"
             >
-              <nav className="mt-6 flex flex-col gap-4">
+              <SheetHeader>
+                <SheetTitle className="text-white">Meny</SheetTitle>
+              </SheetHeader>
+              <nav className="mt-6 flex flex-col gap-2">
                 <Link
                   href="/services"
-                  className="text-lg font-medium px-2 py-2 text-white hover:text-teal-400"
+                  className="px-2 py-2 text-white rounded hover:bg-white/10"
                 >
                   Tjänster
                 </Link>
                 <Link
                   href="/omOss"
-                  className="text-lg font-medium px-2 py-2 text-white hover:text-teal-400"
+                  className="px-2 py-2 text-white rounded hover:bg-white/10"
                 >
                   Om oss
                 </Link>
                 <Link
                   href="/faq"
-                  className="text-lg font-medium px-2 py-2 text-white hover:text-teal-400"
+                  className="px-2 py-2 text-white rounded hover:bg-white/10"
                 >
                   FAQ
                 </Link>
                 <Link
                   href="/kontakt"
-                  className="text-lg font-medium px-2 py-2 text-white hover:text-teal-400"
+                  className="px-2 py-2 text-white rounded hover:bg-white/10"
                 >
                   Kontakt
                 </Link>
                 <Button className="bg-teal-500 hover:bg-teal-600 text-white mt-4">
-                  Boka nu
+                  <Link href="/boka">Boka nu</Link>
                 </Button>
               </nav>
             </SheetContent>
           </Sheet>
         </div>
       </div>
-    </div>
+    </header>
   );
 };
 
