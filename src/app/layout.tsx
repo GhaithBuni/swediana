@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { alata, manrope } from "./fonts";
 import "./globals.css";
 import Nav from "../components/Nav";
+import Footer from "@/components/ui/Footer";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,7 +18,8 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${alata.variable} ${manrope.variable} antialiased`}>
         <Nav />
-        {children}
+        <main className="flex-grow">{children}</main>
+        <Footer />
       </body>
     </html>
   );

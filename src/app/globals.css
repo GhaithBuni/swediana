@@ -2,21 +2,12 @@
 @import "tw-animate-css";
 /* Import fonts */
 
-/* Tailwind v4 theme mappings */
+/* Map Next.js font variables into Tailwind tokens */
 @theme {
-  /* Fonts from next/font variables */
-  --font-sans: var(--font-body); /* Manrope for class="font-sans" */
+  --font-sans: var(
+    --font-body
+  ); /* use Manrope when you write class="font-sans" */
   --font-heading: var(--font-heading);
-
-  /* Colors */
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-}
-
-/* Optional: dark mode tweak */
-.dark {
-  /* --primary: #00a0a1; */
-  /* --primary-foreground: #ffffff; */
 }
 
 /* Dark variant helper (Tailwind v4) */
