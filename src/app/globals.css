@@ -1,5 +1,44 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+/* Import fonts */
+
+/* Tailwind v4 theme mappings */
+@theme {
+  /* Fonts from next/font variables */
+  --font-sans: var(--font-body); /* Manrope for class="font-sans" */
+  --font-heading: var(--font-heading);
+
+  /* Colors */
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+}
+
+/* Optional: dark mode tweak */
+.dark {
+  /* --primary: #00a0a1; */
+  /* --primary-foreground: #ffffff; */
+}
+
+/* Dark variant helper (Tailwind v4) */
+@custom-variant dark (&:is(.dark *));
+
+/* Base typography (optional) */
+h1 {
+  font-family: var(--font-heading);
+}
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+div,
+li,
+a,
+button {
+  font-family: var(--font-body);
+}
 
 @custom-variant dark (&:is(.dark *));
 
@@ -51,8 +90,9 @@
   --card-foreground: oklch(0.129 0.042 264.695);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
+  --primary: #007a7b;
+  --grey: #3f3f3f;
+  --primary-foreground: #3f3f3f;
   --secondary: oklch(0.968 0.007 247.896);
   --secondary-foreground: oklch(0.208 0.042 265.755);
   --muted: oklch(0.968 0.007 247.896);
@@ -119,4 +159,9 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@theme {
+  --font-sans: var(--font-body);
+  --font-heading: var(--font-heading);
 }
