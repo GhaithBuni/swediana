@@ -10,27 +10,17 @@ function YesNoPills({
   onChange,
 }: {
   value?: "JA" | "NEJ" | null;
-  onChange?: (v: "JA" | "NEJ") => void;
+  onChange: (v: "JA" | "NEJ") => void;
 }) {
-  const [internal, setInternal] = React.useState<"JA" | "NEJ" | null>(
-    value ?? null
-  );
-  const current = value ?? internal;
-
-  const set = (v: "JA" | "NEJ") => {
-    setInternal(v);
-    onChange?.(v);
-  };
-
   return (
     <RadioGroup
-      value={current ?? undefined}
-      onValueChange={(v) => set(v as "JA" | "NEJ")}
+      value={value ?? undefined}
+      onValueChange={(v) => onChange(v as "JA" | "NEJ")}
       className="flex items-center gap-4"
       aria-label="Välj JA eller NEJ"
     >
       {(["JA", "NEJ"] as const).map((opt) => {
-        const active = current === opt;
+        const active = value === opt;
         return (
           <label key={opt} className="cursor-pointer">
             <RadioGroupItem value={opt} className="sr-only" />
@@ -59,21 +49,14 @@ type ServiceKey =
   | "magasinering";
 
 export default function ExtraServices({
-  value,
+  value = {},
   onChange,
 }: {
   value?: Partial<Record<ServiceKey, "JA" | "NEJ">>;
-  onChange?: (v: Partial<Record<ServiceKey, "JA" | "NEJ">>) => void;
+  onChange: (v: Partial<Record<ServiceKey, "JA" | "NEJ">>) => void;
 }) {
-  const [state, setState] = React.useState<
-    Partial<Record<ServiceKey, "JA" | "NEJ">>
-  >(value ?? {});
-
-  const setField = (key: ServiceKey, v: "JA" | "NEJ") => {
-    const next = { ...state, [key]: v };
-    setState(next);
-    onChange?.(next);
-  };
+  const setField = (key: ServiceKey, v: "JA" | "NEJ") =>
+    onChange({ ...value, [key]: v });
 
   return (
     <section className="space-y-6">
@@ -82,11 +65,10 @@ export default function ExtraServices({
       </h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
-        {/* Rad 1 */}
         <div>
           <p className="mb-3 text-foreground">Behöver du hjälp att packa?</p>
           <YesNoPills
-            value={state.packa ?? null}
+            value={value.packa ?? null}
             onChange={(v) => setField("packa", v)}
           />
         </div>
@@ -96,18 +78,17 @@ export default function ExtraServices({
             Behöver du hjälp att Montera/Nedmontera?
           </p>
           <YesNoPills
-            value={state.montera ?? null}
+            value={value.montera ?? null}
             onChange={(v) => setField("montera", v)}
           />
         </div>
 
-        {/* Rad 2 */}
         <div>
           <p className="mb-3 text-foreground">
             Behöver du hjälp med Bortforsling?
           </p>
           <YesNoPills
-            value={state.bortforsling ?? null}
+            value={value.bortforsling ?? null}
             onChange={(v) => setField("bortforsling", v)}
           />
         </div>
@@ -118,16 +99,15 @@ export default function ExtraServices({
             <span className="font-medium">Får du 15% Rabatt</span>
           </p>
           <YesNoPills
-            value={state.flyttstad ?? null}
+            value={value.flyttstad ?? null}
             onChange={(v) => setField("flyttstad", v)}
           />
         </div>
 
-        {/* Rad 3 */}
         <div>
           <p className="mb-3 text-foreground">Behöver du magasinering?</p>
           <YesNoPills
-            value={state.magasinering ?? null}
+            value={value.magasinering ?? null}
             onChange={(v) => setField("magasinering", v)}
           />
         </div>

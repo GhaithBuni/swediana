@@ -4,7 +4,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { ChevronDown } from "lucide-react"; // or any svg you prefer
 
 export default function CleaningIncludes() {
   return (

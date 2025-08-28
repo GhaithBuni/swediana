@@ -48,7 +48,7 @@ export default function HomeTypeSelect({
 
               <Card
                 className={cn(
-                  "relative h-40 rounded-2xl p-6 flex flex-col items-center justify-center transition border",
+                  "relative h-32 rounded-2xl p-6 flex flex-col items-center justify-center transition border",
                   isSelected
                     ? "bg-black text-white border-black"
                     : "bg-primary/10 text-foreground border-transparent hover:bg-primary/15"
@@ -57,9 +57,9 @@ export default function HomeTypeSelect({
                 <Image
                   src={src}
                   alt={label}
-                  width={64}
-                  height={64}
-                  className="mb-3 object-contain"
+                  width={40}
+                  height={40}
+                  className="object-contain"
                 />
                 <span
                   className={cn(
