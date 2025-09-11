@@ -49,7 +49,7 @@ const Page = () => {
       {/* offset for fixed nav h-16 */}
       <header className="w-full md:w-4/5 mx-auto px-6 flex flex-col items-center mt-12 text-center">
         <h1 className="pb-4 text-4xl text-primary-foreground">
-          Boka <span className="font-bold text-primary">FlyttStäd</span>
+          Boka <span className="font-bold text-primary">Flyttstäd</span>
         </h1>
         <p className="text-foreground pb-4 text-xl">
           text om varför ska man boka hos oss
@@ -102,7 +102,7 @@ const Page = () => {
           </div>
 
           {/* RIGHT column */}
-          <SummaryCard title="FlyttStäd" />
+          <SummaryCard title="Flyttstäd" />
         </div>
       </main>
     </div>
