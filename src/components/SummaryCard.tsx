@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import CleaningIncludes from "@/components/CleaningIncludes";
 
-export default function SummaryCard() {
+export default function SummaryCard({ title }: { title: string }) {
   return (
     <aside className="sticky top-16 self-start w-full">
       {/* This wrapper makes the card + accordion share the same width and align to the right edge */}
@@ -23,7 +23,7 @@ export default function SummaryCard() {
             <CardTitle className="text-2xl">Bokning uppgifter</CardTitle>
             <div className="w-40 border-b border-white/60 my-2" />
             <CardDescription className="text-lg text-white">
-              Flytthjälp
+              {title}
             </CardDescription>
           </CardHeader>
 

@@ -128,7 +128,6 @@ const Page = () => {
                   </section>
                 </section>
                 <div>
-                  <SummaryCard />
                   <div className="h-[30vh]" />
                 </div>
               </>

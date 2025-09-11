@@ -13,7 +13,7 @@ export default function BookingDetails() {
   );
 
   return (
-    <section className="max-w-5xl mx-auto space-y-8">
+    <section className="max-w-5xl  space-y-8">
       {/* Vad som ska flyttas? */}
       <div>
         <h3 className="text-2xl font-semibold text-primary-foreground mb-4">

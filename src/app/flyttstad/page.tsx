@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import CleaningIncludes from "@/components/CleaningIncludes";
-import DistanceSlider from "@/components/DistanceSlider";
 import ExtraServices from "@/components/ExtraServices";
 import BookingDetails from "@/components/BookingDetails";
 import SummaryCard from "@/components/SummaryCard";
@@ -50,7 +49,7 @@ const Page = () => {
       {/* offset for fixed nav h-16 */}
       <header className="w-full md:w-4/5 mx-auto px-6 flex flex-col items-center mt-12 text-center">
         <h1 className="pb-4 text-4xl text-primary-foreground">
-          Boka <span className="font-bold text-primary">Flytthjälp</span>
+          Boka <span className="font-bold text-primary">FlyttStäd</span>
         </h1>
         <p className="text-foreground pb-4 text-xl">
           text om varför ska man boka hos oss
@@ -90,14 +89,6 @@ const Page = () => {
               onChange={setFrom}
             />
 
-            <AddressSection
-              title="Ny adress"
-              value={to}
-              onChange={setTo}
-              // Often distance is global (between from/to), so keep only on first section:
-              showDistance={false}
-            />
-
             <section>
               <ExtraServices value={extra} onChange={setExtra} />
             </section>
@@ -111,7 +102,7 @@ const Page = () => {
           </div>
 
           {/* RIGHT column */}
-          <SummaryCard title="Flytthjälp" />
+          <SummaryCard title="FlyttStäd" />
         </div>
       </main>
     </div>
