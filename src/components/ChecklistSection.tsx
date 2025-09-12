@@ -22,7 +22,7 @@ export default function ChecklistSection() {
         aria-hidden={false}
       >
         <Image
-          src="/land-page.jpg" // <- your image path
+          src="/Refrigerator.png" // <- your image path
           alt="Färgglada grönsaker organiserade i lådor"
           width={720}
           height={1080}
