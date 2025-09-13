@@ -3,9 +3,9 @@
 import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu } from "lucide-react";
+import { Menu, ChevronDown } from "lucide-react";
+import { usePathname } from "next/navigation";
 import Container from "@/components/Container";
-
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -17,12 +17,150 @@ import {
 
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+
+const MobileNav = () => {
+  const pathname = usePathname();
+  const [openServices, setOpenServices] = React.useState(false);
+
+  const linkBase =
+    "flex items-center justify-between px-3 py-3 rounded-lg text-white/90 hover:text-white hover:bg-white/10 transition-colors";
+  const isActive = (href: string) =>
+    pathname === href
+      ? "bg-white/10 text-white ring-1 ring-white/10"
+      : "text-white/90";
+
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button
+          variant="outline"
+          size="icon"
+          className="border-white/30 bg-transparent hover:bg-white/10"
+          aria-label="Öppna meny"
+        >
+          <Menu className="h-6 w-6 text-white" />
+        </Button>
+      </SheetTrigger>
+
+      <SheetContent
+        side="right"
+        className="
+          w-[82vw] max-w-sm p-0
+          bg-slate-900/90 backdrop-blur
+          border-l border-white/10
+          text-white
+          flex flex-col
+        "
+      >
+        {/* Header */}
+        <SheetHeader className="px-4 pb-4 pt-5 border-b border-white/10">
+          <div className="flex items-center gap-3">
+            <Image
+              src="/logo.svg"
+              alt="Swediana"
+              width={28}
+              height={28}
+              className="h-7 w-auto"
+              priority
+            />
+            <SheetTitle className="text-white/95 tracking-tight"></SheetTitle>
+          </div>
+        </SheetHeader>
+
+        {/* Scrollable links */}
+        <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
+          {/* Tjänster (collapsible) */}
+          <button
+            type="button"
+            onClick={() => setOpenServices((v) => !v)}
+            className={`${linkBase} w-full`}
+            aria-expanded={openServices}
+            aria-controls="services-submenu"
+          >
+            <span className="font-medium">Tjänster</span>
+            <ChevronDown
+              className={`h-4 w-4 transition-transform ${
+                openServices ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+          <div
+            id="services-submenu"
+            className={`grid overflow-hidden transition-[grid-template-rows] duration-300 ${
+              openServices ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+            }`}
+          >
+            <div className="min-h-0">
+              <ul className="mt-1 pl-2 space-y-1">
+                <li>
+                  <SheetClose asChild>
+                    <Link
+                      href="/flytthjalp"
+                      className={`block ${linkBase} ${isActive("/flytthjalp")}`}
+                    >
+                      Flytt
+                    </Link>
+                  </SheetClose>
+                </li>
+                <li>
+                  <SheetClose asChild>
+                    <Link
+                      href="/services/cleaning"
+                      className={`block ${linkBase} ${isActive(
+                        "/services/cleaning"
+                      )}`}
+                    >
+                      Städning
+                    </Link>
+                  </SheetClose>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <SheetClose asChild>
+            <Link href="/omOss" className={`${linkBase} ${isActive("/omOss")}`}>
+              Om oss
+            </Link>
+          </SheetClose>
+
+          <SheetClose asChild>
+            <Link href="/faq" className={`${linkBase} ${isActive("/faq")}`}>
+              FAQ
+            </Link>
+          </SheetClose>
+
+          <SheetClose asChild>
+            <Link
+              href="/kontakt"
+              className={`${linkBase} ${isActive("/kontakt")}`}
+            >
+              Kontakt
+            </Link>
+          </SheetClose>
+        </nav>
+
+        {/* Sticky CTA */}
+        <div className="p-4 border-t border-white/10 bg-gradient-to-t from-white/5 to-transparent pb-[env(safe-area-inset-bottom)]">
+          <SheetClose asChild>
+            <Button className="w-full bg-teal-500 hover:bg-teal-600 text-white rounded-xl shadow-lg shadow-teal-900/20">
+              <Link href="/boka" className="w-full text-center">
+                Boka nu
+              </Link>
+            </Button>
+          </SheetClose>
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+};
 
 const Nav = () => {
   return (
@@ -55,7 +193,7 @@ const Nav = () => {
                       <li>
                         <NavigationMenuLink asChild>
                           <Link
-                            href="/services/moving"
+                            href="/flytthjalp"
                             className="block rounded-md px-3 py-2 hover:bg-accent"
                           >
                             Flytt
@@ -65,7 +203,7 @@ const Nav = () => {
                       <li>
                         <NavigationMenuLink asChild>
                           <Link
-                            href="/services/cleaning"
+                            href="/flyttstad"
                             className="block rounded-md px-3 py-2 hover:bg-accent"
                           >
                             Städning
@@ -126,55 +264,7 @@ const Nav = () => {
 
           {/* Mobile menu */}
           <div className="md:hidden">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="border-white/30 bg-transparent hover:bg-white/10"
-                  aria-label="Öppna meny"
-                >
-                  <Menu className="h-6 w-6 text-white" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent
-                side="right"
-                className="w-64 bg-slate-900 border-l border-white/20"
-              >
-                <SheetHeader>
-                  <SheetTitle className="text-white">Meny</SheetTitle>
-                </SheetHeader>
-                <nav className="mt-6 flex flex-col gap-2">
-                  <Link
-                    href="/services"
-                    className="px-2 py-2 text-white rounded hover:bg-white/10"
-                  >
-                    Tjänster
-                  </Link>
-                  <Link
-                    href="/omOss"
-                    className="px-2 py-2 text-white rounded hover:bg-white/10"
-                  >
-                    Om oss
-                  </Link>
-                  <Link
-                    href="/faq"
-                    className="px-2 py-2 text-white rounded hover:bg-white/10"
-                  >
-                    FAQ
-                  </Link>
-                  <Link
-                    href="/kontakt"
-                    className="px-2 py-2 text-white rounded hover:bg-white/10"
-                  >
-                    Kontakt
-                  </Link>
-                  <Button className="bg-teal-500 hover:bg-teal-600 text-white mt-4">
-                    <Link href="/boka">Boka nu</Link>
-                  </Button>
-                </nav>
-              </SheetContent>
-            </Sheet>
+            <MobileNav />
           </div>
         </div>
       </Container>
