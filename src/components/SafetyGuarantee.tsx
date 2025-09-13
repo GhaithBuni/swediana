@@ -4,10 +4,12 @@ export default function SafetyGuarantee({
   imageUrl,
   title,
   subtitle,
+  bgColor,
 }: {
   imageUrl: string;
   title: string;
   subtitle: string;
+  bgColor: string;
 }) {
   return (
     <section className="relative overflow-hidden w-full pt-1">
@@ -29,7 +31,10 @@ export default function SafetyGuarantee({
         </div>
 
         {/* RIGHT: content block (2/3) */}
-        <div className="relative flex items-center bg-[#EDE4D8] p-6 md:p-12 md:col-span-2">
+        <div
+          className="relative flex items-center p-6 md:p-12 md:col-span-2"
+          style={{ backgroundColor: bgColor }} // ✅ dynamic background
+        >
           <div className="max-w-3xl">
             <h3 className="text-3xl md:text-4xl font-extrabold text-primary-foreground">
               {title}

@@ -3,13 +3,15 @@ import Link from "next/link";
 import Image from "next/image";
 import ChecklistSection from "@/components/ChecklistSection";
 import SafetyGuarantee from "@/components/SafetyGuarantee";
-import { faqItemsFlytthjalp } from "../util/items";
+import { faqItemsByggstad } from "../util/items";
 import FAQTilesCollapsing from "@/components/FAQTiles";
+import ChecklistSectionStad from "@/components/ChecklistSectionStad";
+import ChecklistSectionByggStad from "@/components/ChecklistSectionByggStad";
 
 export default function Page() {
-  const saftyTitle = "Vår trygghetsgaranti för flytthjälp";
+  const saftyTitle = "Vår nöjdhetsgaranti för byggstädning";
   const subtitleSafty =
-    "Din trygghet är vår prioritet. Alla våra flytthjälpstjänster kommer med en heltäckande transportförsäkring och en nöjdhetsgaranti. Skulle något mot förmodan inte vara till belåtenhet under flytten, eller om du har frågor efteråt, är du välkommen att kontakta oss så hjälper vi dig omgående. Vi strävar alltid efter att du ska känna dig helt nöjd med din flyttupplevelse.";
+    "Din tillfredsställelse är vår prioritet. Alla våra byggstädningar kommer med en 24-timmars nöjdhetsgaranti. Om något inte lever upp till dina förväntningar inom denna tid, hör av dig så åtgärdar vi det omgående.";
 
   return (
     <main className="text-slate-900">
@@ -17,7 +19,7 @@ export default function Page() {
       <header className="relative isolate w-screen mx-[calc(50%-50vw)]">
         <div className="relative h-[60vh] sm:h-[70vh] md:h-[80vh] w-full">
           <Image
-            src="/Turquoise_Elegance_upscaled.png"
+            src="/vase.png"
             alt="Turkos fåtölj i solbelyst rum"
             fill
             priority
@@ -34,7 +36,7 @@ export default function Page() {
                          text-3xl sm:text-4xl md:text-5xl font-bold text-white
                          drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]"
           >
-            Flytthjälp
+            Byggstäd
           </h1>
         </div>
       </header>
@@ -49,24 +51,24 @@ export default function Page() {
         />
         <div className="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 text-center">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-balance text-primary-foreground">
-            Din perfekta flytt börjar här Med Swediana!
+            Professionell byggstädning för en perfekt överlämning
           </h2>
           <p className="mt-4 sm:mt-6 text-base sm:text-lg max-w-2xl mx-auto text-primary-foreground">
-            Var trygg med ditt val. Vi erbjuder säker och försäkrad flytthjälp
-            för att du ska känna dig helt nöjd. Låt oss ta hand om detaljerna så
-            att du kan fokusera på ditt nya hem.
+            Slipp stressen med byggstädning. Vi erbjuder noggrann och
+            professionell flyttstädning som uppfyller alla krav från mäklare och
+            nya ägare. Lita på oss för ett prickfritt resultat.
           </p>
           <Link
             href="/services/moving"
             className="mt-6 inline-block font-semibold underline text-primary-foreground"
           >
-            Se våra tjänster och boka tryggt!
+            Boka flyttstädning
           </Link>
         </div>
       </section>
 
       {/* CHECKLIST (your existing component should already be responsive) */}
-      <ChecklistSection />
+      <ChecklistSectionByggStad />
 
       {/* TEAL PROMO STRIP */}
       <section className="relative overflow-hidden bg-teal-700 text-white py-10 sm:py-14 md:py-20">
@@ -87,15 +89,16 @@ export default function Page() {
             {/* LEFT */}
             <div className="md:max-w-3xl">
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight">
-                För att din flytt ska bli så smidig och effektiv som möjligt,
-                här är några saker att tänka på innan våra flyttare anländer.
+                Så förbereder du inför vår byggstädning en enkel checklista!
               </h2>
               <ul className="mt-6 sm:mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 text-base sm:text-lg">
                 {[
-                  "Gör gångar fria",
-                  "Informera om tillgänglighet",
-                  "Meddela om speciella behov",
-                  "Packa ömtåligt separat",
+                  "Informera om speciella behov",
+                  "Töm bostaden helt",
+                  "Frosta av frysen",
+                  "Säkerställ el och vatten",
+                  "Kontrollera nycklar",
+                  "Dubbelkolla allt en extra gång",
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3">
                     <svg
@@ -144,25 +147,25 @@ export default function Page() {
 
       {/* FULL-WIDTH GUARANTEE BLOCK */}
       <SafetyGuarantee
-        imageUrl="/Dog.png"
+        imageUrl="/Orange_Chair.png"
         title={saftyTitle}
         subtitle={subtitleSafty}
-        bgColor="#EDE4D8"
+        bgColor="#d9e9e8"
       />
 
       {/* FAQ */}
       <section className="mx-auto w-full max-w-6xl px-4 sm:px-6 py-12 sm:py-16">
         <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-primary-foreground">
-          Frågor &amp; svar <span className="text-teal-700">flytthjälp</span>
+          Frågor &amp; svar <span className="text-teal-700">byggstädning</span>
         </h2>
         <p className="mt-2 text-slate-600 text-sm sm:text-base">
-          Har du frågor om flytthjälp? Här har vi samlat de vanligaste frågorna
-          och svaren som rör flytthjälp.
+          Har du frågor om flyttstädning? Här har vi samlat de vanligaste
+          frågorna och svaren som rör flyttstädning.
         </p>
 
         <div className="mt-6 sm:mt-8">
           <FAQTilesCollapsing
-            items={faqItemsFlytthjalp}
+            items={faqItemsByggstad}
             collapsed={180} // narrower cards on mobile
             expanded={300}
             height={340}
