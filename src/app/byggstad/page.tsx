@@ -5,17 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import CleaningIncludes from "@/components/CleaningIncludes";
-import ExtraServices from "@/components/ExtraServices";
 import BookingDetails from "@/components/BookingDetails";
 import SummaryCard from "@/components/SummaryCard";
 import AddressSection from "@/components/AddressSection";
+import ExtraServicesCleaning from "@/components/ExtraServicesCleaning";
 
-type ServiceKey =
-  | "packa"
-  | "montera"
-  | "bortforsling"
-  | "flyttstad"
-  | "magasinering";
+type ServiceKey = "Persienner" | "badrum" | "toalett" | "Inglasadduschhörna";
 
 type HomeType = "lagenhet" | "Hus" | "forrad" | "kontor";
 type Floor = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10+";
@@ -90,7 +85,7 @@ const Page = () => {
             />
 
             <section>
-              <ExtraServices value={extra} onChange={setExtra} />
+              <ExtraServicesCleaning value={extra} onChange={setExtra} />
             </section>
 
             <section>
