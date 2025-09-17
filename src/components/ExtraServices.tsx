@@ -41,12 +41,7 @@ function YesNoPills({
   );
 }
 
-type ServiceKey =
-  | "packa"
-  | "montera"
-  | "bortforsling"
-  | "flyttstad"
-  | "magasinering";
+type ServiceKey = "packa" | "montera" | "flyttstad" | "packaKitchen";
 
 export default function ExtraServices({
   value = {},
@@ -72,6 +67,15 @@ export default function ExtraServices({
             onChange={(v) => setField("packa", v)}
           />
         </div>
+        <div>
+          <p className="mb-3 text-foreground">
+            Behöver du hjälp att packa (Bara Kök)?
+          </p>
+          <YesNoPills
+            value={value.packaKitchen ?? null}
+            onChange={(v) => setField("packaKitchen", v)}
+          />
+        </div>
 
         <div>
           <p className="mb-3 text-foreground">
@@ -85,30 +89,12 @@ export default function ExtraServices({
 
         <div>
           <p className="mb-3 text-foreground">
-            Behöver du hjälp med Bortforsling?
-          </p>
-          <YesNoPills
-            value={value.bortforsling ?? null}
-            onChange={(v) => setField("bortforsling", v)}
-          />
-        </div>
-
-        <div>
-          <p className="mb-3 text-foreground">
             Behöver du flyttstäd?{" "}
             <span className="font-medium">Får du 15% Rabatt</span>
           </p>
           <YesNoPills
             value={value.flyttstad ?? null}
             onChange={(v) => setField("flyttstad", v)}
-          />
-        </div>
-
-        <div>
-          <p className="mb-3 text-foreground">Behöver du magasinering?</p>
-          <YesNoPills
-            value={value.magasinering ?? null}
-            onChange={(v) => setField("magasinering", v)}
           />
         </div>
       </div>

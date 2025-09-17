@@ -11,10 +11,63 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import CleaningIncludes from "@/components/CleaningIncludes";
 
-export default function SummaryCard({ title }: { title: string }) {
+type ExtraObj = Record<string, number>;
+type Props = {
+  title: string;
+  movingPrice: number;
+  extra: Partial<Record<string, "JA" | "NEJ">>;
+  extraService: Record<string, number>[]; // [{ ...prices }]
+  size: React.RefObject<HTMLInputElement | null>;
+  cleaningPrice: number; // <-- you already have this
+};
+
+// UI key -> API key (remove flyttstad here so we don't double count it)
+const KEY_MAP: Record<string, string> = {
+  packa: "packagingAllRooms",
+  packaKitchen: "packagingKitchen",
+  montera: "mounting",
+};
+
+const LABELS: Record<string, string> = {
+  packa: "Packning (alla rum)",
+  packaKitchen: "Packning (Bara Kök)",
+  montera: "Montering",
+  flyttstad: "Flyttstäd",
+};
+
+export default function SummaryCard({
+  title,
+  movingPrice,
+  extra,
+  extraService,
+  size,
+  cleaningPrice, // <-- use it
+}: Props) {
+  const priceTable = extraService?.[0] ?? {};
+  const sizeValue = parseFloat(size.current?.value || "1");
+
+  // selected extra keys
+  const selected = Object.entries(extra)
+    .filter(([, v]) => v === "JA")
+    .map(([k]) => k);
+
+  // extras from table (per KVM) — exclude cleaning here
+  const extrasTotal = selected.reduce((sum, k) => {
+    if (k === "flyttstad") return sum; // handle separately
+    const apiKey = KEY_MAP[k] ?? k;
+    const p = priceTable[apiKey] ?? 0;
+    return sum + p * sizeValue;
+  }, 0);
+
+  // cleaning: own variable (fixed). If yours is per KVM, change to: cleaningPrice * sizeValue
+  const cleaningSelected = selected.includes("flyttstad");
+  const rawCleaning = cleaningPrice; // or just cleaningPrice if it's fixed
+  const cleaningLine = cleaningSelected ? rawCleaning * 0.85 : 0; // 15% discount
+
+  const grandTotal = movingPrice + extrasTotal + cleaningLine;
+
   return (
     <aside className="sticky top-16 self-start w-full">
-      {/* This wrapper makes the card + accordion share the same width and align to the right edge */}
       <div className="w-full md:max-w-sm md:ml-auto">
         <Card className="relative w-full bg-primary text-white rounded-[28px] overflow-hidden shadow-md">
           <div className="absolute inset-x-0 top-0 h-16 bg-primary/20" />
@@ -29,17 +82,45 @@ export default function SummaryCard({ title }: { title: string }) {
 
           <CardContent className="relative divide-y divide-white/30">
             <div className="flex justify-between items-center py-2 px-4">
-              <p>Extra Badrum</p>
-              <p>300kr</p>
+              <p>Flytthjälp</p>
+              <p>{movingPrice}kr</p>
             </div>
-            <div className="flex justify-between items-center py-2 px-4">
-              <p>Extra Toalett</p>
-              <p>200kr</p>
-            </div>
-            <div className="flex justify-between items-center py-2 px-4">
-              <p>Inglasad Duschhörna</p>
-              <p>200kr</p>
-            </div>
+
+            {selected.length > 0 && (
+              <div className="py-1 px-4 text-sm opacity-80">Tillägg</div>
+            )}
+            {/* per-KVM extras */}
+            {selected
+              .filter((k) => k !== "flyttstad")
+              .map((k) => {
+                const apiKey = KEY_MAP[k] ?? k;
+                const price = (priceTable[apiKey] ?? 0) * sizeValue;
+                return (
+                  <div
+                    key={k}
+                    className="flex justify-between items-center py-2 px-4"
+                  >
+                    <p>{LABELS[k] ?? k}</p>
+                    <p>{price} kr</p>
+                  </div>
+                );
+              })}
+
+            {/* cleaning (own variable) */}
+            {cleaningSelected && (
+              <div className="flex justify-between items-center py-2 px-4">
+                <p>
+                  {LABELS["flyttstad"]}{" "}
+                  <span className="text-sm opacity-75">(15% rabatt)</span>
+                </p>
+                <p>
+                  <span className="line-through mr-2 opacity-70">
+                    {rawCleaning} kr
+                  </span>
+                  {cleaningLine} kr
+                </p>
+              </div>
+            )}
 
             <div className="flex items-center gap-2 py-6 px-4">
               <Input
@@ -54,11 +135,10 @@ export default function SummaryCard({ title }: { title: string }) {
 
           <CardFooter className="flex justify-between items-center py-3 px-4 border-t border-white/30">
             <p>Totalt pris:</p>
-            <p>2800kr</p>
+            <p>{grandTotal} Kr</p>
           </CardFooter>
         </Card>
 
-        {/* Accordion under the card, same width */}
         <CleaningIncludes />
       </div>
     </aside>

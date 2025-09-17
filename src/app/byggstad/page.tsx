@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -9,9 +9,9 @@ import BookingDetails from "@/components/BookingDetails";
 import SummaryCard from "@/components/SummaryCard";
 import AddressSection from "@/components/AddressSection";
 import ExtraServicesCleaning from "@/components/ExtraServicesCleaning";
+import CleaningSummaryCard from "@/components/CleaningSummaryCard";
 
 type ServiceKey = "Persienner" | "badrum" | "toalett" | "Inglasadduschhörna";
-
 type HomeType = "lagenhet" | "Hus" | "forrad" | "kontor";
 type Floor = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10+";
 type Access = "stairs" | "elevator" | "large-elevator";
@@ -33,11 +33,32 @@ const DEFAULT_ADDRESS: Address = {
 
 const Page = () => {
   const [from, setFrom] = React.useState<Address>(DEFAULT_ADDRESS);
-  const [to, setTo] = React.useState<Address>(DEFAULT_ADDRESS);
   const [visible, setVisible] = React.useState(false);
   const [extra, setExtra] = React.useState<
     Partial<Record<ServiceKey, "JA" | "NEJ">>
   >({});
+  const [cleaningPrice, setCleaningPrice] = useState(0);
+  const [extraService, setExtraService] = useState([]);
+  const sizeRef = useRef<HTMLInputElement>(null);
+
+  const onclick = async () => {
+    const size = sizeRef.current?.value;
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_KEY}/prices/cleaning`,
+      {
+        method: "POST",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify({
+          size,
+        }),
+      }
+    );
+    const result = await response.json();
+    setCleaningPrice(result.data.cleaningPrice);
+    setExtraService(result.data.extraServices);
+    console.log(result);
+    console.log(cleaningPrice, extraService);
+  };
 
   return (
     <div className="pt-16">
@@ -53,8 +74,13 @@ const Page = () => {
 
       {/* top inputs */}
       <div className="w-full md:w-4/5 mx-auto px-6 flex flex-col items-center gap-6">
-        <div className="w-full grid gap-4 md:grid-cols-3">
-          <Input type="number" placeholder="Storlek (m³)" className="w-full" />
+        <div className="w-full grid gap-4 md:grid-cols-2">
+          <Input
+            ref={sizeRef}
+            type="number"
+            placeholder="Storlek (m³)"
+            className="w-full"
+          />
           <Input
             type="text"
             placeholder="Postnummer (från)"
@@ -62,15 +88,10 @@ const Page = () => {
             value={from.postcode ?? ""}
             onChange={(e) => setFrom({ ...from, postcode: e.target.value })}
           />
-          <Input
-            type="text"
-            placeholder="Postnummer (till)"
-            className="w-full"
-            value={to.postcode ?? ""}
-            onChange={(e) => setTo({ ...to, postcode: e.target.value })}
-          />
         </div>
-        <Button className="text-white">Fortsätt</Button>
+        <Button onClick={onclick} className="text-white">
+          Fortsätt
+        </Button>
       </div>
 
       {/* main content */}
@@ -96,8 +117,14 @@ const Page = () => {
             {visible && <CleaningIncludes />}
           </div>
 
-          {/* RIGHT column */}
-          <SummaryCard title="Byggstäd" />
+          {/* <SummaryCard title="Flyttstäd" /> */}
+
+          <CleaningSummaryCard
+            title="Byggstäd"
+            cleaningPrice={cleaningPrice}
+            extra={extra}
+            extraService={extraService}
+          />
         </div>
       </main>
     </div>
