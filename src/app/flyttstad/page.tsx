@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 
 import CleaningIncludes from "@/components/CleaningIncludes";
 import BookingDetails from "@/components/BookingDetails";
-import SummaryCard from "@/components/SummaryCard";
 import AddressSection from "@/components/AddressSection";
 import ExtraServicesCleaning from "@/components/ExtraServicesCleaning";
 import CleaningSummaryCard from "@/components/CleaningSummaryCard";
@@ -119,12 +118,7 @@ const Page = () => {
 
           {/* <SummaryCard title="Flyttstäd" /> */}
 
-          <CleaningSummaryCard
-            title="Flyttstäd"
-            cleaningPrice={cleaningPrice}
-            extra={extra}
-            extraService={extraService}
-          />
+          <CleaningSummaryCard />
         </div>
       </main>
     </div>

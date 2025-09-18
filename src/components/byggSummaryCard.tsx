@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useCleaningStore } from "@/stores/cleaningStore";
+import { useCleaningStore } from "@/stores/byggStore";
 
 const KEY_MAP: Record<string, string> = {
   Persienner: "Persinner", // <- double-check this matches your API payload key
@@ -32,7 +32,7 @@ const kr = (n: number) =>
     Math.round(Number(n) || 0)
   ) + " kr";
 
-export default function CleaningSummaryCard() {
+export default function ByggSummaryCard() {
   const { basePrice, extrasTable, extras } = useCleaningStore();
 
   const priceTable = extrasTable?.[0] ?? {};
@@ -48,7 +48,7 @@ export default function CleaningSummaryCard() {
   // Base cleaning
   lines.push({
     key: "base",
-    label: "Flyttstäd",
+    label: "Byggstäd",
     amount: Number(basePrice) || 0,
   });
 
@@ -87,7 +87,7 @@ export default function CleaningSummaryCard() {
           <CardTitle className="text-2xl">Bokning uppgifter</CardTitle>
           <div className="w-40 border-b border-white/60 my-2" />
           <CardDescription className="text-lg text-white">
-            Flyttstäd
+            Byggstäd
           </CardDescription>
         </CardHeader>
 

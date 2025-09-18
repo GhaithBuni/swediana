@@ -6,10 +6,11 @@ import { Button } from "@/components/ui/button";
 
 import CleaningIncludes from "@/components/CleaningIncludes";
 import BookingDetails from "@/components/BookingDetails";
-import SummaryCard from "@/components/SummaryCard";
 import AddressSection from "@/components/AddressSection";
 import ExtraServicesCleaning from "@/components/ExtraServicesCleaning";
 import CleaningSummaryCard from "@/components/CleaningSummaryCard";
+import BookingDetailsBygg from "@/components/BookingDetailsBygg";
+import ByggSummaryCard from "@/components/byggSummaryCard";
 
 type ServiceKey = "Persienner" | "badrum" | "toalett" | "Inglasadduschhörna";
 type HomeType = "lagenhet" | "Hus" | "forrad" | "kontor";
@@ -110,7 +111,7 @@ const Page = () => {
             </section>
 
             <section>
-              <BookingDetails />
+              <BookingDetailsBygg />
             </section>
 
             {/* Optional helper/info block */}
@@ -119,12 +120,7 @@ const Page = () => {
 
           {/* <SummaryCard title="Flyttstäd" /> */}
 
-          <CleaningSummaryCard
-            title="Byggstäd"
-            cleaningPrice={cleaningPrice}
-            extra={extra}
-            extraService={extraService}
-          />
+          <ByggSummaryCard />
         </div>
       </main>
     </div>

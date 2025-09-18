@@ -17,12 +17,6 @@ const DEFAULT_ADDRESS: Address = {
   access: "stairs",
   distance: 10,
 };
-type ServiceKey =
-  | "packa"
-  | "montera"
-  | "bortforsling"
-  | "flyttstad"
-  | "magasinering";
 
 type HomeType = "lagenhet" | "Hus" | "forrad" | "kontor";
 type Floor = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10+";

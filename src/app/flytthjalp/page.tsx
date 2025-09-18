@@ -1,66 +1,36 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
-import CleaningIncludes from "@/components/CleaningIncludes";
 import ExtraServices from "@/components/ExtraServices";
 import BookingDetails from "@/components/BookingDetails";
 import SummaryCard from "@/components/SummaryCard";
 import AddressSection from "@/components/AddressSection";
-
-type ServiceKey = "packa" | "montera" | "flyttstad" | "packaKitchen";
-
-type HomeType = "lagenhet" | "Hus" | "forrad" | "kontor";
-type Floor = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10+";
-type Access = "stairs" | "elevator" | "large-elevator";
-
-type Address = {
-  homeType: HomeType;
-  floor: Floor;
-  access: Access;
-  distance: number;
-  postcode?: string;
-};
-
-const DEFAULT_ADDRESS: Address = {
-  homeType: "lagenhet",
-  floor: "1",
-  access: "stairs",
-  distance: 10,
-};
+import { useBookingStore } from "@/stores/bookingStore";
 
 const Page = () => {
-  const [from, setFrom] = React.useState<Address>(DEFAULT_ADDRESS);
-  const [to, setTo] = React.useState<Address>(DEFAULT_ADDRESS);
-  const [visible, setVisible] = React.useState(false);
-  const [extra, setExtra] = React.useState<
-    Partial<Record<ServiceKey, "JA" | "NEJ">>
-  >({});
-  const [movingPrice, setMovingPrice] = useState(0);
-  const [extraService, setExtraService] = useState([]);
-  const [cleaningPrice, setCleaningPrice] = useState(0);
-
-  //Api Call
+  const {
+    from,
+    to,
+    setFrom,
+    setTo,
+    sizeValue,
+    setSize,
+    extra,
+    setExtra,
+    cleaningExtra,
+    setCleaningExtra,
+    fetchPrices,
+  } = useBookingStore();
 
   const sizeRef = useRef<HTMLInputElement>(null);
 
   const onclick = async () => {
-    const size = sizeRef.current?.value;
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_KEY}/prices`, {
-      method: "POST",
-      headers: { "Content-type": "application/json" },
-      body: JSON.stringify({
-        size,
-        postNummer: from.postcode,
-        postNummerTo: to.postcode,
-      }),
-    });
-    const result = await response.json();
-    setMovingPrice(result.data.movingPrice);
-    setExtraService(result.data.extraServices);
-    setCleaningPrice(result.data.cleaningPrice);
+    // sync size from input into store first
+    const sz = Number(sizeRef.current?.value || 1);
+    setSize(sz);
+    await fetchPrices(process.env.NEXT_PUBLIC_API_KEY!);
   };
 
   return (
@@ -80,6 +50,7 @@ const Page = () => {
         <div className="w-full grid gap-4 md:grid-cols-3">
           <Input
             ref={sizeRef}
+            defaultValue={sizeValue}
             type="number"
             placeholder="Storlek (m³)"
             className="w-full"
@@ -89,14 +60,14 @@ const Page = () => {
             placeholder="Postnummer (från)"
             className="w-full"
             value={from.postcode ?? ""}
-            onChange={(e) => setFrom({ ...from, postcode: e.target.value })}
+            onChange={(e) => setFrom({ postcode: e.target.value })}
           />
           <Input
             type="text"
             placeholder="Postnummer (till)"
             className="w-full"
             value={to.postcode ?? ""}
-            onChange={(e) => setTo({ ...to, postcode: e.target.value })}
+            onChange={(e) => setTo({ postcode: e.target.value })}
           />
         </div>
         <Button onClick={onclick} className="text-white">
@@ -104,46 +75,40 @@ const Page = () => {
         </Button>
       </div>
 
-      {/* main content */}
       <main className="w-full md:w-4/5 mx-auto px-6 mt-12 mb-24">
         <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_380px] items-start">
-          {/* LEFT column */}
           <div className="space-y-10">
             <AddressSection
               title="Nuvarande adress"
               value={from}
-              onChange={setFrom}
+              onChange={(v) => setFrom(v)}
             />
-
             <AddressSection
               title="Ny adress"
               value={to}
-              onChange={setTo}
-              // Often distance is global (between from/to), so keep only on first section:
+              onChange={(v) => setTo(v)}
               showDistance={false}
             />
 
             <section>
-              <ExtraServices value={extra} onChange={setExtra} />
+              <ExtraServices
+                value={extra}
+                onChange={(v) => setExtra(v)}
+                cleaningValue={cleaningExtra}
+                onCleaningChange={(v) => setCleaningExtra(v)}
+              />
             </section>
 
             <section>
               <BookingDetails />
             </section>
 
-            {/* Optional helper/info block */}
-            {visible && <CleaningIncludes />}
+            {/* Optional */}
+            {/* <CleaningIncludes /> */}
           </div>
 
-          {/* RIGHT column */}
-          <SummaryCard
-            title="Flytthjälp"
-            movingPrice={movingPrice}
-            extra={extra}
-            extraService={extraService}
-            size={sizeRef}
-            cleaningPrice={cleaningPrice}
-          />
+          {/* Summary reads from the store directly now (no props needed) */}
+          <SummaryCard />
         </div>
       </main>
     </div>

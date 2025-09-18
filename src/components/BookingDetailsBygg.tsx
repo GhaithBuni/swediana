@@ -1,3 +1,4 @@
+// components/BookingDetailsCleaning.tsx
 "use client";
 
 import * as React from "react";
@@ -6,15 +7,14 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { useBookingStore } from "@/stores/bookingStore";
+import { useCleaningStore } from "@/stores/cleaningStore";
 
-export default function BookingDetails() {
-  const postBooking = useBookingStore((s) => s.postBooking);
-  const resetBooking = useBookingStore((s) => s.resetBooking); // ⬅️ get the reset action
-  // OPTIONAL: if you added resetBooking() in your store, uncomment this:
-  // const resetBooking = useBookingStore((s) => s.resetBooking);
+export default function BookingDetailsBygg() {
+  const postCleaning = useCleaningStore((s) => s.postCleaningBooking);
+  const resetCleaning = useCleaningStore((s) => s.resetCleaning);
 
-  const [moveType, setMoveType] = React.useState<"typical" | "inspection">(
+  // purely visual (to mirror original component’s first block)
+  const [cleanType, setCleanType] = React.useState<"typical" | "inspection">(
     "typical"
   );
 
@@ -24,40 +24,42 @@ export default function BookingDetails() {
   }>({ type: "idle" });
 
   return (
-    <section className="max-w-5xl space-y-8">
-      {/* Vad som ska flyttas? */}
+    <section className="max-w-5xl  space-y-8">
+      {/* Same header block as original */}
       <div>
         <h3 className="text-2xl font-semibold text-primary-foreground mb-4">
-          Vad som ska flyttas?
+          Vad som ska städas?
         </h3>
 
         <RadioGroup
-          value={moveType}
-          onValueChange={(v) => setMoveType(v as typeof moveType)}
+          value={cleanType}
+          onValueChange={(v) => setCleanType(v as typeof cleanType)}
           className="grid grid-cols-1 md:grid-cols-2 gap-10"
         >
+          {/* Option 1 */}
           <div className="flex items-center gap-3">
             <RadioGroupItem
-              id="typical"
+              id="typical-clean"
               value="typical"
               className="h-6 w-6 border-primary data-[state=checked]:bg-primary data-[state=checked]:border-primary"
             />
             <Label
-              htmlFor="typical"
+              htmlFor="typical-clean"
               className="text-foreground font-medium cursor-pointer"
             >
               Typiskt för storleken
             </Label>
           </div>
 
+          {/* Option 2 */}
           <div className="flex items-center gap-3">
             <RadioGroupItem
-              id="inspection"
+              id="inspection-clean"
               value="inspection"
               className="h-6 w-6 border-primary data-[state=checked]:bg-primary data-[state=checked]:border-primary"
             />
             <Label
-              htmlFor="inspection"
+              htmlFor="inspection-clean"
               className="text-foreground font-medium cursor-pointer"
             >
               Boka en kostnadsfri besiktning
@@ -66,7 +68,7 @@ export default function BookingDetails() {
         </RadioGroup>
       </div>
 
-      {/* Bokning uppgifter */}
+      {/* Bokning uppgifter (same design & layout) */}
       <div>
         <h3 className="text-2xl font-semibold text-primary-foreground mb-4">
           Bokning uppgifter
@@ -77,12 +79,10 @@ export default function BookingDetails() {
             e.preventDefault();
             setStatus({ type: "loading" });
 
-            // capture the form BEFORE any await (so it doesn't get nulled)
             const form = e.currentTarget as HTMLFormElement;
-
             const f = Object.fromEntries(new FormData(form).entries());
 
-            // minimal required checks
+            // required (mirror original)
             if (!f.name || !f.email || !f.date) {
               setStatus({
                 type: "error",
@@ -92,21 +92,18 @@ export default function BookingDetails() {
             }
 
             try {
-              await postBooking(process.env.NEXT_PUBLIC_API_KEY!, {
+              await postCleaning(process.env.NEXT_PUBLIC_API_KEY!, {
                 name: String(f.name),
                 email: String(f.email),
                 phone: String(f.phone || ""),
-                pnr: String(f.pnr || ""),
-                keys: String(f.keys || ""),
+                personalNumber: String(f.pnr || ""),
                 message: String(f.message || ""),
                 date: String(f.date || ""),
               });
 
-              // reset only after a successful post
+              // reset form + store (same behavior pattern)
               form.reset();
-              resetBooking();
-              // OPTIONAL: clear store state if you added this action
-              // resetBooking();
+              resetCleaning();
 
               setStatus({
                 type: "success",
@@ -121,7 +118,7 @@ export default function BookingDetails() {
           }}
           className="space-y-6"
         >
-          {/* 2-column grid */}
+          {/* 2-column grid (identical structure & classes) */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label htmlFor="name">Namn</Label>
@@ -178,6 +175,8 @@ export default function BookingDetails() {
               />
             </div>
 
+            {/* If you also want "Lägenhetsnycklar" here like the moving form, uncomment: */}
+            {/* 
             <div className="space-y-2">
               <Label htmlFor="keys">Lägenhetsnycklar</Label>
               <Input
@@ -187,9 +186,10 @@ export default function BookingDetails() {
                 className="rounded-xl placeholder:text-foreground/60"
               />
             </div>
+            */}
           </div>
 
-          {/* Message */}
+          {/* Message (same style) */}
           <div className="space-y-2">
             <Label htmlFor="message">Meddelande</Label>
             <Textarea
@@ -200,7 +200,7 @@ export default function BookingDetails() {
             />
           </div>
 
-          {/* Feedback (only one shows at a time) */}
+          {/* Feedback (same pattern) */}
           {status.type === "error" && (
             <p className="text-red-500 text-sm">{status.text}</p>
           )}
@@ -208,7 +208,7 @@ export default function BookingDetails() {
             <p className="text-green-500 text-sm">{status.text}</p>
           )}
 
-          {/* Submit */}
+          {/* Submit (same button styling) */}
           <Button
             type="submit"
             disabled={status.type === "loading"}
