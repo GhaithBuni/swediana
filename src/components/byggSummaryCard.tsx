@@ -1,4 +1,3 @@
-// components/CleaningSummaryCard.tsx
 "use client";
 
 import {
