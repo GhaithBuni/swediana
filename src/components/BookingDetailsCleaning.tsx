@@ -8,8 +8,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useCleaningStore } from "@/stores/cleaningStore";
 import { bookingDetailsSchema } from "@/app/schema/schema"; // same schema as moving form
+import { useRouter } from "next/navigation"; // ← add this
 
 export default function BookingDetailsCleaning() {
+  const router = useRouter(); // ← add this
   const postCleaning = useCleaningStore((s) => s.postCleaningBooking);
   const resetCleaning = useCleaningStore((s) => s.resetCleaning);
 
@@ -120,27 +122,49 @@ export default function BookingDetailsCleaning() {
             }
 
             try {
-              await postCleaning(process.env.NEXT_PUBLIC_API_KEY ?? "", {
-                name: String(f.name),
-                email: String(f.email),
-                phone: String(f.phone || ""),
-                personalNumber: String(f.pnr || ""),
-                message: String(f.message || ""),
-                date: String(f.date || ""),
-              });
+              const res = await postCleaning(
+                process.env.NEXT_PUBLIC_API_KEY ?? "",
+                {
+                  name: String(f.name),
+                  email: String(f.email),
+                  phone: String(f.phone || ""),
+                  personalNumber: String(f.pnr || ""),
+                  message: String(f.message || ""),
+                  date: String(f.date || ""),
+                }
+              );
 
+              // Derive a booking/order id from the response in a tolerant way
+              const bookingId =
+                (res && (res._id || res.orderId || res.id)) ||
+                (typeof res === "string" ? res : undefined) ||
+                `tmp-${Date.now()}`; // fallback if your API doesn't return an id
+              console.log(res);
+
+              // Build query string for the Thanks page
+              const qs = new URLSearchParams({
+                order: String(bookingId),
+                service: "Flyttstäd", // or inject dynamically if you have it
+                date: String(f.date || ""),
+                name: String(f.name || ""),
+                email: String(f.email || ""),
+                phone: String(f.phone || ""),
+              }).toString();
+
+              // Clear local UI
               form.reset();
               resetCleaning();
 
-              setStatus({
-                type: "success",
-                text: "Bokning lyckades! Vi återkommer med bekräftelse.",
-              });
+              // Navigate to your thank-you page (use replace to avoid going back to form on back button)
+              router.replace(`/thanks?${qs}`);
             } catch (err: any) {
               setStatus({
                 type: "error",
                 text: err?.message || "Kunde inte skicka bokningen.",
               });
+            } finally {
+              // (optional) if you keep status for the button spinner
+              // setStatus({ type: "idle" });
             }
           }}
           className="space-y-6"

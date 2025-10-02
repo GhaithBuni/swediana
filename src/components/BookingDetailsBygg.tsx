@@ -9,8 +9,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useCleaningStore } from "@/stores/cleaningStore"; // if you have a separate store for bygg, swap this
 import { bookingDetailsSchema } from "@/app/schema/schema"; // <-- same schema as your other form
+import { useRouter } from "next/navigation";
 
 export default function BookingDetailsBygg() {
+  const router = useRouter();
   const postCleaning = useCleaningStore((s) => s.postCleaningBooking);
   const resetCleaning = useCleaningStore((s) => s.resetCleaning);
 
@@ -118,22 +120,38 @@ export default function BookingDetailsBygg() {
             }
 
             try {
-              await postCleaning(process.env.NEXT_PUBLIC_API_KEY ?? "", {
-                name: String(f.name),
-                email: String(f.email),
-                phone: String(f.phone || ""),
-                personalNumber: String(f.pnr || ""),
-                message: String(f.message || ""),
+              const res = await postCleaning(
+                process.env.NEXT_PUBLIC_API_KEY ?? "",
+                {
+                  name: String(f.name),
+                  email: String(f.email),
+                  phone: String(f.phone || ""),
+                  personalNumber: String(f.pnr || ""),
+                  message: String(f.message || ""),
+                  date: String(f.date || ""),
+                }
+              );
+
+              const bookingId =
+                (res && (res._id || res.orderId || res.id)) ||
+                (typeof res === "string" ? res : undefined) ||
+                `tmp-${Date.now()}`; // fallback if your API doesn't return an id
+              console.log(res);
+
+              // Build query string for the Thanks page
+              const qs = new URLSearchParams({
+                order: String(bookingId),
+                service: "Byggstäd", // or inject dynamically if you have it
                 date: String(f.date || ""),
-              });
+                name: String(f.name || ""),
+                email: String(f.email || ""),
+                phone: String(f.phone || ""),
+              }).toString();
 
               form.reset();
               resetCleaning();
 
-              setStatus({
-                type: "success",
-                text: "Bokning lyckades! Vi återkommer med bekräftelse.",
-              });
+              router.replace(`/thanks?${qs}`);
             } catch (err: any) {
               setStatus({
                 type: "error",
