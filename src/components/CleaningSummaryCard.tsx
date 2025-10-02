@@ -12,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useCleaningStore } from "@/stores/cleaningStore";
+import CleaningIncludes from "./CleaningIncludes";
 
 const KEY_MAP: Record<string, string> = {
   Persienner: "Persinner", // <- double-check this matches your API payload key
@@ -125,6 +126,7 @@ export default function CleaningSummaryCard() {
           <p>{kr(grandTotal)}</p>
         </CardFooter>
       </Card>
+      <CleaningIncludes />
     </aside>
   );
 }

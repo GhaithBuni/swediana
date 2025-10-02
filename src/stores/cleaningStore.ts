@@ -227,6 +227,8 @@ export const useCleaningStore = create<CleaningState>()(
 
       postCleaningBooking: async (apiBase, customer) => {
         const s = get();
+        console.log(customer);
+        console.log(s);
         const body = {
           size: s.size,
           // single address for cleaning

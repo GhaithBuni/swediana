@@ -1,4 +1,4 @@
-// components/BookingDetailsCleaning.tsx
+// components/BookingDetailsBygg.tsx
 "use client";
 
 import * as React from "react";
@@ -7,13 +7,13 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { useCleaningStore } from "@/stores/cleaningStore";
+import { useCleaningStore } from "@/stores/cleaningStore"; // if you have a separate store for bygg, swap this
+import { bookingDetailsSchema } from "@/app/schema/schema"; // <-- same schema as your other form
 
 export default function BookingDetailsBygg() {
   const postCleaning = useCleaningStore((s) => s.postCleaningBooking);
   const resetCleaning = useCleaningStore((s) => s.resetCleaning);
 
-  // purely visual (to mirror original component’s first block)
   const [cleanType, setCleanType] = React.useState<"typical" | "inspection">(
     "typical"
   );
@@ -23,9 +23,20 @@ export default function BookingDetailsBygg() {
     text?: string;
   }>({ type: "idle" });
 
+  const [errors, setErrors] = React.useState<Record<string, string>>({});
+
+  const clearError = (field: string) => {
+    if (errors[field]) {
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next[field];
+        return next;
+      });
+    }
+  };
+
   return (
-    <section className="max-w-5xl  space-y-8">
-      {/* Same header block as original */}
+    <section className="max-w-5xl space-y-8">
       <div>
         <h3 className="text-2xl font-semibold text-primary-foreground mb-4">
           Vad som ska städas?
@@ -36,7 +47,6 @@ export default function BookingDetailsBygg() {
           onValueChange={(v) => setCleanType(v as typeof cleanType)}
           className="grid grid-cols-1 md:grid-cols-2 gap-10"
         >
-          {/* Option 1 */}
           <div className="flex items-center gap-3">
             <RadioGroupItem
               id="typical-clean"
@@ -51,7 +61,6 @@ export default function BookingDetailsBygg() {
             </Label>
           </div>
 
-          {/* Option 2 */}
           <div className="flex items-center gap-3">
             <RadioGroupItem
               id="inspection-clean"
@@ -68,7 +77,6 @@ export default function BookingDetailsBygg() {
         </RadioGroup>
       </div>
 
-      {/* Bokning uppgifter (same design & layout) */}
       <div>
         <h3 className="text-2xl font-semibold text-primary-foreground mb-4">
           Bokning uppgifter
@@ -77,22 +85,40 @@ export default function BookingDetailsBygg() {
         <form
           onSubmit={async (e) => {
             e.preventDefault();
+
+            setErrors({});
             setStatus({ type: "loading" });
 
             const form = e.currentTarget as HTMLFormElement;
             const f = Object.fromEntries(new FormData(form).entries());
 
-            // required (mirror original)
-            if (!f.name || !f.email || !f.date) {
-              setStatus({
-                type: "error",
-                text: "Fyll i namn, e-post och datum.",
-              });
+            // Validate with Zod (same schema)
+            const result = bookingDetailsSchema.safeParse({
+              name: f.name || "",
+              email: f.email || "",
+              phone: f.phone || "",
+              date: f.date || "",
+              pnr: f.pnr || "",
+              keys: "", // not present in this form; schema allows optional/empty
+              message: f.message || "",
+            });
+
+            if (!result.success) {
+              const validationErrors: Record<string, string> = {};
+              for (const issue of result.error.issues) {
+                const field = String(issue.path[0] ?? "general");
+                validationErrors[field] = issue.message;
+              }
+              setErrors(validationErrors);
+              setStatus({ type: "idle" });
+
+              const first = Object.keys(validationErrors)[0];
+              document.getElementById(first)?.focus();
               return;
             }
 
             try {
-              await postCleaning(process.env.NEXT_PUBLIC_API_KEY!, {
+              await postCleaning(process.env.NEXT_PUBLIC_API_KEY ?? "", {
                 name: String(f.name),
                 email: String(f.email),
                 phone: String(f.phone || ""),
@@ -101,7 +127,6 @@ export default function BookingDetailsBygg() {
                 date: String(f.date || ""),
               });
 
-              // reset form + store (same behavior pattern)
               form.reset();
               resetCleaning();
 
@@ -118,29 +143,42 @@ export default function BookingDetailsBygg() {
           }}
           className="space-y-6"
         >
-          {/* 2-column grid (identical structure & classes) */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="name">Namn</Label>
+              <Label htmlFor="name">
+                Namn <span className="text-red-500">*</span>
+              </Label>
               <Input
                 id="name"
                 name="name"
                 placeholder="Namn"
-                required
-                className="rounded-xl placeholder:text-foreground/60"
+                className={`rounded-xl placeholder:text-foreground/60 ${
+                  errors.name ? "border-red-500" : ""
+                }`}
+                onChange={() => clearError("name")}
               />
+              {errors.name && (
+                <p className="text-sm text-red-500">{errors.name}</p>
+              )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">
+                Email <span className="text-red-500">*</span>
+              </Label>
               <Input
                 id="email"
                 name="email"
                 type="email"
                 placeholder="Email"
-                required
-                className="rounded-xl placeholder:text-foreground/60"
+                className={`rounded-xl placeholder:text-foreground/60 ${
+                  errors.email ? "border-red-500" : ""
+                }`}
+                onChange={() => clearError("email")}
               />
+              {errors.email && (
+                <p className="text-sm text-red-500">{errors.email}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -149,20 +187,31 @@ export default function BookingDetailsBygg() {
                 id="phone"
                 name="phone"
                 inputMode="tel"
-                placeholder="Telefon"
-                className="rounded-xl placeholder:text-foreground/60"
+                placeholder="0701234567"
+                className={`rounded-xl placeholder:text-foreground/60 ${
+                  errors.phone ? "border-red-500" : ""
+                }`}
+                onChange={() => clearError("phone")}
               />
+              {errors.phone && (
+                <p className="text-sm text-red-500">{errors.phone}</p>
+              )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="date">Datum</Label>
+              <Label htmlFor="date">
+                Datum <span className="text-red-500">*</span>
+              </Label>
               <Input
                 id="date"
                 name="date"
                 type="date"
-                required
-                className="rounded-xl"
+                className={`rounded-xl ${errors.date ? "border-red-500" : ""}`}
+                onChange={() => clearError("date")}
               />
+              {errors.date && (
+                <p className="text-sm text-red-500">{errors.date}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -170,37 +219,34 @@ export default function BookingDetailsBygg() {
               <Input
                 id="pnr"
                 name="pnr"
-                placeholder="Personnummer"
-                className="rounded-xl placeholder:text-foreground/60"
+                placeholder="ÅÅMMDD-XXXX"
+                className={`rounded-xl placeholder:text-foreground/60 ${
+                  errors.pnr ? "border-red-500" : ""
+                }`}
+                onChange={() => clearError("pnr")}
               />
+              {errors.pnr && (
+                <p className="text-sm text-red-500">{errors.pnr}</p>
+              )}
             </div>
-
-            {/* If you also want "Lägenhetsnycklar" here like the moving form, uncomment: */}
-            {/* 
-            <div className="space-y-2">
-              <Label htmlFor="keys">Lägenhetsnycklar</Label>
-              <Input
-                id="keys"
-                name="keys"
-                placeholder="Lägenhetsnycklar"
-                className="rounded-xl placeholder:text-foreground/60"
-              />
-            </div>
-            */}
           </div>
 
-          {/* Message (same style) */}
           <div className="space-y-2">
             <Label htmlFor="message">Meddelande</Label>
             <Textarea
               id="message"
               name="message"
               placeholder="Meddelande"
-              className="min-h-[140px] rounded-xl placeholder:text-foreground/60"
+              className={`min-h-[140px] rounded-xl placeholder:text-foreground/60 ${
+                errors.message ? "border-red-500" : ""
+              }`}
+              onChange={() => clearError("message")}
             />
+            {errors.message && (
+              <p className="text-sm text-red-500">{errors.message}</p>
+            )}
           </div>
 
-          {/* Feedback (same pattern) */}
           {status.type === "error" && (
             <p className="text-red-500 text-sm">{status.text}</p>
           )}
@@ -208,7 +254,6 @@ export default function BookingDetailsBygg() {
             <p className="text-green-500 text-sm">{status.text}</p>
           )}
 
-          {/* Submit (same button styling) */}
           <Button
             type="submit"
             disabled={status.type === "loading"}

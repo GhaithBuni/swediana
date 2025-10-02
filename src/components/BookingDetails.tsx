@@ -7,12 +7,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useBookingStore } from "@/stores/bookingStore";
+import { bookingDetailsSchema } from "../app/schema/schema";
 
 export default function BookingDetails() {
   const postBooking = useBookingStore((s) => s.postBooking);
-  const resetBooking = useBookingStore((s) => s.resetBooking); // ⬅️ get the reset action
-  // OPTIONAL: if you added resetBooking() in your store, uncomment this:
-  // const resetBooking = useBookingStore((s) => s.resetBooking);
+  const resetBooking = useBookingStore((s) => s.resetBooking);
 
   const [moveType, setMoveType] = React.useState<"typical" | "inspection">(
     "typical"
@@ -22,6 +21,19 @@ export default function BookingDetails() {
     type: "idle" | "loading" | "success" | "error";
     text?: string;
   }>({ type: "idle" });
+
+  const [errors, setErrors] = React.useState<Record<string, string>>({});
+
+  // Clear error when user starts typing
+  const clearError = (field: string) => {
+    if (errors[field]) {
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next[field];
+        return next;
+      });
+    }
+  };
 
   return (
     <section className="max-w-5xl space-y-8">
@@ -75,19 +87,38 @@ export default function BookingDetails() {
         <form
           onSubmit={async (e) => {
             e.preventDefault();
+
+            // Clear previous errors and status
+            setErrors({});
             setStatus({ type: "loading" });
 
-            // capture the form BEFORE any await (so it doesn't get nulled)
             const form = e.currentTarget as HTMLFormElement;
-
             const f = Object.fromEntries(new FormData(form).entries());
 
-            // minimal required checks
-            if (!f.name || !f.email || !f.date) {
-              setStatus({
-                type: "error",
-                text: "Fyll i namn, e-post och datum.",
+            // Validate with Zod
+            const result = bookingDetailsSchema.safeParse({
+              name: f.name || "",
+              email: f.email || "",
+              phone: f.phone || "",
+              date: f.date || "",
+              pnr: f.pnr || "",
+              keys: f.keys || "",
+              message: f.message || "",
+            });
+
+            if (!result.success) {
+              // Extract errors
+              const validationErrors: Record<string, string> = {};
+              result.error.issues.forEach((err) => {
+                const field = err.path[0] as string;
+                validationErrors[field] = err.message;
               });
+              setErrors(validationErrors);
+              setStatus({ type: "idle" });
+
+              // Scroll to first error
+              const firstError = Object.keys(validationErrors)[0];
+              document.getElementById(firstError)?.focus();
               return;
             }
 
@@ -102,11 +133,8 @@ export default function BookingDetails() {
                 date: String(f.date || ""),
               });
 
-              // reset only after a successful post
               form.reset();
               resetBooking();
-              // OPTIONAL: clear store state if you added this action
-              // resetBooking();
 
               setStatus({
                 type: "success",
@@ -124,26 +152,40 @@ export default function BookingDetails() {
           {/* 2-column grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="name">Namn</Label>
+              <Label htmlFor="name">
+                Namn <span className="text-red-500">*</span>
+              </Label>
               <Input
                 id="name"
                 name="name"
                 placeholder="Namn"
-                required
-                className="rounded-xl placeholder:text-foreground/60"
+                className={`rounded-xl placeholder:text-foreground/60 ${
+                  errors.name ? "border-red-500" : ""
+                }`}
+                onChange={() => clearError("name")}
               />
+              {errors.name && (
+                <p className="text-sm text-red-500">{errors.name}</p>
+              )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">
+                Email <span className="text-red-500">*</span>
+              </Label>
               <Input
                 id="email"
                 name="email"
                 type="email"
                 placeholder="Email"
-                required
-                className="rounded-xl placeholder:text-foreground/60"
+                className={`rounded-xl placeholder:text-foreground/60 ${
+                  errors.email ? "border-red-500" : ""
+                }`}
+                onChange={() => clearError("email")}
               />
+              {errors.email && (
+                <p className="text-sm text-red-500">{errors.email}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -152,20 +194,31 @@ export default function BookingDetails() {
                 id="phone"
                 name="phone"
                 inputMode="tel"
-                placeholder="Telefon"
-                className="rounded-xl placeholder:text-foreground/60"
+                placeholder="0701234567"
+                className={`rounded-xl placeholder:text-foreground/60 ${
+                  errors.phone ? "border-red-500" : ""
+                }`}
+                onChange={() => clearError("phone")}
               />
+              {errors.phone && (
+                <p className="text-sm text-red-500">{errors.phone}</p>
+              )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="date">Datum</Label>
+              <Label htmlFor="date">
+                Datum <span className="text-red-500">*</span>
+              </Label>
               <Input
                 id="date"
                 name="date"
                 type="date"
-                required
-                className="rounded-xl"
+                className={`rounded-xl ${errors.date ? "border-red-500" : ""}`}
+                onChange={() => clearError("date")}
               />
+              {errors.date && (
+                <p className="text-sm text-red-500">{errors.date}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -173,9 +226,15 @@ export default function BookingDetails() {
               <Input
                 id="pnr"
                 name="pnr"
-                placeholder="Personnummer"
-                className="rounded-xl placeholder:text-foreground/60"
+                placeholder="ÅÅMMDD-XXXX"
+                className={`rounded-xl placeholder:text-foreground/60 ${
+                  errors.pnr ? "border-red-500" : ""
+                }`}
+                onChange={() => clearError("pnr")}
               />
+              {errors.pnr && (
+                <p className="text-sm text-red-500">{errors.pnr}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -196,8 +255,14 @@ export default function BookingDetails() {
               id="message"
               name="message"
               placeholder="Meddelande"
-              className="min-h-[140px] rounded-xl placeholder:text-foreground/60"
+              className={`min-h-[140px] rounded-xl placeholder:text-foreground/60 ${
+                errors.message ? "border-red-500" : ""
+              }`}
+              onChange={() => clearError("message")}
             />
+            {errors.message && (
+              <p className="text-sm text-red-500">{errors.message}</p>
+            )}
           </div>
 
           {/* Feedback (only one shows at a time) */}

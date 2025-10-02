@@ -1,32 +1,78 @@
-// schema.ts
 import { z } from "zod";
 
-export const addressSchema = z.object({
-  homeType: z.enum(["lagenhet", "villa", "radhus", "kontor", "forrad"]),
-  floor: z.enum(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10+"]),
-  access: z.enum(["stairs", "elevator", "large-elevator"]),
-  parkingDistance: z
-    .enum(["10", "20", "30", "40", "50"])
-    .transform((v) => Number(v)),
+// Validation schema for the initial booking form
+export const initialBookingSchema = z.object({
+  size: z
+    .number()
+    .min(1, "Storlek måste vara minst 1 m³")
+    .max(500, "Storlek kan inte överstiga 500 m³"),
+  fromPostcode: z
+    .string()
+    .min(1, "Postnummer (från) är obligatoriskt")
+    .regex(/^\d{5}$/, "Postnummer måste vara 5 siffror"),
+  toPostcode: z
+    .string()
+    .min(1, "Postnummer (till) är obligatoriskt")
+    .regex(/^\d{5}$/, "Postnummer måste vara 5 siffror"),
 });
 
-export const extrasSchema = z.object({
-  packa: z.enum(["JA", "NEJ"]).optional(),
-  montera: z.enum(["JA", "NEJ"]).optional(),
-  bortforsling: z.enum(["JA", "NEJ"]).optional(),
-  flyttstad: z.enum(["JA", "NEJ"]).optional(),
-  magasinering: z.enum(["JA", "NEJ"]).optional(),
+// Validation schema for the booking details form
+export const bookingDetailsSchema = z.object({
+  name: z
+    .string()
+    .min(2, "Namn måste vara minst 2 tecken")
+    .max(100, "Namn kan inte vara längre än 100 tecken"),
+  email: z
+    .string()
+    .min(1, "Email är obligatoriskt")
+    .email("Ogiltig emailadress"),
+  phone: z
+    .string()
+    .regex(/^(\+46|0)?[1-9]\d{8,9}$/, "Ogiltigt telefonnummer")
+    .optional()
+    .or(z.literal("")),
+  date: z
+    .string()
+    .min(1, "Datum är obligatoriskt")
+    .refine((date) => {
+      const selected = new Date(date);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return selected >= today;
+    }, "Datum kan inte vara i det förflutna"),
+  pnr: z
+    .string()
+    .regex(/^\d{6}-?\d{4}$/, "Personnummer måste vara i formatet ÅÅMMDD-XXXX")
+    .optional()
+    .or(z.literal("")),
+  keys: z.string().optional(),
+  message: z
+    .string()
+    .max(1000, "Meddelandet kan inte vara längre än 1000 tecken")
+    .optional(),
 });
 
-export const formSchema = z.object({
-  from: addressSchema,
-  to: addressSchema,
-  extras: extrasSchema,
-  customer: z.object({
-    name: z.string().min(2),
-    email: z.string().email(),
-    phone: z.string().min(6).optional(),
-    message: z.string().optional(),
-  }),
+export const initialCleaningSchema = z.object({
+  size: z
+    .number()
+    .min(1, "Storlek måste vara minst 1 m³")
+    .max(500, "Storlek kan inte överstiga 500 m³"),
+  fromPostcode: z
+    .string()
+    .min(1, "Postnummer (från) är obligatoriskt")
+    .regex(/^\d{5}$/, "Postnummer måste vara 5 siffror"),
 });
-export type FormValues = z.infer<typeof formSchema>;
+
+export type InitialBookingData = z.infer<typeof initialBookingSchema>;
+export type BookingDetailsData = z.infer<typeof bookingDetailsSchema>;
+export type initialCleaningSchema = z.infer<typeof initialCleaningSchema>;
+
+// Helper to get user-friendly error messages
+export function getValidationErrors(error: z.ZodError): Record<string, string> {
+  const errors: Record<string, string> = {};
+  error.issues.forEach((err) => {
+    const path = err.path.join(".");
+    errors[path] = err.message;
+  });
+  return errors;
+}
