@@ -116,7 +116,7 @@ type CleaningState = {
   setExtras: (patch: CleaningExtras) => void;
 
   fetchCleaningPrices: (apiBase: string) => Promise<void>;
-  postCleaningBooking: (
+  postByggCleaningBooking: (
     apiBase: string,
     customer: {
       name: string;
@@ -138,7 +138,7 @@ function makeInitialState(): Omit<
   | "setSize"
   | "setExtras"
   | "fetchCleaningPrices"
-  | "postCleaningBooking"
+  | "postByggCleaningBooking"
   | "resetCleaning"
 > {
   return {
@@ -224,8 +224,28 @@ export const useCleaningStore = create<CleaningState>()(
         });
       },
 
-      postCleaningBooking: async (apiBase, customer) => {
+      postByggCleaningBooking: async (apiBase, customer) => {
+        // Get fresh state at call time
         const s = get();
+
+        // Debug: Log current state
+        console.log("Current state at booking:", {
+          basePrice: s.basePrice,
+          size: s.size,
+          extras: s.extras,
+          extrasTable: s.extrasTable,
+        });
+
+        // Recalculate price details to ensure they're current
+        const currentPriceDetails = computePriceDetails({
+          base: s.basePrice,
+          size: s.size,
+          extras: s.extras,
+          table: s.extrasTable,
+        });
+
+        console.log("Computed price details:", currentPriceDetails);
+
         const body = {
           size: s.size,
           // single address for cleaning
@@ -249,9 +269,11 @@ export const useCleaningStore = create<CleaningState>()(
           message: customer.message,
           date: customer.date,
 
-          // snapshot
-          priceDetails: s.priceDetails,
+          // snapshot - use recalculated values
+          priceDetails: currentPriceDetails,
         };
+
+        console.log("Booking body:", body);
 
         const res = await fetch(`${apiBase}/bygg`, {
           method: "POST",

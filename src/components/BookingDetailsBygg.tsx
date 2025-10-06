@@ -7,13 +7,15 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { useCleaningStore } from "@/stores/cleaningStore"; // if you have a separate store for bygg, swap this
+import { useCleaningStore } from "@/stores/byggStore"; // if you have a separate store for bygg, swap this
 import { bookingDetailsSchema } from "@/app/schema/schema"; // <-- same schema as your other form
 import { useRouter } from "next/navigation";
 
 export default function BookingDetailsBygg() {
   const router = useRouter();
-  const postCleaning = useCleaningStore((s) => s.postCleaningBooking);
+  const postByggCleaningBooking = useCleaningStore(
+    (s) => s.postByggCleaningBooking
+  );
   const resetCleaning = useCleaningStore((s) => s.resetCleaning);
 
   const [cleanType, setCleanType] = React.useState<"typical" | "inspection">(
@@ -120,7 +122,7 @@ export default function BookingDetailsBygg() {
             }
 
             try {
-              const res = await postCleaning(
+              const res = await postByggCleaningBooking(
                 process.env.NEXT_PUBLIC_API_KEY ?? "",
                 {
                   name: String(f.name),
@@ -132,11 +134,7 @@ export default function BookingDetailsBygg() {
                 }
               );
 
-              const bookingId =
-                (res && (res._id || res.orderId || res.id)) ||
-                (typeof res === "string" ? res : undefined) ||
-                `tmp-${Date.now()}`; // fallback if your API doesn't return an id
-              console.log(res);
+              const bookingId = res?.data?.bookingNumber;
 
               // Build query string for the Thanks page
               const qs = new URLSearchParams({

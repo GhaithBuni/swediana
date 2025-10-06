@@ -135,11 +135,9 @@ export default function BookingDetailsCleaning() {
               );
 
               // Derive a booking/order id from the response in a tolerant way
-              const bookingId =
-                (res && (res._id || res.orderId || res.id)) ||
-                (typeof res === "string" ? res : undefined) ||
-                `tmp-${Date.now()}`; // fallback if your API doesn't return an id
-              console.log(res);
+              const bookingId = res?.data?.bookingNumber;
+
+              console.log(res, bookingId);
 
               // Build query string for the Thanks page
               const qs = new URLSearchParams({

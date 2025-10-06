@@ -150,7 +150,7 @@ function makeInitialState(): Omit<
       distance: 10,
       postcode: "",
     },
-    size: 1,
+    size: 0,
     extras: {},
     basePrice: 0,
     extrasTable: [],

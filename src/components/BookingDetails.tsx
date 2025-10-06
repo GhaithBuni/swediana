@@ -136,10 +136,7 @@ export default function BookingDetails() {
                 date: String(f.date || ""),
               });
 
-              const bookingId =
-                (res && (res._id || res.orderId || res.id)) ||
-                (typeof res === "string" ? res : undefined) ||
-                `tmp-${Date.now()}`; // fallback if your API doesn't return an id
+              const bookingId = res?.data?.bookingNumber;
               console.log(res);
 
               // Build query string for the Thanks page
