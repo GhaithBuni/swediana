@@ -193,6 +193,7 @@ type BookingState = {
       pnr?: string;
       keys?: string;
       message?: string;
+      addressStreet: string;
       date?: string;
     }
   ) => Promise<any>;
@@ -383,6 +384,7 @@ export const useBookingStore = create<BookingState>()(
           // Customer
           name: customer.name,
           email: customer.email,
+          addressStreet: customer.addressStreet,
           phone: customer.phone,
           personalNumber: customer.pnr,
           apartmentKeys: customer.keys,

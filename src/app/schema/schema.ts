@@ -46,6 +46,10 @@ export const bookingDetailsSchema = z.object({
     .optional()
     .or(z.literal("")),
   keys: z.string().optional(),
+  addressStreet: z
+    .string()
+    .min(1, "Adress är obligatorisk")
+    .max(200, "Adress kan inte vara längre än 200 tecken"),
   message: z
     .string()
     .max(1000, "Meddelandet kan inte vara längre än 1000 tecken")

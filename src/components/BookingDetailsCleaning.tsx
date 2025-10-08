@@ -104,6 +104,7 @@ export default function BookingDetailsCleaning() {
               // "keys" isn't in this form UI, but schema allows optional/empty -> pass empty string
               keys: "",
               message: f.message || "",
+              addressStreet: f.addressStreet || "",
             });
 
             if (!result.success) {
@@ -131,6 +132,7 @@ export default function BookingDetailsCleaning() {
                   personalNumber: String(f.pnr || ""),
                   message: String(f.message || ""),
                   date: String(f.date || ""),
+                  addressStreet: String(f.addressStreet || ""),
                 }
               );
 
@@ -251,6 +253,21 @@ export default function BookingDetailsCleaning() {
               />
               {errors.pnr && (
                 <p className="text-sm text-red-500">{errors.pnr}</p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="address">Adress</Label>
+              <Input
+                id="addressStreet"
+                name="addressStreet"
+                placeholder="Adress"
+                className={`rounded-xl placeholder:text-foreground/60 ${
+                  errors.addressStreet ? "border-red-500" : ""
+                }`}
+                onChange={() => clearError("addressStreet")}
+              />
+              {errors.addressStreet && (
+                <p className="text-sm text-red-500">{errors.addressStreet}</p>
               )}
             </div>
           </div>

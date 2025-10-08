@@ -107,6 +107,7 @@ export default function BookingDetails() {
               pnr: f.pnr || "",
               keys: f.keys || "",
               message: f.message || "",
+              addressStreet: f.addressStreet || "",
             });
 
             if (!result.success) {
@@ -134,6 +135,7 @@ export default function BookingDetails() {
                 keys: String(f.keys || ""),
                 message: String(f.message || ""),
                 date: String(f.date || ""),
+                addressStreet: String(f.addressStreet || ""),
               });
 
               const bookingId = res?.data?.bookingNumber;
@@ -147,6 +149,7 @@ export default function BookingDetails() {
                 name: String(f.name || ""),
                 email: String(f.email || ""),
                 phone: String(f.phone || ""),
+                addressStreet: String(f.addressStreet || ""),
               }).toString();
 
               form.reset();
@@ -197,6 +200,22 @@ export default function BookingDetails() {
               />
               {errors.email && (
                 <p className="text-sm text-red-500">{errors.email}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="address">Adress</Label>
+              <Input
+                id="addressStreet"
+                name="addressStreet"
+                placeholder="Adress"
+                className={`rounded-xl placeholder:text-foreground/60 ${
+                  errors.addressStreet ? "border-red-500" : ""
+                }`}
+                onChange={() => clearError("addressStreet")}
+              />
+              {errors.addressStreet && (
+                <p className="text-sm text-red-500">{errors.addressStreet}</p>
               )}
             </div>
 

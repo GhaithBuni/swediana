@@ -1,6 +1,7 @@
 // app/stores/cleaningStore.ts
 "use client";
 
+import { add } from "date-fns";
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 
@@ -126,6 +127,7 @@ type CleaningState = {
       personalNumber?: string;
       message?: string;
       date: string;
+      addressStreet: string;
     }
   ) => Promise<any>;
 
@@ -251,6 +253,7 @@ export const useCleaningStore = create<CleaningState>()(
           personalNumber: customer.personalNumber,
           message: customer.message,
           date: customer.date,
+          addressStreet: customer.addressStreet,
 
           // snapshot
           priceDetails: s.priceDetails,
