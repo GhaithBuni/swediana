@@ -25,9 +25,23 @@ import {
 import { Button } from "@/components/ui/button";
 
 const Nav = () => {
+  const [scrolled, setScrolled] = React.useState(false);
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 0);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <header className="w-full bg-transparent fixed top-0 z-50">
-      {/* 100% width on mobile, 80% on md+ */}
+    <header
+      className={`w-full fixed top-0 z-50 transition-colors duration-300 ${
+        scrolled ? "bg-[#007a7b]" : "bg-transparent"
+      }`}
+    >
       <Container>
         <div className="h-16 flex items-center justify-between gap-4">
           {/* Logo */}
