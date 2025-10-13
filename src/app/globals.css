@@ -6,7 +6,7 @@
 @theme {
   --font-sans: var(
     --font-body
-  ); /* use Manrope when you write class="font-sans" */
+  ); /* use Manrope when you write class="font-sanss" */
   --font-heading: var(--font-heading);
 }
 
@@ -157,4 +157,3 @@ button {
   --font-sans: var(--font-body);
   --font-heading: var(--font-heading);
 }
-

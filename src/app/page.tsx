@@ -18,7 +18,7 @@ const words = [
   "Byggstädning"
 ];
 
-function Typewriter({ words, speed = 100, pause = 1200 }) {
+function Typewriter({ words, speed = 100, pause = 1200 }: { words: string[]; speed?: number; pause?: number }) {
   const [displayed, setDisplayed] = useState("");
   const [wordIndex, setWordIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
@@ -53,39 +53,16 @@ function Typewriter({ words, speed = 100, pause = 1200 }) {
 }
 
 export default function Home() {
-  return (
-    <div className="w-full overflow-x-hidden">
-      {/* Hero Section */}
-      <div
-        className="flex flex-col justify-center items-center min-h-screen bg-cover bg-center px-4 py-8"
-        style={{ backgroundImage: "url('/land-page.jpg')" }}
-      >
-        <div className="text-center max-w-4xl mx-auto">
-          <h1 className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 leading-tight">
-            Din pålitliga städfirma med
-          </h1>
-          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold min-h-[60px] md:min-h-[80px] flex items-center justify-center">
-            <Typewriter words={words} />
-          </h2>
-          
-          {/* Optional: Add a CTA button for mobile */}
-          <div className="mt-8 md:mt-12 lg:hidden">
-            <button className="bg-[#11b6b7] text-white px-6 py-3 rounded-lg font-semibold text-lg hover:bg-[#0fa0a1] transition-colors duration-300">
-              Boka Nu
-            </button>
-          </div>
-        </div>
-      </div>
+  return <div>
 
-      {/* Main Content Sections */}
-      <div className="w-full">
-        <Tjanster />
-        <Swediana />
-        <BookingFlowPage />
-        <OmdomePage />
-        <VarforPage />
-        <SlappnaAvPage />
-      </div>
-    </div>
-  );
+
+   
+   <div
+  className="flex justify-center items-center h-screen bg-cover bg-center"
+  style={{ backgroundImage: "url('/land-page.jpg')" }}
+>
+  <h1 className="text-white text-5xl font-bold">Welcome to Swediana</h1>
+</div>
+
+  </div>;
 }

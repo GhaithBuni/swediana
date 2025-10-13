@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import ExtraServicesCleaning from "@/components/ExtraServicesCleaning";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
@@ -41,19 +42,18 @@ function YesNoPills({
   );
 }
 
-type ServiceKey =
-  | "packa"
-  | "montera"
-  | "bortforsling"
-  | "flyttstad"
-  | "magasinering";
+type ServiceKey = "packa" | "montera" | "flyttstad" | "packaKitchen";
 
 export default function ExtraServices({
   value = {},
   onChange,
+  cleaningValue,
+  onCleaningChange,
 }: {
   value?: Partial<Record<ServiceKey, "JA" | "NEJ">>;
   onChange: (v: Partial<Record<ServiceKey, "JA" | "NEJ">>) => void;
+  cleaningValue?: Record<string, any>; // cleaning extras state
+  onCleaningChange?: (v: Record<string, any>) => void; // setter
 }) {
   const setField = (key: ServiceKey, v: "JA" | "NEJ") =>
     onChange({ ...value, [key]: v });
@@ -65,11 +65,21 @@ export default function ExtraServices({
       </h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
+        {/* Moving extras */}
         <div>
           <p className="mb-3 text-foreground">Behöver du hjälp att packa?</p>
           <YesNoPills
             value={value.packa ?? null}
             onChange={(v) => setField("packa", v)}
+          />
+        </div>
+        <div>
+          <p className="mb-3 text-foreground">
+            Behöver du hjälp att packa (Bara Kök)?
+          </p>
+          <YesNoPills
+            value={value.packaKitchen ?? null}
+            onChange={(v) => setField("packaKitchen", v)}
           />
         </div>
 
@@ -85,16 +95,6 @@ export default function ExtraServices({
 
         <div>
           <p className="mb-3 text-foreground">
-            Behöver du hjälp med Bortforsling?
-          </p>
-          <YesNoPills
-            value={value.bortforsling ?? null}
-            onChange={(v) => setField("bortforsling", v)}
-          />
-        </div>
-
-        <div>
-          <p className="mb-3 text-foreground">
             Behöver du flyttstäd?{" "}
             <span className="font-medium">Får du 15% Rabatt</span>
           </p>
@@ -103,15 +103,20 @@ export default function ExtraServices({
             onChange={(v) => setField("flyttstad", v)}
           />
         </div>
+      </div>
 
-        <div>
-          <p className="mb-3 text-foreground">Behöver du magasinering?</p>
-          <YesNoPills
-            value={value.magasinering ?? null}
-            onChange={(v) => setField("magasinering", v)}
+      {/* ✅ Show cleaning extras if flyttstad === JA */}
+      {value.flyttstad === "JA" && cleaningValue && onCleaningChange && (
+        <div className="mt-8">
+          <h4 className="text-xl font-semibold text-primary-foreground mb-4">
+            Välj tillägg för Flyttstäd
+          </h4>
+          <ExtraServicesCleaning
+            value={cleaningValue}
+            onChange={onCleaningChange}
           />
         </div>
-      </div>
+      )}
     </section>
   );
 }
