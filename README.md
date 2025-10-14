@@ -17,7 +17,7 @@ It provides secure authentication with **JWT** + **bcrypt**, efficient state man
 - [MongoDB](https://www.mongodb.com/) with [Mongoose](https://mongoosejs.com/)
 - [bcrypt](https://www.npmjs.com/package/bcrypt) for password hashing
 - [jsonwebtoken (JWT)](https://www.npmjs.com/package/jsonwebtoken) for authentication
-- [Zod](https://zod.dev/) / [Yup](https://github.com/jquense/yup) for request validation
+- [Zod](https://zod.dev/) for request validation
 - Rate limiting and error-handling middleware for improved security
 
 ---
