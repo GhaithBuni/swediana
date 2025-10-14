@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Service Booking Platform 🧾
 
-## Getting Started
+A full-stack **service booking platform** built entirely with **TypeScript**, featuring a **Next.js** client and admin dashboard, an **Express.js** backend, and **MongoDB** database.  
+It provides secure authentication with **JWT** + **bcrypt**, efficient state management with **Zustand**, and an optimized developer experience with modular architecture and CI-ready configurations.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 Tech Stack
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Frontend (Client & Admin):**
+- [Next.js (TypeScript)](https://nextjs.org/)
+- [Zustand](https://zustand-demo.pmnd.rs/) for state management
+- [TailwindCSS](https://tailwindcss.com/) for styling and responsiveness
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**Backend:**
+- [Express.js (TypeScript)](https://expressjs.com/)
+- [MongoDB](https://www.mongodb.com/) with [Mongoose](https://mongoosejs.com/)
+- [bcrypt](https://www.npmjs.com/package/bcrypt) for password hashing
+- [jsonwebtoken (JWT)](https://www.npmjs.com/package/jsonwebtoken) for authentication
+- [Zod](https://zod.dev/) / [Yup](https://github.com/jquense/yup) for request validation
+- Rate limiting and error-handling middleware for improved security
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🔐 Key Features
 
-To learn more about Next.js, take a look at the following resources:
+- **Full Authentication System**
+  - Secure registration & login using **bcrypt** + **JWT**
+  - Token refresh flow for seamless sessions
+  - Role-based access control for admin and users
+  
+- **Zustand-Based State Management**
+  - Centralized global store for user sessions and bookings
+  - Persistent state and optimistic UI updates
+  
+- **Admin Dashboard**
+  - Manage bookings, pricing, and availability
+  - CRUD operations for services, offers, and discounts
+  - Visual calendar overview
+  
+- **Customer Platform**
+  - Book services, manage upcoming sessions, cancel or reschedule
+  - Real-time updates with API and global state sync
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Scalable Backend Architecture**
+  - Feature-based modular structure (`/routes`, `/controllers`, `/models`)
+  - Input validation, error handling, and clean service separation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## ⚙️ Installation & Setup
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Prerequisites
+Make sure you have the following installed:
+- **Node.js** >= 18
+- **npm** or **yarn**
+- **MongoDB**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
