@@ -64,11 +64,22 @@ export default function Home() {
   return (
     <div>
       <div
-        className="flex justify-center items-center h-screen bg-cover bg-center"
+        className="flex flex-col justify-center items-center h-screen bg-cover bg-center"
         style={{ backgroundImage: "url('/land-page.jpg')" }}
       >
-        <h1 className="text-white text-5xl font-bold">Welcome to Swediana</h1>
+        <h1 className="text-white text-5xl font-bold">
+          Din pålitliga städfirma med{" "}
+        </h1>
+        <h2 className="text-4xl mt-6">
+          <Typewriter words={words} />
+        </h2>
       </div>
+      <Tjanster />
+      <Swediana />
+      <BookingFlowPage />
+      <OmdomePage />
+      <VarforPage />
+      <SlappnaAvPage />
     </div>
   );
 }
