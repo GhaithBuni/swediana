@@ -1,7 +1,7 @@
 "use client";
 
 import { create } from "zustand";
-import { devtools, persist } from "zustand/middleware";
+import { devtools } from "zustand/middleware";
 
 /* ----------------------------- Types ----------------------------- */
 
@@ -14,7 +14,7 @@ export type Address = {
   homeType: HomeType;
   floor: Floor;
   access: Access;
-  distance: number; // meters
+  distance: number;
   postcode?: string;
 };
 
@@ -32,8 +32,18 @@ export type PriceDetails = {
     movingExtras: number;
     cleaningBaseAfterDiscount: number;
     cleaningExtras: number;
+    subtotal: number;
+    discount: number;
     grandTotal: number;
   };
+};
+
+// Add discount type
+export type DiscountInfo = {
+  code: string;
+  amount: number;
+  type: "percentage" | "fixed";
+  value: number;
 };
 
 /* ------------------- Price calculation (pure) -------------------- */
@@ -46,6 +56,7 @@ function computePriceDetails(args: {
   cleaningPrice: number;
   cleaningExtra: CleaningExtra;
   cleaningService: PriceTable[];
+  discount?: DiscountInfo;
 }): PriceDetails {
   const {
     movingPrice,
@@ -55,6 +66,7 @@ function computePriceDetails(args: {
     cleaningPrice,
     cleaningExtra,
     cleaningService,
+    discount,
   } = args;
 
   const movingTable = extraService?.[0] ?? {};
@@ -142,6 +154,23 @@ function computePriceDetails(args: {
     });
   }
 
+  // Calculate subtotal before discount
+  const subtotal =
+    movingPrice + movingExtras + cleaningBaseAfterDiscount + cleaningExtras;
+  const discountAmount = discount?.amount || 0;
+
+  // Add discount line if applicable
+  if (discount && discountAmount > 0) {
+    lines.push({
+      key: "discount",
+      label: `Rabattkod (${discount.code})`,
+      amount: -discountAmount,
+      meta: discount.type === "percentage" ? `${discount.value}%` : undefined,
+    });
+  }
+
+  const grandTotal = Math.max(0, subtotal - discountAmount);
+
   return {
     lines,
     totals: {
@@ -149,8 +178,9 @@ function computePriceDetails(args: {
       movingExtras,
       cleaningBaseAfterDiscount,
       cleaningExtras,
-      grandTotal:
-        movingPrice + movingExtras + cleaningBaseAfterDiscount + cleaningExtras,
+      subtotal,
+      discount: discountAmount,
+      grandTotal,
     },
   };
 }
@@ -173,6 +203,12 @@ type BookingState = {
   cleaningPrice: number;
   cleaningService: PriceTable[];
 
+  // discount state
+  discountCode: string;
+  appliedDiscount: DiscountInfo | null;
+  discountError: string | null;
+  isValidatingDiscount: boolean;
+
   // derived
   priceDetails: PriceDetails;
 
@@ -182,6 +218,11 @@ type BookingState = {
   setSize: (n: number) => void;
   setExtra: (patch: MovingExtra) => void;
   setCleaningExtra: (patch: CleaningExtra) => void;
+
+  // discount actions
+  setDiscountCode: (code: string) => void;
+  validateAndApplyDiscount: (apiBase: string) => Promise<void>;
+  removeDiscount: () => void;
 
   fetchPrices: (apiBase: string) => Promise<void>;
   postBooking: (
@@ -199,47 +240,70 @@ type BookingState = {
   ) => Promise<any>;
 
   resetBooking: () => void;
+  resetToken: number;
 };
 
-// default/initial state in one place so reset() is easy
-const initialState = {
-  from: {
-    homeType: "lagenhet" as HomeType,
-    floor: "1" as Floor,
-    access: "stairs" as Access,
-    distance: 10,
-    postcode: "",
-  },
-  to: {
-    homeType: "lagenhet" as HomeType,
-    floor: "1" as Floor,
-    access: "stairs" as Access,
-    distance: 10,
-    postcode: "",
-  },
-  sizeValue: 0,
-  extra: {} as MovingExtra,
-  cleaningExtra: {} as CleaningExtra,
-  movingPrice: 0,
-  extraService: [] as PriceTable[],
-  cleaningPrice: 0,
-  cleaningService: [] as PriceTable[],
-  priceDetails: {
-    lines: [],
-    totals: {
-      movingBase: 0,
-      movingExtras: 0,
-      cleaningBaseAfterDiscount: 0,
-      cleaningExtras: 0,
-      grandTotal: 0,
+// default/initial state
+function makeInitialState(): Omit<
+  BookingState,
+  | "setFrom"
+  | "setTo"
+  | "setSize"
+  | "setExtra"
+  | "setCleaningExtra"
+  | "setDiscountCode"
+  | "validateAndApplyDiscount"
+  | "removeDiscount"
+  | "fetchPrices"
+  | "postBooking"
+  | "resetBooking"
+> {
+  return {
+    from: {
+      homeType: "lagenhet" as HomeType,
+      floor: "1" as Floor,
+      access: "stairs" as Access,
+      distance: 10,
+      postcode: "",
     },
-  } as PriceDetails,
-};
+    to: {
+      homeType: "lagenhet" as HomeType,
+      floor: "1" as Floor,
+      access: "stairs" as Access,
+      distance: 10,
+      postcode: "",
+    },
+    sizeValue: 0,
+    extra: {} as MovingExtra,
+    cleaningExtra: {} as CleaningExtra,
+    movingPrice: 0,
+    extraService: [] as PriceTable[],
+    cleaningPrice: 0,
+    cleaningService: [] as PriceTable[],
+    discountCode: "",
+    appliedDiscount: null,
+    discountError: null,
+    isValidatingDiscount: false,
+    priceDetails: {
+      lines: [],
+      totals: {
+        movingBase: 0,
+        movingExtras: 0,
+        cleaningBaseAfterDiscount: 0,
+        cleaningExtras: 0,
+        subtotal: 0,
+        discount: 0,
+        grandTotal: 0,
+      },
+    } as PriceDetails,
+    resetToken: 0,
+  };
+}
 
 export const useBookingStore = create<BookingState>()(
   devtools(
     (set, get) => ({
-      ...initialState,
+      ...makeInitialState(),
 
       /* ---------- mutations recompute totals ---------- */
       setFrom: (patch) =>
@@ -253,6 +317,7 @@ export const useBookingStore = create<BookingState>()(
             cleaningPrice: next.cleaningPrice,
             cleaningExtra: next.cleaningExtra,
             cleaningService: next.cleaningService,
+            discount: next.appliedDiscount || undefined,
           });
           return next;
         }),
@@ -268,6 +333,7 @@ export const useBookingStore = create<BookingState>()(
             cleaningPrice: next.cleaningPrice,
             cleaningExtra: next.cleaningExtra,
             cleaningService: next.cleaningService,
+            discount: next.appliedDiscount || undefined,
           });
           return next;
         }),
@@ -283,6 +349,7 @@ export const useBookingStore = create<BookingState>()(
             cleaningPrice: next.cleaningPrice,
             cleaningExtra: next.cleaningExtra,
             cleaningService: next.cleaningService,
+            discount: next.appliedDiscount || undefined,
           });
           return next;
         }),
@@ -298,6 +365,7 @@ export const useBookingStore = create<BookingState>()(
             cleaningPrice: next.cleaningPrice,
             cleaningExtra: next.cleaningExtra,
             cleaningService: next.cleaningService,
+            discount: next.appliedDiscount || undefined,
           });
           return next;
         }),
@@ -316,6 +384,96 @@ export const useBookingStore = create<BookingState>()(
             cleaningPrice: next.cleaningPrice,
             cleaningExtra: next.cleaningExtra,
             cleaningService: next.cleaningService,
+            discount: next.appliedDiscount || undefined,
+          });
+          return next;
+        }),
+
+      /* -------------- Discount Actions -------------- */
+      setDiscountCode: (code) =>
+        set({ discountCode: code, discountError: null }),
+
+      validateAndApplyDiscount: async (apiBase) => {
+        const s = get();
+        const code = s.discountCode.trim();
+
+        if (!code) {
+          set({ discountError: "Ange en rabattkod" });
+          return;
+        }
+
+        set({ isValidatingDiscount: true, discountError: null });
+
+        try {
+          const subtotal = s.movingPrice;
+
+          const res = await fetch(`${apiBase}/discount/validate-discount`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ code, amount: subtotal, service: "moving" }),
+          });
+
+          const result = await res.json();
+
+          if (!res.ok || !result.valid) {
+            set({
+              discountError: result.error || "Ogiltig rabattkod",
+              isValidatingDiscount: false,
+            });
+            return;
+          }
+
+          const discountInfo: DiscountInfo = {
+            code: code.toUpperCase(),
+            amount: result.discountAmount,
+            type: result.discountType,
+            value: result.discountValue,
+          };
+
+          set((curr) => {
+            const next = {
+              ...curr,
+              appliedDiscount: discountInfo,
+              discountError: null,
+              isValidatingDiscount: false,
+            };
+            next.priceDetails = computePriceDetails({
+              movingPrice: next.movingPrice,
+              sizeValue: next.sizeValue,
+              extra: next.extra,
+              extraService: next.extraService,
+              cleaningPrice: next.cleaningPrice,
+              cleaningExtra: next.cleaningExtra,
+              cleaningService: next.cleaningService,
+              discount: discountInfo,
+            });
+            return next;
+          });
+        } catch (error: any) {
+          set({
+            discountError: error.message || "Något gick fel",
+            isValidatingDiscount: false,
+          });
+        }
+      },
+
+      removeDiscount: () =>
+        set((s) => {
+          const next = {
+            ...s,
+            discountCode: "",
+            appliedDiscount: null,
+            discountError: null,
+          };
+          next.priceDetails = computePriceDetails({
+            movingPrice: next.movingPrice,
+            sizeValue: next.sizeValue,
+            extra: next.extra,
+            extraService: next.extraService,
+            cleaningPrice: next.cleaningPrice,
+            cleaningExtra: next.cleaningExtra,
+            cleaningService: next.cleaningService,
+            discount: undefined,
           });
           return next;
         }),
@@ -350,6 +508,7 @@ export const useBookingStore = create<BookingState>()(
             cleaningPrice: next.cleaningPrice,
             cleaningExtra: next.cleaningExtra,
             cleaningService: next.cleaningService,
+            discount: next.appliedDiscount || undefined,
           });
           return next;
         });
@@ -362,35 +521,38 @@ export const useBookingStore = create<BookingState>()(
           size: s.sizeValue,
 
           // From
-          fromPostnummer: s.from.postcode,
-          fromHomeType: s.from.homeType,
-          fromFloor: s.from.floor,
-          fromAccess: s.from.access,
-          fromParkingDistance: s.from.distance,
+          postnummer: s.from.postcode,
+          buildingType: s.from.homeType,
+          floor: s.from.floor,
+          Access: s.from.access,
+          parkingDistance: s.from.distance,
 
           // To
-          toPostnummer: s.to.postcode,
-          toHomeType: s.to.homeType,
-          toFloor: s.to.floor,
-          toAccess: s.to.access,
-          toParkingDistance: s.to.distance,
+          postNummerTo: s.to.postcode,
+          buildingTypeNew: s.to.homeType,
+          floorNew: s.to.floor,
+          AccessNew: s.to.access,
+          parkingDistanceNew: s.to.distance,
 
           // Moving extras
-          packa: s.extra.packa,
+          packaging: s.extra.packa,
           packaKitchen: s.extra.packaKitchen,
-          montera: s.extra.montera,
-          flyttstad: s.extra.flyttstad,
+          mounting: s.extra.montera,
+          cleaningOption: s.extra.flyttstad,
 
           // Customer
           name: customer.name,
           email: customer.email,
           addressStreet: customer.addressStreet,
-          phone: customer.phone,
-          personalNumber: customer.pnr,
+          telefon: customer.phone,
+          presonalNumber: customer.pnr,
           apartmentKeys: customer.keys,
-          whatToMove: undefined, // hook your "moveType" if needed
+          whatToMove: undefined,
           message: customer.message,
           date: customer.date,
+
+          // Include discount code if applied
+          discountCode: s.appliedDiscount?.code || undefined,
 
           // Price snapshot
           priceDetails: s.priceDetails,
@@ -408,17 +570,18 @@ export const useBookingStore = create<BookingState>()(
             json?.message || json?.error || res.statusText || "Request failed";
           throw new Error(msg);
         }
-        return json; // { success: true, data: ... }
+        return json;
       },
 
       /* ----------------------- Reset ----------------------- */
-      resetBooking: () => set(() => ({ ...initialState })),
+      resetBooking: () => {
+        const fresh = makeInitialState();
+        fresh.resetToken = Math.floor(Math.random() * 1e9);
+        set(fresh as any, true);
+      },
     }),
     {
       name: "booking-store",
-      // If you don't want everything to persist across refresh,
-      // you can limit what is saved:
-      // partialize: (s) => ({ from: s.from, to: s.to }) // example
     }
   )
 );

@@ -1,9 +1,8 @@
 // app/stores/cleaningStore.ts
 "use client";
 
-import { add } from "date-fns";
 import { create } from "zustand";
-import { devtools, persist } from "zustand/middleware";
+import { devtools } from "zustand/middleware";
 
 type YesNo = "JA" | "NEJ";
 type HomeType = "lagenhet" | "Hus" | "forrad" | "kontor";
@@ -21,7 +20,7 @@ export type Address = {
 type PriceTable = Record<string, number>;
 
 export type CleaningExtras = {
-  Persienner?: number; // quantity
+  Persienner?: number;
   badrum?: YesNo;
   toalett?: YesNo;
   Inglasadduschhörna?: YesNo;
@@ -29,20 +28,34 @@ export type CleaningExtras = {
 
 export type PriceDetails = {
   lines: Array<{ key: string; label: string; amount: number; meta?: string }>;
-  totals: { base: number; extras: number; grandTotal: number };
+  totals: {
+    base: number;
+    extras: number;
+    subtotal: number;
+    discount: number;
+    grandTotal: number;
+  };
+};
+
+// Add discount type
+export type DiscountInfo = {
+  code: string;
+  amount: number;
+  type: "percentage" | "fixed";
+  value: number;
 };
 
 function computePriceDetails(args: {
   base: number;
-  size: number; // if base is per m², multiply here
+  size: number;
   extras: CleaningExtras;
-  table: PriceTable[]; // first element with keys
+  table: PriceTable[];
+  discount?: DiscountInfo;
 }): PriceDetails {
-  const { base, size, extras, table } = args;
+  const { base, size, extras, table, discount } = args;
   const t = table?.[0] ?? {};
 
-  // If your base is per m², do: const baseAmount = Math.round(base * size);
-  const baseAmount = Math.round(base); // adjust if base is per KVM
+  const baseAmount = Math.round(base);
 
   const LABELS: Record<string, string> = {
     Persienner: "Persienner",
@@ -51,7 +64,6 @@ function computePriceDetails(args: {
     Inglasadduschhörna: "Inglasad Duschhörna",
   };
 
-  // API keys mapping (match your backend fields)
   const KEY_MAP: Record<string, string> = {
     Persienner: "Persinner",
     badrum: "ExtraBadrum",
@@ -87,35 +99,55 @@ function computePriceDetails(args: {
     }
   });
 
+  const subtotal = baseAmount + extrasSum;
+  const discountAmount = discount?.amount || 0;
+
+  // Add discount line if applicable
+  if (discount && discountAmount > 0) {
+    lines.push({
+      key: "discount",
+      label: `Rabattkod (${discount.code})`,
+      amount: -discountAmount,
+      meta: discount.type === "percentage" ? `${discount.value}%` : undefined,
+    });
+  }
+
+  const grandTotal = Math.max(0, subtotal - discountAmount);
+
   return {
     lines,
     totals: {
       base: baseAmount,
       extras: extrasSum,
-      grandTotal: baseAmount + extrasSum,
+      subtotal,
+      discount: discountAmount,
+      grandTotal,
     },
   };
 }
 
 type CleaningState = {
-  // inputs
   address: Address;
   size: number;
-
-  // selections
   extras: CleaningExtras;
-
-  // prices
-  basePrice: number; // from /prices/cleaning
-  extrasTable: PriceTable[]; // from /prices/cleaning
-
-  // derived
+  basePrice: number;
+  extrasTable: PriceTable[];
   priceDetails: PriceDetails;
 
-  // actions
+  // Discount state
+  discountCode: string;
+  appliedDiscount: DiscountInfo | null;
+  discountError: string | null;
+  isValidatingDiscount: boolean;
+
   setAddress: (patch: Partial<Address>) => void;
   setSize: (n: number) => void;
   setExtras: (patch: CleaningExtras) => void;
+
+  // Discount actions
+  setDiscountCode: (code: string) => void;
+  validateAndApplyDiscount: (apiBase: string) => Promise<void>;
+  removeDiscount: () => void;
 
   fetchCleaningPrices: (apiBase: string) => Promise<void>;
   postCleaningBooking: (
@@ -140,6 +172,9 @@ function makeInitialState(): Omit<
   | "setAddress"
   | "setSize"
   | "setExtras"
+  | "setDiscountCode"
+  | "validateAndApplyDiscount"
+  | "removeDiscount"
   | "fetchCleaningPrices"
   | "postCleaningBooking"
   | "resetCleaning"
@@ -156,7 +191,14 @@ function makeInitialState(): Omit<
     extras: {},
     basePrice: 0,
     extrasTable: [],
-    priceDetails: { lines: [], totals: { base: 0, extras: 0, grandTotal: 0 } },
+    priceDetails: {
+      lines: [],
+      totals: { base: 0, extras: 0, subtotal: 0, discount: 0, grandTotal: 0 },
+    },
+    discountCode: "",
+    appliedDiscount: null,
+    discountError: null,
+    isValidatingDiscount: false,
     resetToken: 0,
   };
 }
@@ -174,6 +216,7 @@ export const useCleaningStore = create<CleaningState>()(
             size: next.size,
             extras: next.extras,
             table: next.extrasTable,
+            discount: next.appliedDiscount || undefined,
           });
           return next;
         }),
@@ -186,6 +229,7 @@ export const useCleaningStore = create<CleaningState>()(
             size: next.size,
             extras: next.extras,
             table: next.extrasTable,
+            discount: next.appliedDiscount || undefined,
           });
           return next;
         }),
@@ -198,6 +242,93 @@ export const useCleaningStore = create<CleaningState>()(
             size: next.size,
             extras: next.extras,
             table: next.extrasTable,
+            discount: next.appliedDiscount || undefined,
+          });
+          return next;
+        }),
+
+      setDiscountCode: (code) =>
+        set({ discountCode: code, discountError: null }),
+
+      validateAndApplyDiscount: async (apiBase) => {
+        const s = get();
+        const code = s.discountCode.trim();
+
+        if (!code) {
+          set({ discountError: "Ange en rabattkod" });
+          return;
+        }
+
+        set({ isValidatingDiscount: true, discountError: null });
+
+        try {
+          const subtotal = s.basePrice;
+
+          const res = await fetch(`${apiBase}/discount/validate-discount`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              code,
+              amount: subtotal,
+              service: "cleaning",
+            }),
+          });
+
+          const result = await res.json();
+
+          if (!res.ok || !result.valid) {
+            set({
+              discountError: result.error || "Ogiltig rabattkod",
+              isValidatingDiscount: false,
+            });
+            return;
+          }
+
+          const discountInfo: DiscountInfo = {
+            code: code.toUpperCase(),
+            amount: result.discountAmount,
+            type: result.discountType,
+            value: result.discountValue,
+          };
+
+          set((curr) => {
+            const next = {
+              ...curr,
+              appliedDiscount: discountInfo,
+              discountError: null,
+              isValidatingDiscount: false,
+            };
+            next.priceDetails = computePriceDetails({
+              base: next.basePrice,
+              size: next.size,
+              extras: next.extras,
+              table: next.extrasTable,
+              discount: discountInfo,
+            });
+            return next;
+          });
+        } catch (error: any) {
+          set({
+            discountError: error.message || "Något gick fel",
+            isValidatingDiscount: false,
+          });
+        }
+      },
+
+      removeDiscount: () =>
+        set((s) => {
+          const next = {
+            ...s,
+            discountCode: "",
+            appliedDiscount: null,
+            discountError: null,
+          };
+          next.priceDetails = computePriceDetails({
+            base: next.basePrice,
+            size: next.size,
+            extras: next.extras,
+            table: next.extrasTable,
+            discount: undefined,
           });
           return next;
         }),
@@ -222,6 +353,7 @@ export const useCleaningStore = create<CleaningState>()(
             size: next.size,
             extras: next.extras,
             table: next.extrasTable,
+            discount: next.appliedDiscount || undefined,
           });
           return next;
         });
@@ -229,24 +361,20 @@ export const useCleaningStore = create<CleaningState>()(
 
       postCleaningBooking: async (apiBase, customer) => {
         const s = get();
-        console.log(customer);
-        console.log(s);
+
         const body = {
           size: s.size,
-          // single address for cleaning
-          addressPostnummer: s.address.postcode,
-          addressHomeType: s.address.homeType,
-          addressFloor: s.address.floor,
-          addressAccess: s.address.access,
-          addressParkingDistance: s.address.distance,
+          postcode: s.address.postcode,
+          homeType: s.address.homeType,
+          floor: s.address.floor,
+          Access: s.address.access,
+          parkingDistance: s.address.distance,
 
-          // extras
           Persienner: s.extras.Persienner ?? 0,
           badrum: s.extras.badrum ?? "NEJ",
           toalett: s.extras.toalett ?? "NEJ",
           Inglasadduschhörna: s.extras.Inglasadduschhörna ?? "NEJ",
 
-          // customer
           name: customer.name,
           email: customer.email,
           phone: customer.phone,
@@ -255,7 +383,9 @@ export const useCleaningStore = create<CleaningState>()(
           date: customer.date,
           addressStreet: customer.addressStreet,
 
-          // snapshot
+          // Include discount code if applied
+          discountCode: s.appliedDiscount?.code || undefined,
+
           priceDetails: s.priceDetails,
         };
 
@@ -277,10 +407,7 @@ export const useCleaningStore = create<CleaningState>()(
       resetCleaning: () => {
         const fresh = makeInitialState();
         fresh.resetToken = Math.floor(Math.random() * 1e9);
-        set(fresh as any, true); // REPLACE state
-        // Optional: also clear persisted storage
-        // @ts-ignore
-        // useCleaningStore.persist?.clearStorage?.();
+        set(fresh as any, true);
       },
     }),
     { name: "cleaning-store" }
