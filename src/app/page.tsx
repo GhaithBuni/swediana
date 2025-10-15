@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import Image from "next/image";
 import Nav from "../components/Nav";
@@ -15,10 +15,18 @@ const words = [
   "Flytthjälp",
   "Företagsstädning",
   "Fönsterputs",
-  "Byggstädning"
+  "Byggstädning",
 ];
 
-function Typewriter({ words, speed = 100, pause = 1200 }: { words: string[]; speed?: number; pause?: number }) {
+function Typewriter({
+  words,
+  speed = 100,
+  pause = 1200,
+}: {
+  words: string[];
+  speed?: number;
+  pause?: number;
+}) {
   const [displayed, setDisplayed] = useState("");
   const [wordIndex, setWordIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
@@ -53,27 +61,25 @@ function Typewriter({ words, speed = 100, pause = 1200 }: { words: string[]; spe
 }
 
 export default function Home() {
-  return <div>
-
-
-   
-   <div
-  className="flex flex-col justify-center items-center h-screen bg-cover bg-center"
-  style={{ backgroundImage: "url('/land-page.jpg')" }}
->
-  <h1 className="text-white text-5xl font-bold">Din pålitliga städfirma med </h1>
-<h2 className="text-4xl mt-6">
-   <Typewriter words={words}  />
-</h2>
-   
-  
-</div>
-<Tjanster />
-<Swediana />
-<BookingFlowPage /> 
-<OmdomePage />
-<VarforPage />
-<SlappnaAvPage />
-
-  </div>;
+  return (
+    <div>
+      <div
+        className="flex flex-col justify-center items-center h-screen bg-cover bg-center"
+        style={{ backgroundImage: "url('/land-page.jpg')" }}
+      >
+        <h1 className="text-white text-5xl font-bold">
+          Din pålitliga städfirma med{" "}
+        </h1>
+        <h2 className="text-4xl mt-6">
+          <Typewriter words={words} />
+        </h2>
+      </div>
+      <Tjanster />
+      <Swediana />
+      <BookingFlowPage />
+      <OmdomePage />
+      <VarforPage />
+      <SlappnaAvPage />
+    </div>
+  );
 }
