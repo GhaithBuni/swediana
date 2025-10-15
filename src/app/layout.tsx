@@ -11,14 +11,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body className={`${alata.variable} ${manrope.variable} antialiased`}>
+    <html lang="en" className="h-full">
+      <body
+        className={`${alata.variable} ${manrope.variable} antialiased min-h-dvh flex flex-col`}
+      >
         <Nav />
-        <main className="flex-grow">{children}</main>
+        <main className="flex-1">{children}</main>
         <Footer />
       </body>
     </html>
