@@ -20,6 +20,15 @@ import {
   PopoverContent,
 } from "@/components/ui/popover";
 import { CalendarIcon } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function BookingDetailsCleaning() {
   const router = useRouter();
@@ -29,6 +38,9 @@ export default function BookingDetailsCleaning() {
   const [cleanType, setCleanType] = React.useState<"typical" | "inspection">(
     "typical"
   );
+
+  const [apartmentKeys, setApartmentKeys] = React.useState<string>("");
+
   const [status, setStatus] = React.useState<{
     type: "idle" | "loading" | "success" | "error";
     text?: string;
@@ -187,9 +199,11 @@ export default function BookingDetailsCleaning() {
               phone: f.phone || "",
               date: selectedYmd || "",
               pnr: f.pnr || "",
-              keys: "",
+              keys: f.keys || "",
               message: f.message || "",
               addressStreet: f.addressStreet || "",
+              moveType: f.moveType || "",
+              cleanType: f.cleanType,
             });
 
             if (!result.success) {
@@ -215,8 +229,13 @@ export default function BookingDetailsCleaning() {
                   phone: String(f.phone || ""),
                   personalNumber: String(f.pnr || ""),
                   message: String(f.message || ""),
-                  date: selectedYmd, // send YYYY-MM-DD
+                  keys: apartmentKeys as
+                    | "Jag ska lämna nycklarna til er"
+                    | "Jag ska vara hemma"
+                    | undefined,
+                  date: selectedYmd,
                   addressStreet: String(f.addressStreet || ""),
+                  cleanType: cleanType as "typical" | "inspection" | undefined,
                 }
               );
 
@@ -269,6 +288,7 @@ export default function BookingDetailsCleaning() {
               id="phone"
               label="Telefon"
               error={errors.phone}
+              required
               onChange={() => clearError("phone")}
               inputProps={{
                 name: "phone",
@@ -277,21 +297,19 @@ export default function BookingDetailsCleaning() {
               }}
             />
 
-            {/* Calendar date picker with locked dates */}
             {/* Date field with popover calendar */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="date">
                   Datum <span className="text-red-500">*</span>
                 </Label>
-                {/* your “Låsta dagar: N” etc can stay here if you like */}
               </div>
 
               <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                   <button
                     type="button"
-                    className={`w-full flex items-center justify-between rounded-xl border bg-background px-3 py-2 text-left shadow-sm hover:bg-accent/40
+                    className={`w-full flex items-center justify-between rounded-xl border bg-background px-3 py-2 text-left shadow-sm hover:bg-accent/40 transition-colors
           ${errors.date ? "border-red-500" : ""}`}
                     onClick={() => {
                       clearError("date"), setOpen(true);
@@ -317,9 +335,6 @@ export default function BookingDetailsCleaning() {
                       setSelected(d);
                       clearError("date");
                       setOpen(false);
-                      // close popover automatically
-                      // shadcn popover closes when clicking outside; to close on select, wrap in controlled state:
-                      // <Popover open={open} onOpenChange={setOpen}> and setOpen(false) here.
                     }}
                     disabled={disabledMatcher}
                     weekStartsOn={1}
@@ -371,6 +386,7 @@ export default function BookingDetailsCleaning() {
               id="pnr"
               label="Personnummer"
               error={errors.pnr}
+              required
               onChange={() => clearError("pnr")}
               inputProps={{ name: "pnr", placeholder: "ÅÅMMDD-XXXX" }}
             />
@@ -378,10 +394,28 @@ export default function BookingDetailsCleaning() {
             <Field
               id="addressStreet"
               label="Adress"
+              required
               error={errors.addressStreet}
               onChange={() => clearError("addressStreet")}
               inputProps={{ name: "addressStreet", placeholder: "Adress" }}
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="keys">Lägenhetsnycklar</Label>
+            <Select value={apartmentKeys} onValueChange={setApartmentKeys}>
+              <SelectTrigger className="rounded-xl">
+                <SelectValue placeholder="Välj alternativ" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Jag ska lämna nycklarna til er">
+                  Jag ska lämna nycklarna til er
+                </SelectItem>
+                <SelectItem value="Jag ska vara hemma">
+                  Jag ska vara hemma
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-2">
@@ -401,19 +435,33 @@ export default function BookingDetailsCleaning() {
           </div>
 
           {status.type === "error" && (
-            <p className="text-red-500 text-sm">{status.text}</p>
+            <p className="text-red-500 text-sm font-medium bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+              {status.text}
+            </p>
           )}
           {status.type === "success" && (
-            <p className="text-green-500 text-sm">{status.text}</p>
+            <p className="text-green-600 text-sm font-medium bg-green-50 border border-green-200 rounded-lg px-4 py-3">
+              {status.text}
+            </p>
           )}
 
-          <Button
-            type="submit"
-            disabled={status.type === "loading"}
-            className="bg-primary text-primary-foreground px-8 rounded-full"
-          >
-            {status.type === "loading" ? "Skickar..." : "Boka"}
-          </Button>
+          {/* Submit */}
+          <div className="flex justify-center sm:justify-start pt-4">
+            <Button
+              type="submit"
+              disabled={status.type === "loading"}
+              className="bg-primary text-white hover:bg-primary/90 px-8 sm:px-12 h-11 sm:h-12 rounded-full text-sm sm:text-base font-semibold shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 disabled:hover:scale-100 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto sm:min-w-[200px]"
+            >
+              {status.type === "loading" ? (
+                <span className="flex items-center justify-center gap-2 text-white">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Skickar...</span>
+                </span>
+              ) : (
+                "Boka"
+              )}
+            </Button>
+          </div>
         </form>
       </div>
     </section>

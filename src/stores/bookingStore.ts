@@ -232,10 +232,11 @@ type BookingState = {
       email: string;
       phone?: string;
       pnr?: string;
-      keys?: string;
+      keys?: "Jag ska lämna nycklarna til er" | "Jag ska vara hemma";
       message?: string;
       addressStreet: string;
       date?: string;
+      moveType?: "typical" | "inspection";
     }
   ) => Promise<any>;
 
@@ -545,11 +546,12 @@ export const useBookingStore = create<BookingState>()(
           email: customer.email,
           addressStreet: customer.addressStreet,
           telefon: customer.phone,
-          presonalNumber: customer.pnr,
+          pnr: customer.pnr,
           apartmentKeys: customer.keys,
           whatToMove: undefined,
           message: customer.message,
           date: customer.date,
+          moveType: customer.moveType,
 
           // Include discount code if applied
           discountCode: s.appliedDiscount?.code || undefined,
@@ -568,6 +570,7 @@ export const useBookingStore = create<BookingState>()(
         if (!res.ok) {
           const msg =
             json?.message || json?.error || res.statusText || "Request failed";
+          console.log(customer.moveType);
           throw new Error(msg);
         }
         return json;

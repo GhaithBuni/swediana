@@ -17,6 +17,7 @@ export const initialBookingSchema = z.object({
 });
 
 // Validation schema for the booking details form
+
 export const bookingDetailsSchema = z.object({
   name: z
     .string()
@@ -28,9 +29,8 @@ export const bookingDetailsSchema = z.object({
     .email("Ogiltig emailadress"),
   phone: z
     .string()
-    .regex(/^(\+46|0)?[1-9]\d{8,9}$/, "Ogiltigt telefonnummer")
-    .optional()
-    .or(z.literal("")),
+    .min(1, "Telefonnummer är obligatoriskt")
+    .regex(/^(\+46|0)?[1-9]\d{8,9}$/, "Ogiltigt telefonnummer"),
   date: z
     .string()
     .min(1, "Datum är obligatoriskt")
@@ -42,10 +42,13 @@ export const bookingDetailsSchema = z.object({
     }, "Datum kan inte vara i det förflutna"),
   pnr: z
     .string()
-    .regex(/^\d{6}-?\d{4}$/, "Personnummer måste vara i formatet ÅÅMMDD-XXXX")
+    .min(1, "Personnummer är obligatoriskt")
+    .regex(/^\d{6}-?\d{4}$/, "Personnummer måste vara i formatet ÅÅMMDD-XXXX"),
+  keys: z
+    .enum(["Jag ska lämna nycklarna til er", "Jag ska vara hemma"])
     .optional()
     .or(z.literal("")),
-  keys: z.string().optional(),
+
   addressStreet: z
     .string()
     .min(1, "Adress är obligatorisk")
@@ -54,6 +57,42 @@ export const bookingDetailsSchema = z.object({
     .string()
     .max(1000, "Meddelandet kan inte vara längre än 1000 tecken")
     .optional(),
+});
+export const ByggDetailsSchema = z.object({
+  name: z
+    .string()
+    .min(2, "Namn måste vara minst 2 tecken")
+    .max(100, "Namn kan inte vara längre än 100 tecken"),
+  email: z
+    .string()
+    .min(1, "Email är obligatoriskt")
+    .email("Ogiltig emailadress"),
+  phone: z
+    .string()
+    .min(1, "Telefonnummer är obligatoriskt")
+    .regex(/^(\+46|0)?[1-9]\d{8,9}$/, "Ogiltigt telefonnummer"),
+  date: z
+    .string()
+    .min(1, "Datum är obligatoriskt")
+    .refine((date) => {
+      const selected = new Date(date);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return selected >= today;
+    }, "Datum kan inte vara i det förflutna"),
+  pnr: z
+    .string()
+    .min(1, "Personnummer är obligatoriskt")
+    .regex(/^\d{6}-?\d{4}$/, "Personnummer måste vara i formatet ÅÅMMDD-XXXX"),
+  addressStreet: z
+    .string()
+    .min(1, "Gatuadress är obligatorisk")
+    .max(200, "Gatuadress kan inte vara längre än 200 tecken"),
+  message: z
+    .string()
+    .max(1000, "Meddelandet kan inte vara längre än 1000 tecken")
+    .optional(),
+  cleanType: z.enum(["typical", "inspection"]).optional(),
 });
 
 export const initialCleaningSchema = z.object({

@@ -8,16 +8,24 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useBookingStore } from "@/stores/bookingStore";
 import { bookingDetailsSchema } from "../app/schema/schema";
-import { useRouter } from "next/navigation"; // ← add this
+import { useRouter } from "next/navigation";
 import {
   Popover,
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Loader2 } from "lucide-react";
 import { useEffect } from "react";
 import { Calendar } from "@/components/ui/calendar";
-
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 export default function BookingDetails() {
   const router = useRouter();
 
@@ -39,6 +47,7 @@ export default function BookingDetails() {
   }>({ type: "idle" });
 
   const [errors, setErrors] = React.useState<Record<string, string>>({});
+  const [apartmentKeys, setApartmentKeys] = React.useState<string>("");
 
   // Clear error when user starts typing
   const clearError = (field: string) => {
@@ -59,7 +68,7 @@ export default function BookingDetails() {
       try {
         setLoadingLocked(true);
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_KEY}/cleaning/locked-dates/all`,
+          `${process.env.NEXT_PUBLIC_API_KEY}/moving/locked-dates/all`,
           {
             cache: "no-store",
           }
@@ -118,8 +127,6 @@ export default function BookingDetails() {
     const day = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     return day < today || lockedSet.has(ymdFromDate(day));
   };
-
-  // Clear error when user starts typing or picking date
 
   return (
     <section className="max-w-5xl space-y-8">
@@ -191,6 +198,7 @@ export default function BookingDetails() {
               keys: f.keys || "",
               message: f.message || "",
               addressStreet: f.addressStreet || "",
+              moveType: f.moveType || "",
             });
 
             if (!result.success) {
@@ -215,19 +223,24 @@ export default function BookingDetails() {
                 email: String(f.email),
                 phone: String(f.phone || ""),
                 pnr: String(f.pnr || ""),
-                keys: String(f.keys || ""),
+                keys: apartmentKeys as
+                  | "Jag ska lämna nycklarna til er"
+                  | "Jag ska vara hemma"
+                  | undefined,
                 message: String(f.message || ""),
                 date: String(f.date || ""),
                 addressStreet: String(f.addressStreet || ""),
+                moveType: moveType as "typical" | "inspection" | undefined,
               });
 
               const bookingId = res?.data?.bookingNumber;
+
               console.log(res);
 
               // Build query string for the Thanks page
               const qs = new URLSearchParams({
                 order: String(bookingId),
-                service: "Flytthjälp", // or inject dynamically if you have it
+                service: "Flytthjälp",
                 date: String(f.date || ""),
                 name: String(f.name || ""),
                 email: String(f.email || ""),
@@ -287,7 +300,9 @@ export default function BookingDetails() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="address">Adress</Label>
+              <Label htmlFor="address">
+                Adress <span className="text-red-500">*</span>
+              </Label>
               <Input
                 id="addressStreet"
                 name="addressStreet"
@@ -303,7 +318,9 @@ export default function BookingDetails() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="phone">Telefon</Label>
+              <Label htmlFor="phone">
+                Telefon <span className="text-red-500">*</span>
+              </Label>
               <Input
                 id="phone"
                 name="phone"
@@ -325,14 +342,13 @@ export default function BookingDetails() {
                 <Label htmlFor="date">
                   Datum <span className="text-red-500">*</span>
                 </Label>
-                {/* your “Låsta dagar: N” etc can stay here if you like */}
               </div>
 
               <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                   <button
                     type="button"
-                    className={`w-full flex items-center justify-between rounded-xl border bg-background px-3 py-2 text-left shadow-sm hover:bg-accent/40
+                    className={`w-full flex items-center justify-between rounded-xl border bg-background px-3 py-2 text-left shadow-sm hover:bg-accent/40 transition-colors
           ${errors.date ? "border-red-500" : ""}`}
                     onClick={() => {
                       clearError("date"), setOpen(true);
@@ -358,9 +374,6 @@ export default function BookingDetails() {
                       setSelected(d);
                       clearError("date");
                       setOpen(false);
-                      // close popover automatically
-                      // shadcn popover closes when clicking outside; to close on select, wrap in controlled state:
-                      // <Popover open={open} onOpenChange={setOpen}> and setOpen(false) here.
                     }}
                     disabled={disabledMatcher}
                     weekStartsOn={1}
@@ -409,7 +422,9 @@ export default function BookingDetails() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="pnr">Personnummer</Label>
+              <Label htmlFor="pnr">
+                Personnummer <span className="text-red-500">*</span>
+              </Label>
               <Input
                 id="pnr"
                 name="pnr"
@@ -426,12 +441,19 @@ export default function BookingDetails() {
 
             <div className="space-y-2">
               <Label htmlFor="keys">Lägenhetsnycklar</Label>
-              <Input
-                id="keys"
-                name="keys"
-                placeholder="Lägenhetsnycklar"
-                className="rounded-xl placeholder:text-foreground/60"
-              />
+              <Select value={apartmentKeys} onValueChange={setApartmentKeys}>
+                <SelectTrigger className="rounded-xl">
+                  <SelectValue placeholder="Välj alternativ" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Jag ska lämna nycklarna til er">
+                    Jag ska lämna nycklarna til er
+                  </SelectItem>
+                  <SelectItem value="Jag ska vara hemma">
+                    Jag ska vara hemma
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
@@ -454,20 +476,33 @@ export default function BookingDetails() {
 
           {/* Feedback (only one shows at a time) */}
           {status.type === "error" && (
-            <p className="text-red-500 text-sm">{status.text}</p>
+            <p className="text-red-500 text-sm font-medium bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+              {status.text}
+            </p>
           )}
           {status.type === "success" && (
-            <p className="text-green-500 text-sm">{status.text}</p>
+            <p className="text-green-600 text-sm font-medium bg-green-50 border border-green-200 rounded-lg px-4 py-3">
+              {status.text}
+            </p>
           )}
 
           {/* Submit */}
-          <Button
-            type="submit"
-            disabled={status.type === "loading"}
-            className="bg-primary text-primary-foreground px-8 rounded-full"
-          >
-            {status.type === "loading" ? "Skickar..." : "Boka"}
-          </Button>
+          <div className="flex justify-center sm:justify-start pt-4">
+            <Button
+              type="submit"
+              disabled={status.type === "loading"}
+              className="bg-primary text-white hover:bg-primary/90 px-8 sm:px-12 h-11 sm:h-12 rounded-full text-sm sm:text-base font-semibold shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 disabled:hover:scale-100 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto sm:min-w-[200px]"
+            >
+              {status.type === "loading" ? (
+                <span className="flex items-center justify-center gap-2 text-white">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Skickar...</span>
+                </span>
+              ) : (
+                "Boka"
+              )}
+            </Button>
+          </div>
         </form>
       </div>
     </section>

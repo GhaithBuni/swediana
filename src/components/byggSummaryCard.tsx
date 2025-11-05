@@ -1,5 +1,4 @@
 "use client";
-
 import {
   Card,
   CardContent,
@@ -12,20 +11,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useCleaningStore } from "@/stores/byggStore";
 import CleaningIncludes from "./CleaningIncludes";
-
-const KEY_MAP: Record<string, string> = {
-  Persienner: "Persinner", // <- double-check this matches your API payload key
-  badrum: "ExtraBadrum",
-  toalett: "ExtraToalett",
-  Inglasadduschhörna: "inglassadDusch",
-};
-
-const LABELS: Record<string, string> = {
-  Persienner: "Persienner",
-  badrum: "Extra Badrum",
-  toalett: "Extra Toalett",
-  Inglasadduschhörna: "Inglasad Duschhörna",
-};
+import { Loader2, X } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const kr = (n: number) =>
   new Intl.NumberFormat("sv-SE", { maximumFractionDigits: 0 }).format(
@@ -33,96 +20,124 @@ const kr = (n: number) =>
   ) + " kr";
 
 export default function ByggSummaryCard() {
-  const { basePrice, extrasTable, extras } = useCleaningStore();
+  const {
+    priceDetails,
+    discountCode,
+    appliedDiscount,
+    discountError,
+    isValidatingDiscount,
+    setDiscountCode,
+    validateAndApplyDiscount,
+    removeDiscount,
+  } = useCleaningStore();
 
-  const priceTable = extrasTable?.[0] ?? {};
-  let extrasTotal = 0;
-
-  const lines: Array<{
-    key: string;
-    label: string;
-    amount: number;
-    detail?: string;
-  }> = [];
-
-  // Base cleaning
-  lines.push({
-    key: "base",
-    label: "Byggstäd",
-    amount: Number(basePrice) || 0,
-  });
-
-  // Extras (fixed & quantity)
-  Object.entries(extras || {}).forEach(([k, v]) => {
-    const apiKey = KEY_MAP[k] ?? k;
-    const unit = Number(priceTable[apiKey] ?? 0);
-
-    if (typeof v === "number" && v > 0) {
-      const qty = v;
-      const amount = unit * qty;
-      extrasTotal += amount;
-      lines.push({
-        key: k,
-        label: LABELS[k] ?? k,
-        amount,
-        detail: `${qty} × ${kr(unit)}`,
-      });
-    } else if (v === "JA") {
-      const amount = unit;
-      extrasTotal += amount;
-      lines.push({
-        key: k,
-        label: LABELS[k] ?? k,
-        amount,
-      });
-    }
-  });
-
-  const grandTotal = (Number(basePrice) || 0) + extrasTotal;
+  const handleApplyDiscount = async () => {
+    await validateAndApplyDiscount(process.env.NEXT_PUBLIC_API_KEY!);
+  };
 
   return (
-    <aside className="sticky top-16 self-start w-full">
-      <Card className="relative w-full bg-primary text-white rounded-[28px] overflow-hidden shadow-md">
-        <CardHeader className="relative flex flex-col items-center justify-center pt-8">
-          <CardTitle className="text-2xl">Bokning uppgifter</CardTitle>
-          <div className="w-40 border-b border-white/60 my-2" />
-          <CardDescription className="text-lg text-white">
+    <aside className="w-full max-w-full overflow-hidden">
+      <Card className="relative w-full bg-primary text-white rounded-2xl sm:rounded-[28px] overflow-hidden shadow-md">
+        <CardHeader className="relative flex flex-col items-center justify-center pt-6 sm:pt-8 px-4">
+          <CardTitle className="text-xl sm:text-2xl">
+            Bokning uppgifter
+          </CardTitle>
+          <div className="w-32 sm:w-40 border-b border-white/60 my-2" />
+          <CardDescription className="text-base sm:text-lg text-white">
             Byggstäd
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="relative divide-y divide-white/30">
-          {lines.map((line) => (
+        <CardContent className="relative divide-y divide-white/30 px-2 sm:px-4">
+          {priceDetails.lines.map((line) => (
             <div
               key={line.key}
-              className="flex justify-between items-center py-2 px-4"
+              className="flex justify-between items-center py-2 px-2 sm:px-4 gap-2"
             >
-              <p>
+              <p className="text-sm sm:text-base flex-1 min-w-0">
                 {line.label}
-                {line.detail && (
-                  <span className="ml-2 text-sm opacity-80">
-                    ({line.detail})
+                {line.meta && (
+                  <span className="text-xs sm:text-sm opacity-75 ml-2">
+                    ({line.meta})
                   </span>
                 )}
               </p>
-              <p>{kr(line.amount)}</p>
+              <p
+                className={`text-sm sm:text-base whitespace-nowrap ${
+                  line.key === "discount" ? "text-green-300 font-semibold" : ""
+                }`}
+              >
+                {line.amount < 0 ? "-" : ""}
+                {kr(Math.abs(line.amount))}
+              </p>
             </div>
           ))}
 
-          <div className="flex items-center gap-2 py-6 px-4">
-            <Input
-              placeholder="Rabattskod"
-              className="w-full bg-transparent text-white placeholder:text-white/80 ring-1 ring-white/50 rounded-full px-4"
-            />
-            <Button className="bg-[#95fff8] text-black px-4 rounded-lg">
-              Använd
-            </Button>
+          {/* Discount Code Section */}
+          <div className="py-4 sm:py-6 px-2 sm:px-4 space-y-2">
+            {appliedDiscount ? (
+              // Show applied discount with remove button
+              <div className="bg-white/10 rounded-lg p-3 flex items-center justify-between">
+                <div className="flex-1">
+                  <p className="text-sm font-semibold">
+                    Rabattkod tillämpad: {appliedDiscount.code}
+                  </p>
+                  <p className="text-xs opacity-75">
+                    {appliedDiscount.type === "percentage"
+                      ? `${appliedDiscount.value}% rabatt`
+                      : `${kr(appliedDiscount.value)} rabatt`}
+                  </p>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={removeDiscount}
+                  className="text-white hover:bg-white/20 h-8 w-8 p-0"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            ) : (
+              // Show discount input
+              <>
+                <div className="flex items-center gap-2">
+                  <Input
+                    placeholder="Rabattkod"
+                    value={discountCode}
+                    onChange={(e) => setDiscountCode(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !isValidatingDiscount) {
+                        handleApplyDiscount();
+                      }
+                    }}
+                    disabled={isValidatingDiscount}
+                    className="w-full bg-white/10 text-white placeholder:text-white/60 border-white/30 focus:border-white/50 focus:ring-2 focus:ring-white/20 rounded-full px-3 sm:px-4 text-sm sm:text-base h-9 sm:h-10"
+                  />
+                  <Button
+                    onClick={handleApplyDiscount}
+                    disabled={isValidatingDiscount || !discountCode.trim()}
+                    className="bg-white text-primary px-4 sm:px-6 rounded-full hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base h-9 sm:h-10 flex-shrink-0 font-semibold shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105"
+                  >
+                    {isValidatingDiscount ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      "Använd"
+                    )}
+                  </Button>
+                </div>
+                {discountError && (
+                  <p className="text-xs text-red-300 px-2">{discountError}</p>
+                )}
+              </>
+            )}
           </div>
         </CardContent>
 
-        <CardFooter className="flex justify-between items-center py-3 px-4 border-t border-white/30">
-          <p>Totalt pris:</p>
-          <p>{kr(grandTotal)}</p>
+        <CardFooter className="flex justify-between items-center py-3 px-3 sm:px-4 border-t border-white/30">
+          <p className="font-semibold text-sm sm:text-base">Totalt pris:</p>
+          <p className="text-lg sm:text-xl font-bold">
+            {kr(priceDetails.totals.grandTotal)}
+          </p>
         </CardFooter>
       </Card>
       <CleaningIncludes />

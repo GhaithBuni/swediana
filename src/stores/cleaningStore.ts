@@ -157,9 +157,11 @@ type CleaningState = {
       email: string;
       phone?: string;
       personalNumber?: string;
+      keys?: "Jag ska lämna nycklarna til er" | "Jag ska vara hemma";
       message?: string;
       date: string;
       addressStreet: string;
+      cleanType?: "typical" | "inspection";
     }
   ) => Promise<any>;
 
@@ -379,9 +381,11 @@ export const useCleaningStore = create<CleaningState>()(
           email: customer.email,
           phone: customer.phone,
           personalNumber: customer.personalNumber,
+          apartmentKeys: customer.keys,
           message: customer.message,
           date: customer.date,
           addressStreet: customer.addressStreet,
+          cleanType: customer.cleanType,
 
           // Include discount code if applied
           discountCode: s.appliedDiscount?.code || undefined,
@@ -399,6 +403,7 @@ export const useCleaningStore = create<CleaningState>()(
         if (!res.ok) {
           const msg =
             json?.message || json?.error || res.statusText || "Request failed";
+          console.log(customer.cleanType);
           throw new Error(msg);
         }
         return json;

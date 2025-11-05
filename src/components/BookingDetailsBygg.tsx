@@ -7,8 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { useCleaningStore } from "@/stores/byggStore"; // if you have a separate store for bygg, swap this
-import { bookingDetailsSchema } from "@/app/schema/schema"; // <-- same schema as your other form
+import { useCleaningStore } from "@/stores/byggStore";
+import { ByggDetailsSchema } from "@/app/schema/schema";
 import { useRouter } from "next/navigation";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -16,7 +16,7 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Loader2 } from "lucide-react";
 import { useEffect } from "react";
 
 export default function BookingDetailsBygg() {
@@ -176,15 +176,20 @@ export default function BookingDetailsBygg() {
             const form = e.currentTarget as HTMLFormElement;
             const f = Object.fromEntries(new FormData(form).entries());
 
-            // Validate with Zod (same schema)
-            const result = bookingDetailsSchema.safeParse({
+            // Inject the calendar-selected date
+            const selectedYmd = selected
+              ? ymdFromDate(selected)
+              : String(f.date || "");
+
+            const result = ByggDetailsSchema.safeParse({
               name: f.name || "",
               email: f.email || "",
               phone: f.phone || "",
-              date: f.date || "",
+              date: selectedYmd || "",
               pnr: f.pnr || "",
-              keys: "", // not present in this form; schema allows optional/empty
+              addressStreet: f.addressStreet || "",
               message: f.message || "",
+              cleanType: cleanType,
             });
 
             if (!result.success) {
@@ -210,23 +215,25 @@ export default function BookingDetailsBygg() {
                   phone: String(f.phone || ""),
                   personalNumber: String(f.pnr || ""),
                   message: String(f.message || ""),
-                  date: String(f.date || ""),
+                  date: selectedYmd,
+                  addressStreet: String(f.addressStreet || ""),
+                  cleanType: cleanType as "typical" | "inspection" | undefined,
                 }
               );
 
               const bookingId = res?.data?.bookingNumber;
 
-              // Build query string for the Thanks page
               const qs = new URLSearchParams({
                 order: String(bookingId),
-                service: "Byggstäd", // or inject dynamically if you have it
-                date: String(f.date || ""),
+                service: "Byggstäd",
+                date: selectedYmd,
                 name: String(f.name || ""),
                 email: String(f.email || ""),
                 phone: String(f.phone || ""),
               }).toString();
 
               form.reset();
+              setSelected(undefined);
               resetCleaning();
 
               router.replace(`/thanks?${qs}`);
@@ -278,7 +285,9 @@ export default function BookingDetailsBygg() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="phone">Telefon</Label>
+              <Label htmlFor="phone">
+                Telefon <span className="text-red-500">*</span>
+              </Label>
               <Input
                 id="phone"
                 name="phone"
@@ -294,19 +303,19 @@ export default function BookingDetailsBygg() {
               )}
             </div>
 
+            {/* Date field with popover calendar */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="date">
                   Datum <span className="text-red-500">*</span>
                 </Label>
-                {/* your “Låsta dagar: N” etc can stay here if you like */}
               </div>
 
               <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                   <button
                     type="button"
-                    className={`w-full flex items-center justify-between rounded-xl border bg-background px-3 py-2 text-left shadow-sm hover:bg-accent/40
+                    className={`w-full flex items-center justify-between rounded-xl border bg-background px-3 py-2 text-left shadow-sm hover:bg-accent/40 transition-colors
           ${errors.date ? "border-red-500" : ""}`}
                     onClick={() => {
                       clearError("date"), setOpen(true);
@@ -332,9 +341,6 @@ export default function BookingDetailsBygg() {
                       setSelected(d);
                       clearError("date");
                       setOpen(false);
-                      // close popover automatically
-                      // shadcn popover closes when clicking outside; to close on select, wrap in controlled state:
-                      // <Popover open={open} onOpenChange={setOpen}> and setOpen(false) here.
                     }}
                     disabled={disabledMatcher}
                     weekStartsOn={1}
@@ -371,7 +377,6 @@ export default function BookingDetailsBygg() {
                 </PopoverContent>
               </Popover>
 
-              {/* Hidden input so FormData still has "date" for Zod & submit */}
               <input
                 type="hidden"
                 name="date"
@@ -383,7 +388,9 @@ export default function BookingDetailsBygg() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="pnr">Personnummer</Label>
+              <Label htmlFor="pnr">
+                Personnummer <span className="text-red-500">*</span>
+              </Label>
               <Input
                 id="pnr"
                 name="pnr"
@@ -395,6 +402,24 @@ export default function BookingDetailsBygg() {
               />
               {errors.pnr && (
                 <p className="text-sm text-red-500">{errors.pnr}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="addressStreet">
+                Gatuadress <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="addressStreet"
+                name="addressStreet"
+                placeholder="Gatuadress"
+                className={`rounded-xl placeholder:text-foreground/60 ${
+                  errors.addressStreet ? "border-red-500" : ""
+                }`}
+                onChange={() => clearError("addressStreet")}
+              />
+              {errors.addressStreet && (
+                <p className="text-sm text-red-500">{errors.addressStreet}</p>
               )}
             </div>
           </div>
@@ -416,19 +441,33 @@ export default function BookingDetailsBygg() {
           </div>
 
           {status.type === "error" && (
-            <p className="text-red-500 text-sm">{status.text}</p>
+            <p className="text-red-500 text-sm font-medium bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+              {status.text}
+            </p>
           )}
           {status.type === "success" && (
-            <p className="text-green-500 text-sm">{status.text}</p>
+            <p className="text-green-600 text-sm font-medium bg-green-50 border border-green-200 rounded-lg px-4 py-3">
+              {status.text}
+            </p>
           )}
 
-          <Button
-            type="submit"
-            disabled={status.type === "loading"}
-            className="bg-primary text-primary-foreground px-8 rounded-full"
-          >
-            {status.type === "loading" ? "Skickar..." : "Boka"}
-          </Button>
+          {/* Submit */}
+          <div className="flex justify-center sm:justify-start pt-4">
+            <Button
+              type="submit"
+              disabled={status.type === "loading"}
+              className="bg-primary text-white hover:bg-primary/90 px-8 sm:px-12 h-11 sm:h-12 rounded-full text-sm sm:text-base font-semibold shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 disabled:hover:scale-100 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto sm:min-w-[200px]"
+            >
+              {status.type === "loading" ? (
+                <span className="flex items-center justify-center gap-2 text-white">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Skickar...</span>
+                </span>
+              ) : (
+                "Boka"
+              )}
+            </Button>
+          </div>
         </form>
       </div>
     </section>

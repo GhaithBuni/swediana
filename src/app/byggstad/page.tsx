@@ -1,16 +1,17 @@
-// app/bygg/page.tsx (or wherever this page lives)
+// app/bygg/page.tsx
 "use client";
 
 import React, { useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
+import { Separator } from "@/components/ui/separator";
 import AddressSection from "@/components/AddressSection";
 import ExtraServicesCleaning from "@/components/ExtraServicesCleaning";
 import BookingDetailsBygg from "@/components/BookingDetailsBygg";
 import ByggSummaryCard from "@/components/byggSummaryCard";
-import { useCleaningStore } from "@/stores/byggStore"; // your "bygg-store"
+import { useCleaningStore } from "@/stores/byggStore";
 import { initialCleaningSchema } from "../schema/schema";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const Page = () => {
   const {
@@ -20,7 +21,6 @@ const Page = () => {
     setSize,
     extras,
     setExtras,
-
     fetchCleaningPrices,
     resetToken,
   } = useCleaningStore();
@@ -46,7 +46,6 @@ const Page = () => {
 
     if (!result.success) {
       // Extract errors
-
       const validationErrors: Record<string, string> = {};
       result.error.issues.forEach((err) => {
         const field = err.path[0] as string;
@@ -69,37 +68,42 @@ const Page = () => {
       setVisible(true);
     }
   };
+
   return (
-    <div className="pt-16">
-      <header className="w-full md:w-4/5 mx-auto px-6 flex flex-col items-center mt-12 text-center">
-        <h1 className="pb-4 text-4xl text-primary-foreground">
+    <div className="pt-12 sm:pt-16">
+      {/* Header Section - Responsive padding and text sizes */}
+      <header className="w-full lg:w-4/5 mx-auto px-4 sm:px-6 flex flex-col items-center mt-6 sm:mt-12 text-center">
+        <h1 className="pb-3 sm:pb-4 text-2xl sm:text-3xl md:text-4xl text-primary-foreground leading-tight">
           Boka <span className="font-bold text-primary">Byggstäd</span>
         </h1>
-        <p className="text-foreground pb-4 text-xl">
+        <p className="text-foreground pb-3 sm:pb-4 text-base sm:text-lg md:text-xl max-w-2xl">
           text om varför ska man boka hos oss
         </p>
       </header>
 
-      {/* top inputs (controlled by store) */}
-      <div className="w-full md:w-4/5 mx-auto px-6 flex flex-col items-center gap-6">
-        <div className="w-full grid gap-4 md:grid-cols-2">
+      {/* Input Section - Responsive grid and spacing */}
+      <div className="w-full lg:w-4/5 mx-auto px-4 sm:px-6 flex flex-col items-center gap-4 sm:gap-6">
+        <div className="w-full grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
           <div className="space-y-1">
             <Input
               ref={sizeRef}
               defaultValue={size || ""}
               type="number"
               placeholder="Storlek (m³)"
-              className={`w-full ${errors.size ? "border-red-500" : ""}`}
+              className={`w-full h-10 sm:h-11 text-sm sm:text-base ${
+                errors.size ? "border-red-500" : ""
+              }`}
             />
             {errors.size && (
-              <p className="text-sm text-red-500">{errors.size}</p>
+              <p className="text-xs sm:text-sm text-red-500">{errors.size}</p>
             )}
           </div>
+
           <div className="space-y-1">
             <Input
               type="text"
               placeholder="Postnummer (från)"
-              className={`w-full ${
+              className={`w-full h-10 sm:h-11 text-sm sm:text-base ${
                 errors.fromPostcode ? "border-red-500" : ""
               }`}
               value={address.postcode ?? ""}
@@ -115,23 +119,38 @@ const Page = () => {
               }}
             />
             {errors.fromPostcode && (
-              <p className="text-sm text-red-500">{errors.fromPostcode}</p>
+              <p className="text-xs sm:text-sm text-red-500">
+                {errors.fromPostcode}
+              </p>
             )}
           </div>
         </div>
-        <Button onClick={onFetch} className="text-white">
-          Fortsätt
+
+        {errors.general && (
+          <Alert variant="destructive" className="w-full">
+            <AlertDescription className="text-sm">
+              {errors.general}
+            </AlertDescription>
+          </Alert>
+        )}
+
+        <Button
+          onClick={onFetch}
+          className="text-white w-full sm:w-auto px-8 h-10 sm:h-11 text-sm sm:text-base"
+          disabled={isLoading}
+        >
+          {isLoading ? "Laddar..." : "Fortsätt"}
         </Button>
       </div>
 
-      {/* main content */}
-      <main className="w-full md:w-4/5 mx-auto px-6 mt-12 mb-24 min-h-[50vh]">
+      {/* Main Content - Responsive layout */}
+      <main className="w-full lg:w-4/5 mx-auto px-4 sm:px-6 mt-8 sm:mt-12 mb-16 sm:mb-24">
         {visible && (
-          <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_380px] items-start">
-            {/* LEFT */}
-            <div className="space-y-10">
+          <div className="grid gap-6 sm:gap-8 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_380px] max-w-full">
+            {/* Left Column - Form sections */}
+            <div className="space-y-6 sm:space-y-8 md:space-y-10 w-full min-w-0 pb-8">
               <AddressSection
-                key={`addr-${resetToken}`} // force-reset child internal state after booking reset
+                key={`addr-${resetToken}`}
                 title="Adress"
                 value={address}
                 onChange={setAddress}
@@ -140,21 +159,35 @@ const Page = () => {
 
               <section>
                 <ExtraServicesCleaning
-                  key={`extras-${resetToken}`} // same trick for extras
+                  key={`extras-${resetToken}`}
                   value={extras}
                   onChange={setExtras}
                 />
               </section>
 
+              {/* Summary Card - Shows here on mobile */}
+              <div className="lg:hidden w-full max-w-full space-y-6">
+                <ByggSummaryCard />
+                <div className="flex items-center gap-4">
+                  <Separator className="flex-1" />
+                  <span className="text-sm text-muted-foreground font-medium">
+                    Bokningsdetaljer
+                  </span>
+                  <Separator className="flex-1" />
+                </div>
+              </div>
+
               <section>
                 <BookingDetailsBygg />
               </section>
-
-              {/* Optional helper/info block */}
             </div>
 
-            {/* RIGHT */}
-            <ByggSummaryCard />
+            {/* Right Column - Summary Card (sidebar on desktop only) */}
+            <div className="hidden lg:block">
+              <div className="sticky top-24">
+                <ByggSummaryCard />
+              </div>
+            </div>
           </div>
         )}
       </main>

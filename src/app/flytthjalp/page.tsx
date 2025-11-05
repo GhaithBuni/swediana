@@ -2,6 +2,7 @@
 import React, { useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import ExtraServices from "@/components/ExtraServices";
 import BookingDetails from "@/components/BookingDetails";
 import SummaryCard from "@/components/SummaryCard";
@@ -74,29 +75,32 @@ const Page = () => {
   };
 
   return (
-    <div className="pt-16">
-      <header className="w-full md:w-4/5 mx-auto px-6 flex flex-col items-center mt-12 text-center">
-        <h1 className="pb-4 text-4xl text-primary-foreground">
+    <div className="pt-12 sm:pt-16">
+      {/* Header Section - Responsive padding and text sizes */}
+      <header className="w-full lg:w-4/5 mx-auto px-4 sm:px-6 flex flex-col items-center mt-6 sm:mt-12 text-center">
+        <h1 className="pb-3 sm:pb-4 text-2xl sm:text-3xl md:text-4xl text-primary-foreground leading-tight">
           Boka <span className="font-bold text-primary">Flytthjälp</span>
         </h1>
-        <p className="text-foreground pb-4 text-xl">
+        <p className="text-foreground pb-3 sm:pb-4 text-base sm:text-lg md:text-xl max-w-2xl">
           text om varför ska man boka hos oss
         </p>
       </header>
 
-      {/* top inputs */}
-      <div className="w-full md:w-4/5 mx-auto px-6 flex flex-col items-center gap-6">
-        <div className="w-full grid gap-4 md:grid-cols-3">
+      {/* Input Section - Responsive grid and spacing */}
+      <div className="w-full lg:w-4/5 mx-auto px-4 sm:px-6 flex flex-col items-center gap-4 sm:gap-6">
+        <div className="w-full grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
           <div className="space-y-1">
             <Input
               ref={sizeRef}
               defaultValue={sizeValue || ""}
               type="number"
               placeholder="Storlek (m³)"
-              className={`w-full ${errors.size ? "border-red-500" : ""}`}
+              className={`w-full h-10 sm:h-11 text-sm sm:text-base ${
+                errors.size ? "border-red-500" : ""
+              }`}
             />
             {errors.size && (
-              <p className="text-sm text-red-500">{errors.size}</p>
+              <p className="text-xs sm:text-sm text-red-500">{errors.size}</p>
             )}
           </div>
 
@@ -104,7 +108,7 @@ const Page = () => {
             <Input
               type="text"
               placeholder="Postnummer (från)"
-              className={`w-full ${
+              className={`w-full h-10 sm:h-11 text-sm sm:text-base ${
                 errors.fromPostcode ? "border-red-500" : ""
               }`}
               value={from.postcode ?? ""}
@@ -120,15 +124,19 @@ const Page = () => {
               }}
             />
             {errors.fromPostcode && (
-              <p className="text-sm text-red-500">{errors.fromPostcode}</p>
+              <p className="text-xs sm:text-sm text-red-500">
+                {errors.fromPostcode}
+              </p>
             )}
           </div>
 
-          <div className="space-y-1">
+          <div className="space-y-1 sm:col-span-2 md:col-span-1">
             <Input
               type="text"
               placeholder="Postnummer (till)"
-              className={`w-full ${errors.toPostcode ? "border-red-500" : ""}`}
+              className={`w-full h-10 sm:h-11 text-sm sm:text-base ${
+                errors.toPostcode ? "border-red-500" : ""
+              }`}
               value={to.postcode ?? ""}
               onChange={(e) => {
                 setTo({ postcode: e.target.value });
@@ -142,25 +150,36 @@ const Page = () => {
               }}
             />
             {errors.toPostcode && (
-              <p className="text-sm text-red-500">{errors.toPostcode}</p>
+              <p className="text-xs sm:text-sm text-red-500">
+                {errors.toPostcode}
+              </p>
             )}
           </div>
         </div>
 
         {errors.general && (
           <Alert variant="destructive" className="w-full">
-            <AlertDescription>{errors.general}</AlertDescription>
+            <AlertDescription className="text-sm">
+              {errors.general}
+            </AlertDescription>
           </Alert>
         )}
 
-        <Button onClick={onclick} className="text-white" disabled={isLoading}>
+        <Button
+          onClick={onclick}
+          className="text-white w-full sm:w-auto px-8 h-10 sm:h-11 text-sm sm:text-base"
+          disabled={isLoading}
+        >
           {isLoading ? "Laddar..." : "Fortsätt"}
         </Button>
       </div>
-      <main className="w-full md:w-4/5 mx-auto px-6 mt-12 mb-24 min-h-[60vh]">
+
+      {/* Main Content - Responsive layout */}
+      <main className="w-full lg:w-4/5 mx-auto px-4 sm:px-6 mt-8 sm:mt-12 mb-16 sm:mb-24">
         {visible && (
-          <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_380px] items-start">
-            <div className="space-y-10">
+          <div className="grid gap-6 sm:gap-8 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_370px] max-w-full">
+            {/* Left Column - Form sections */}
+            <div className="space-y-6 sm:space-y-8 md:space-y-10 w-full min-w-0 pb-8">
               <AddressSection
                 title="Nuvarande adress"
                 value={from}
@@ -180,11 +199,30 @@ const Page = () => {
                   onCleaningChange={(v) => setCleaningExtra(v)}
                 />
               </section>
+
+              {/* Summary Card - Shows here on mobile */}
+              <div className="lg:hidden w-full max-w-full space-y-6">
+                <SummaryCard />
+                <div className="flex items-center gap-4">
+                  <Separator className="flex-1" />
+                  <span className="text-sm text-muted-foreground font-medium">
+                    Bokningsdetaljer
+                  </span>
+                  <Separator className="flex-1" />
+                </div>
+              </div>
+
               <section>
                 <BookingDetails />
               </section>
             </div>
-            <SummaryCard />
+
+            {/* Right Column - Summary Card (sidebar on desktop only) */}
+            <div className="hidden lg:block">
+              <div className="sticky top-24">
+                <SummaryCard />
+              </div>
+            </div>
           </div>
         )}
       </main>
