@@ -95,6 +95,38 @@ export const ByggDetailsSchema = z.object({
   cleanType: z.enum(["typical", "inspection"]).optional(),
 });
 
+export const kontaktSchema = z.object({
+  name: z.string().min(2, "Namn måste vara minst 2 tecken"),
+  email: z
+    .string()
+    .min(1, "Email är obligatoriskt")
+    .email("Ogiltig emailadress"),
+  phone: z
+    .string()
+    .min(1, "Telefonnummer är obligatoriskt")
+    .regex(/^(\+46|0)?[1-9]\d{8,9}$/, "Ogiltigt telefonnummer"),
+  subject: z
+    .string()
+    .min(1, "Ämne är obligatoriskt")
+    .max(100, "Ämnet kan inte vara längre än 100 tecken"),
+  message: z
+    .string()
+    .min(1, "Meddelande är obligatoriskt")
+    .max(2000, "Meddelandet kan inte vara längre än 2000 tecken"),
+});
+
+export const foretagstadSchema = z.object({
+  name: z.string().min(2, "Kontaktperson krävs"),
+  kvm: z.string().min(1, "Kvadratmeter krävs"),
+  adress: z.string().min(3, "Adress krävs"),
+  postalcode: z.string().min(5, "Postnummer krävs"),
+  city: z.string().min(2, "Ort krävs"),
+  email: z.string().email("Ogiltig e-postadress"),
+  phone: z.string().min(10, "Telefonnummer krävs"),
+  subject: z.string().min(2, "Ämne krävs"),
+  message: z.string().min(10, "Meddelande måste vara minst 10 tecken"),
+});
+
 export const initialCleaningSchema = z.object({
   size: z
     .number()
@@ -109,6 +141,7 @@ export const initialCleaningSchema = z.object({
 export type InitialBookingData = z.infer<typeof initialBookingSchema>;
 export type BookingDetailsData = z.infer<typeof bookingDetailsSchema>;
 export type initialCleaningSchema = z.infer<typeof initialCleaningSchema>;
+export type KontaktData = z.infer<typeof kontaktSchema>;
 
 // Helper to get user-friendly error messages
 export function getValidationErrors(error: z.ZodError): Record<string, string> {

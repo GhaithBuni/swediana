@@ -3,6 +3,7 @@ import { alata, manrope } from "./fonts";
 import "./globals.css";
 import Nav from "../components/Nav";
 import Footer from "@/components/ui/Footer";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -20,6 +21,7 @@ export default function RootLayout({
         <Nav />
         <main className="flex-1">{children}</main>
         <Footer />
+        <Toaster position="top-right" />
       </body>
     </html>
   );
