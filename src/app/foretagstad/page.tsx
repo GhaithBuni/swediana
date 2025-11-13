@@ -5,6 +5,12 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
@@ -104,75 +110,64 @@ export default function Page() {
                 Vad ingår i en kontorsstädning?
               </h2>
 
-              <div className="mt-6 sm:mt-8 divide-y divide-white/30 border-y border-white/30 max-w-xl">
-                {/* Item */}
-                <details className="group">
-                  <summary className="flex cursor-pointer list-none items-center justify-between py-4 font-medium">
-                    <span>Kontor & mötesrum</span>
-                    <span className="transition-transform group-open:rotate-180">
-                      ∨
-                    </span>
-                  </summary>
-                  <div className="pb-4 text-white/90">
-                    Dammtorkning av fria ytor, tömning av papperskorgar,
-                    avtorkning av bord/stolar, dammsugning och våttorkning av
-                    golv, puts av glasytor vid behov.
-                  </div>
-                </details>
+              <div className="mt-6 sm:mt-8 max-w-xl">
+                <Accordion type="single" collapsible className="w-full">
+                  <AccordionItem value="item-1" className="border-white/30">
+                    <AccordionTrigger className="text-white hover:text-white/90 py-4 font-medium text-left hover:no-underline [&[data-state=open]>svg]:rotate-180 [&>svg]:text-white">
+                      Kontor & mötesrum
+                    </AccordionTrigger>
+                    <AccordionContent className="text-white/90 pb-4">
+                      Dammtorkning av fria ytor, tömning av papperskorgar,
+                      avtorkning av bord/stolar, dammsugning och våttorkning av
+                      golv, puts av glasytor vid behov.
+                    </AccordionContent>
+                  </AccordionItem>
 
-                <details className="group">
-                  <summary className="flex cursor-pointer list-none items-center justify-between py-4 font-medium">
-                    <span>Kök / pentry</span>
-                    <span className="transition-transform group-open:rotate-180">
-                      ∨
-                    </span>
-                  </summary>
-                  <div className="pb-4 text-white/90">
-                    Rengöring av bänkar, diskho, mikrovågsugn utvändigt,
-                    kyl/frys handtag, avtorkning av skåpsluckor och vitvaror,
-                    golvstädning.
-                  </div>
-                </details>
+                  <AccordionItem value="item-2" className="border-white/30">
+                    <AccordionTrigger className="text-white hover:text-white/90 py-4 font-medium text-left hover:no-underline [&[data-state=open]>svg]:rotate-180 [&>svg]:text-white">
+                      Kök / pentry
+                    </AccordionTrigger>
+                    <AccordionContent className="text-white/90 pb-4">
+                      Rengöring av bänkar, diskho, mikrovågsugn utvändigt,
+                      kyl/frys handtag, avtorkning av skåpsluckor och vitvaror,
+                      golvstädning.
+                    </AccordionContent>
+                  </AccordionItem>
 
-                <details className="group">
-                  <summary className="flex cursor-pointer list-none items-center justify-between py-4 font-medium">
-                    <span>Badrum / toaletter</span>
-                    <span className="transition-transform group-open:rotate-180">
-                      ∨
-                    </span>
-                  </summary>
-                  <div className="pb-4 text-white/90">
-                    Rengöring av porslin och blandare, avtorkning av kakel där
-                    det kommer åt, påfyllning av förbrukningsmaterial, speglar
-                    och golv.
-                  </div>
-                </details>
+                  <AccordionItem value="item-3" className="border-white/30">
+                    <AccordionTrigger className="text-white hover:text-white/90 py-4 font-medium text-left hover:no-underline [&[data-state=open]>svg]:rotate-180 [&>svg]:text-white">
+                      Badrum / toaletter
+                    </AccordionTrigger>
+                    <AccordionContent className="text-white/90 pb-4">
+                      Rengöring av porslin och blandare, avtorkning av kakel där
+                      det kommer åt, påfyllning av förbrukningsmaterial, speglar
+                      och golv.
+                    </AccordionContent>
+                  </AccordionItem>
 
-                <details className="group">
-                  <summary className="flex cursor-pointer list-none items-center justify-between py-4 font-medium">
-                    <span>Tilläggstjänster</span>
-                    <span className="transition-transform group-open:rotate-180">
-                      ∨
-                    </span>
-                  </summary>
-                  <div className="pb-4 text-white/90">
-                    Fönsterputs, storstäd, mattvätt, höghöjdsstädning,
-                    maskinstädning m.m.
-                  </div>
-                </details>
+                  <AccordionItem value="item-4" className="border-white/30">
+                    <AccordionTrigger className="text-white hover:text-white/90 py-4 font-medium text-left hover:no-underline [&[data-state=open]>svg]:rotate-180 [&>svg]:text-white">
+                      Tilläggstjänster
+                    </AccordionTrigger>
+                    <AccordionContent className="text-white/90 pb-4">
+                      Fönsterputs, storstäd, mattvätt, höghöjdsstädning,
+                      maskinstädning m.m.
+                    </AccordionContent>
+                  </AccordionItem>
 
-                <details className="group">
-                  <summary className="flex cursor-pointer list-none items-center justify-between py-4 font-medium">
-                    <span>Städmaterial</span>
-                    <span className="transition-transform group-open:rotate-180">
-                      ∨
-                    </span>
-                  </summary>
-                  <div className="pb-4 text-white/90">
-                    Allt basmaterial kan ingå efter överenskommelse – vi
-                    använder miljömärkta kemikalier och mikrofiber.
-                  </div>
-                </details>
+                  <AccordionItem
+                    value="item-5"
+                    className="border-white/30 border-b"
+                  >
+                    <AccordionTrigger className="text-white hover:text-white/90 py-4 font-medium text-left hover:no-underline [&[data-state=open]>svg]:rotate-180 [&>svg]:text-white">
+                      Städmaterial
+                    </AccordionTrigger>
+                    <AccordionContent className="text-white/90 pb-4">
+                      Allt basmaterial kan ingå efter överenskommelse – vi
+                      använder miljömärkta kemikalier och mikrofiber.
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
               </div>
             </div>
           </div>
@@ -507,6 +502,8 @@ export default function Page() {
                   <a
                     aria-label="Instagram"
                     href="https://instagram.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="w-10 h-10 rounded-full bg-slate-800 hover:bg-[#0c8a84] flex items-center justify-center transition-all duration-200 hover:scale-110"
                   >
                     <Instagram size={20} />
@@ -514,6 +511,8 @@ export default function Page() {
                   <a
                     aria-label="Facebook"
                     href="https://facebook.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="w-10 h-10 rounded-full bg-slate-800 hover:bg-[#0c8a84] flex items-center justify-center transition-all duration-200 hover:scale-110"
                   >
                     <Facebook size={20} />
@@ -521,6 +520,8 @@ export default function Page() {
                   <a
                     aria-label="TikTok"
                     href="https://tiktok.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="w-10 h-10 rounded-full bg-slate-800 hover:bg-[#0c8a84] flex items-center justify-center transition-all duration-200 hover:scale-110"
                   >
                     <Music2 size={20} />
