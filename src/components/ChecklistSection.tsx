@@ -38,13 +38,13 @@ export default function ChecklistSection() {
 
       {/* TEXT SIDE */}
       <div className="text-left md:pl-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-primary-foreground">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold ">
           Checklista - vad ingår i en flytthjälp?
         </h2>
 
         <Accordion type="single" collapsible className="mt-6 w-full">
           <AccordionItem value="prep">
-            <AccordionTrigger>
+            <AccordionTrigger className="text-base sm:text-lg">
               Förberedelser (2–4 veckor innan)
             </AccordionTrigger>
             <AccordionContent>
@@ -57,7 +57,7 @@ export default function ChecklistSection() {
           </AccordionItem>
 
           <AccordionItem value="packing">
-            <AccordionTrigger>Packning</AccordionTrigger>
+            <AccordionTrigger className="text-base sm:text-lg">Packning</AccordionTrigger>
             <AccordionContent>
               <ul className="list-disc pl-5 space-y-2">
                 <li>Märk kartonger med rum + innehåll.</li>
@@ -68,7 +68,7 @@ export default function ChecklistSection() {
           </AccordionItem>
 
           <AccordionItem value="moving-day">
-            <AccordionTrigger>Flyttdagen</AccordionTrigger>
+            <AccordionTrigger  className="text-base sm:text-lg">Flyttdagen</AccordionTrigger>
             <AccordionContent>
               <ul className="list-disc pl-5 space-y-2">
                 <li>Ha “första-dygnet-låda” med nödvändigheter.</li>
@@ -79,7 +79,7 @@ export default function ChecklistSection() {
           </AccordionItem>
 
           <AccordionItem value="after">
-            <AccordionTrigger>Efter flytten</AccordionTrigger>
+            <AccordionTrigger  className="text-base sm:text-lg">Efter flytten</AccordionTrigger>
             <AccordionContent>
               <ul className="list-disc pl-5 space-y-2">
                 <li>Packa upp rum för rum (börja med kök/badrum).</li>
@@ -90,12 +90,7 @@ export default function ChecklistSection() {
           </AccordionItem>
         </Accordion>
 
-        <Link
-          href="/services/moving"
-          className="mt-6 inline-block font-semibold underline"
-        >
-          Se våra tjänster och boka tryggt!
-        </Link>
+       
       </div>
     </section>
   );

@@ -102,22 +102,58 @@ const MobileNav = () => {
                 <li>
                   <SheetClose asChild>
                     <Link
-                      href="/flytthjalp"
+                      href="/flytthjalpinfo"
                       className={`block ${linkBase} ${isActive("/flytthjalp")}`}
                     >
-                      Flytt
+                      Flytthjälp
                     </Link>
                   </SheetClose>
                 </li>
                 <li>
                   <SheetClose asChild>
                     <Link
-                      href="/services/cleaning"
+                      href="/flyttstadinfo"
                       className={`block ${linkBase} ${isActive(
                         "/services/cleaning"
                       )}`}
                     >
-                      Städning
+                      FlyttStädning
+                    </Link>
+                  </SheetClose>
+                </li>
+                <li>
+                  <SheetClose asChild>
+                    <Link
+                      href="/foretagstad"
+                      className={`block ${linkBase} ${isActive(
+                        "/services/cleaning"
+                      )}`}
+                    >
+                      Företagstädning
+                    </Link>
+                  </SheetClose>
+                </li>
+                <li>
+                  <SheetClose asChild>
+                    <Link
+                      href="/byggstadinfo"
+                      className={`block ${linkBase} ${isActive(
+                        "/services/cleaning"
+                      )}`}
+                    >
+                      Byggstäadning
+                    </Link>
+                  </SheetClose>
+                </li>
+                  <li>
+                  <SheetClose asChild>
+                    <Link
+                      href="/fonsterputs"
+                      className={`block ${linkBase} ${isActive(
+                        "/services/cleaning"
+                      )}`}
+                    >
+                      Fönsterputs
                     </Link>
                   </SheetClose>
                 </li>
@@ -187,16 +223,16 @@ const Nav = () => {
             <Image
               src="/logo.svg"
               alt="Swediana"
-              width={120}
-              height={32}
-              className="h-8 w-auto"
+              width={200}
+              height={100}
+              className="h-10 w-auto"
               priority
             />
           </Link>
 
           {/* Desktop menu (centered) */}
           <nav className="hidden md:flex flex-1 justify-center">
-            <NavigationMenu>
+            <NavigationMenu className="">
               <NavigationMenuList className="flex items-center gap-8">
                 <NavigationMenuItem>
                   <NavigationMenuTrigger className="bg-transparent text-white hover:text-teal-400 hover:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-teal-400 ">
@@ -207,20 +243,50 @@ const Nav = () => {
                       <li>
                         <NavigationMenuLink asChild>
                           <Link
-                            href="/flytthjalp"
+                            href="/flytthjalpinfo"
                             className="block rounded-md px-3 py-2 hover:bg-accent"
                           >
-                            Flytt
+                            Flytthjälp
                           </Link>
                         </NavigationMenuLink>
                       </li>
                       <li>
                         <NavigationMenuLink asChild>
                           <Link
-                            href="/flyttstad"
+                            href="/flyttstadinfo"
                             className="block rounded-md px-3 py-2 hover:bg-accent"
                           >
-                            Städning
+                            Flyttstädning
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                       <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            href="/foretagstad"
+                            className="block rounded-md px-3 py-2 hover:bg-accent"
+                          >
+                            Företagstädning
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            href="/byggstadinfo"
+                            className="block rounded-md px-3 py-2 hover:bg-accent"
+                          >
+                            Byggstädning
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            href="/fonsterputs"
+                            className="block rounded-md px-3 py-2 hover:bg-accent"
+                          >
+                            Fönsterputs
                           </Link>
                         </NavigationMenuLink>
                       </li>

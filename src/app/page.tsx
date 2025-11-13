@@ -67,12 +67,38 @@ export default function Home() {
         className="flex flex-col justify-center items-center h-screen bg-cover bg-center"
         style={{ backgroundImage: "url('/land-page.jpg')" }}
       >
-        <h1 className="text-white text-5xl font-bold">
-          Din pålitliga städfirma med{" "}
-        </h1>
-        <h2 className="text-4xl mt-6">
-          <Typewriter words={words} />
-        </h2>
+        <h1
+  className="
+    text-white
+    font-bold
+    leading-tight
+    text-3xl
+    sm:text-4xl
+    md:text-5xl
+    lg:text-6xl
+    text-center
+    md:text-left
+  "
+>
+  Din pålitliga städfirma med{" "}
+</h1>
+
+<h2
+  className="
+    mt-4
+    sm:mt-6
+    text-2xl
+    sm:text-3xl
+    md:text-4xl
+    lg:text-5xl
+    text-center
+    md:text-left
+    text-[#11b6b7]
+    font-bold
+  "
+>
+  <Typewriter words={words} />
+</h2>
       </div>
       <Tjanster />
       <Swediana />
