@@ -29,7 +29,7 @@ function YesNoPills({
               className={cn(
                 "h-14 w-14 rounded-full flex items-center justify-center text-sm font-semibold transition border",
                 active
-                  ? "bg-black text-white border-black"
+                  ? "bg-primary text-white border-primary"
                   : "bg-primary/10 text-foreground border-transparent hover:bg-primary/15"
               )}
             >

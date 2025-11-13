@@ -18,8 +18,8 @@ export default function HomeTypeSelect({
   value,
   onChange,
 }: {
-  value: HomeType; // <-- required, controlled
-  onChange: (v: HomeType) => void; // <-- required
+  value: HomeType;
+  onChange: (v: HomeType) => void;
 }) {
   return (
     <div className="max-w-3xl">
@@ -36,19 +36,24 @@ export default function HomeTypeSelect({
               <RadioGroupItem value={id} className="sr-only" />
               <Card
                 className={cn(
-                  "relative h-32 rounded-2xl p-6 flex flex-col items-center justify-center transition border",
+                  "relative h-32 rounded-2xl p-6 flex flex-col items-center justify-center transition border gap-3",
                   isSelected
-                    ? "bg-black text-white border-black"
+                    ? "bg-primary text-white border-primary"
                     : "bg-primary/10 text-foreground border-transparent hover:bg-primary/15"
                 )}
               >
-                <Image
-                  src={src}
-                  alt={label}
-                  width={40}
-                  height={40}
-                  className="object-contain"
-                />
+                <div className="w-12 h-12 flex items-center justify-center">
+                  <Image
+                    src={src}
+                    alt={label}
+                    width={48}
+                    height={48}
+                    className={cn(
+                      "object-contain w-full h-full",
+                      isSelected && "brightness-0 invert"
+                    )}
+                  />
+                </div>
                 <span
                   className={cn(
                     "text-base font-medium",

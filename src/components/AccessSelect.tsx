@@ -17,15 +17,14 @@ export default function AccessSelect({
   value,
   onChange,
 }: {
-  value: AccessValue; // controlled
-  onChange: (v: AccessValue) => void; // controlled
+  value: AccessValue;
+  onChange: (v: AccessValue) => void;
 }) {
   return (
     <div className="max-w-3xl">
       <h3 className="mb-3 text-lg font-semibold text-primary-foreground">
         Tillgång
       </h3>
-
       <RadioGroup
         value={value}
         onValueChange={(v) => onChange(v as AccessValue)}
@@ -38,19 +37,24 @@ export default function AccessSelect({
               <RadioGroupItem value={opt.id} className="sr-only" />
               <Card
                 className={cn(
-                  "h-40 rounded-2xl p-6 flex flex-col items-center justify-center text-center transition border",
+                  "h-40 rounded-2xl p-6 flex flex-col items-center justify-center text-center transition border gap-3",
                   active
-                    ? "bg-black text-white border-black"
+                    ? "bg-primary text-white border-primary"
                     : "bg-primary/10 text-foreground border-transparent hover:bg-primary/15"
                 )}
               >
-                <Image
-                  src={opt.icon}
-                  alt={opt.label}
-                  width={64}
-                  height={64}
-                  className="mb-3 object-contain"
-                />
+                <div className="w-16 h-16 flex items-center justify-center">
+                  <Image
+                    src={opt.icon}
+                    alt={opt.label}
+                    width={64}
+                    height={64}
+                    className={cn(
+                      "object-contain w-full h-full",
+                      active && "brightness-0 invert"
+                    )}
+                  />
+                </div>
                 <span className="text-sm font-medium">{opt.label}</span>
               </Card>
             </label>

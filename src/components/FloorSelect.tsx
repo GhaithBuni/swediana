@@ -1,9 +1,8 @@
 "use client";
-
 import * as React from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card } from "@/components/ui/card";
-import { cn } from "@/lib/utils"; // or remove and use template strings
+import { cn } from "@/lib/utils";
 
 type FloorValue = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10+";
 
@@ -43,11 +42,9 @@ export default function FloorSelect({
       <h3 className="mb-3 text-lg font-semibold text-primary-foreground">
         {label}
       </h3>
-
       <RadioGroup
         value={selected}
         onValueChange={handleChange}
-        // was: "grid grid-cols-5 gap-4 sm:grid-cols-5"
         className="inline-grid grid-cols-[repeat(5,auto)] gap-4 md:gap-6 w-fit mx-auto"
         aria-label="Välj våning"
       >
@@ -55,14 +52,12 @@ export default function FloorSelect({
           const isSelected = selected === opt;
           return (
             <label key={opt} className="cursor-pointer">
-              {/* keep the native radio for a11y, hide visually */}
               <RadioGroupItem value={opt} className="sr-only" />
-
               <Card
                 className={cn(
                   "h-14 w-14 rounded-full flex items-center justify-center text-base font-medium transition border",
                   isSelected
-                    ? "bg-black text-white border-black"
+                    ? "bg-primary text-white border-primary"
                     : "bg-primary/10 text-foreground border-transparent hover:bg-primary/15"
                 )}
               >
