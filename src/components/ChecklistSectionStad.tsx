@@ -15,9 +15,9 @@ export default function ChecklistSection() {
         className="
           relative w-full max-w-md md:max-w-lg lg:max-w-xl
           before:content-[''] before:absolute before:-left-3 before:-top-3
-          before:h-12 before:w-[120px] before:bg-[#6B2E1A]
+          before:h-12 before:w-[120px] before:bg-[#c69d74]
           after:content-[''] after:absolute after:-left-3 after:-top-3
-          after:h-[120px] after:w-12 after:bg-[#6B2E1A]
+          after:h-[120px] after:w-12 after:bg-[#c69d74]
         "
         aria-hidden={false}
       >
@@ -38,13 +38,13 @@ export default function ChecklistSection() {
 
       {/* TEXT SIDE */}
       <div className="text-left md:pl-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-primary-foreground">
+        <h2 className="text-3xl md:text-4xl font-bold ">
           Checklista - vad ingår i en flyttstädning?
         </h2>
 
         <Accordion type="single" collapsible className="mt-6 w-full">
           <AccordionItem value="prep">
-            <AccordionTrigger>Kök</AccordionTrigger>
+            <AccordionTrigger className="text-base sm:text-lg">Kök</AccordionTrigger>
             <AccordionContent>
               <ul className="list-disc pl-5 space-y-2">
                 <li>Boka flytthjälp och bekräfta datum.</li>
@@ -55,7 +55,7 @@ export default function ChecklistSection() {
           </AccordionItem>
 
           <AccordionItem value="packing">
-            <AccordionTrigger>Badrum</AccordionTrigger>
+            <AccordionTrigger className="text-base sm:text-lg">Badrum</AccordionTrigger>
             <AccordionContent>
               <ul className="list-disc pl-5 space-y-2">
                 <li>Märk kartonger med rum + innehåll.</li>
@@ -66,7 +66,7 @@ export default function ChecklistSection() {
           </AccordionItem>
 
           <AccordionItem value="moving-day">
-            <AccordionTrigger>Bostadrum</AccordionTrigger>
+            <AccordionTrigger className="text-base sm:text-lg">Bostadrum</AccordionTrigger>
             <AccordionContent>
               <ul className="list-disc pl-5 space-y-2">
                 <li>Ha “första-dygnet-låda” med nödvändigheter.</li>
@@ -77,7 +77,7 @@ export default function ChecklistSection() {
           </AccordionItem>
 
           <AccordionItem value="after">
-            <AccordionTrigger>Ingår inte i flyttstädning </AccordionTrigger>
+            <AccordionTrigger className="text-base sm:text-lg">Ingår inte i flyttstädning </AccordionTrigger>
             <AccordionContent>
               <ul className="list-disc pl-5 space-y-2">
                 <li>Packa upp rum för rum (börja med kök/badrum).</li>
@@ -88,12 +88,7 @@ export default function ChecklistSection() {
           </AccordionItem>
         </Accordion>
 
-        <Link
-          href="/services/moving"
-          className="mt-6 inline-block font-semibold underline"
-        >
-          Se våra tjänster och boka tryggt!
-        </Link>
+      
       </div>
     </section>
   );

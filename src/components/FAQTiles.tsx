@@ -57,27 +57,29 @@ export default function FAQTilesCollapsing({
 
   return (
     <div className="w-full">
-      {/* arrows */}
-      <div className="flex items-center justify-center gap-2 mb-6">
-        <Button
-          variant="outline"
-          size="icon"
-          aria-label="Scroll left"
-          onClick={() => scrollByOne("left")}
-          className="rounded-full"
-        >
-          <ChevronLeft className="h-5 w-5" />
-        </Button>
-        <Button
-          variant="default"
-          size="icon"
-          aria-label="Scroll right"
-          onClick={() => scrollByOne("right")}
-          className="rounded-full bg-slate-800 hover:bg-slate-700"
-        >
-          <ChevronRight className="h-5 w-5 text-white" />
-        </Button>
-      </div>
+      {/* arrows — mobile only */}
+<div className="flex items-center justify-center gap-2 mb-6 sm:hidden">
+  <Button
+    variant="outline"
+    size="icon"
+    aria-label="Scroll left"
+    onClick={() => scrollByOne("left")}
+    className="rounded-full"
+  >
+    <ChevronLeft className="h-5 w-5" />
+  </Button>
+
+  <Button
+    variant="default"
+    size="icon"
+    aria-label="Scroll right"
+    onClick={() => scrollByOne("right")}
+    className="rounded-full bg-slate-800 hover:bg-slate-700"
+  >
+    <ChevronRight className="h-5 w-5 text-white" />
+  </Button>
+</div>
+
 
       <Accordion
         type="single"
@@ -129,13 +131,13 @@ export default function FAQTilesCollapsing({
 
                 {/* header trigger (kept for a11y + collapse when open) */}
                 <AccordionTrigger
-                  className="relative z-20 p-6 text-left font-semibold text-lg leading-snug hover:no-underline"
+                  className="mt-10 relative z-20 p-6 text-left font-bold text-2xl md:3xl leading-snug hover:no-underline"
                   style={{ minHeight: height * 0.45 }}
                 >
                   {item.question}
                 </AccordionTrigger>
 
-                <AccordionContent className="relative z-20 px-6 pb-6 text-sm leading-relaxed data-[state=open]:text-white/90">
+                <AccordionContent className="relative z-20 px-6 pb-6 text-base sm:text-lg leading-relaxed data-[state=open]:text-white/90">
                   {item.answer}
                 </AccordionContent>
               </AccordionItem>

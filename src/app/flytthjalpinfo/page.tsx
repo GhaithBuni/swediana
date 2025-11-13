@@ -1,4 +1,6 @@
 // app/your-page/page.tsx
+import { ArrowLeft, ArrowRight } from "lucide-react";
+
 import Link from "next/link";
 import Image from "next/image";
 import ChecklistSection from "@/components/ChecklistSection";
@@ -64,6 +66,8 @@ export default function Page() {
 
       {/* CHECKLIST (your existing component should already be responsive) */}
       <ChecklistSection />
+
+
 
        <div className="w-full">
       {/* TEAL PROMO STRIP */}
@@ -144,7 +148,8 @@ export default function Page() {
             </p>
 
             <a
-              href="/booking"
+              href="/flytthjalp
+            "
               className="
                 mt-6 inline-block 
                 text-base sm:text-lg 
@@ -215,25 +220,36 @@ export default function Page() {
     </div>
 
       {/* FAQ */}
-      <section className="mx-auto w-full max-w-6xl px-4 sm:px-6 py-12 sm:py-16">
-        <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-primary-foreground">
-          Frågor &amp; svar <span className="text-teal-700">flytthjälp</span>
-        </h2>
-        <p className="mt-2 text-slate-600 text-sm sm:text-base">
-          Har du frågor om flytthjälp? Här har vi samlat de vanligaste frågorna
-          och svaren som rör flytthjälp.
-        </p>
+   <section className="mx-auto max-w-7xl px-4 sm:px-6 py-12 sm:py-16">
+  {/* Top row: title left, text + arrows right */}
+  <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 md:gap-12">
+    {/* Left title */}
+    <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">
+      Frågor &amp; svar
+      <span className="block text-teal-700">flytthjälp</span>
+    </h2>
 
-        <div className="mt-6 sm:mt-8">
-          <FAQTilesCollapsing
-            items={faqItemsFlytthjalp}
-            collapsed={180} // narrower cards on mobile
-            expanded={300}
-            height={340}
-            gap={10}
-          />
-        </div>
-      </section>
+    {/* Right text + arrows */}
+    <div className="flex flex-col items-start md:items-end gap-4">
+      <p className="text-base sm:text-lg max-w-md font-bold ">
+    Har du frågor om flytthjälp? Här har vi samlat de vanligaste frågorna och svaren som rör flytthjälp.
+      </p>
+
+      
+    </div>
+  </div>
+
+  {/* FAQ tiles below */}
+  <div className="mt-8 sm:mt-10">
+    <FAQTilesCollapsing
+      items={faqItemsFlytthjalp}
+      collapsed={180}
+      expanded={350}
+      height={400}
+      gap={15}
+    />
+  </div>
+</section>
     </div>
   );
 }
