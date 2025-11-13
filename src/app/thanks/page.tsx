@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { CheckCircle2, CalendarDays, Mail, Phone, Info } from "lucide-react";
@@ -20,7 +20,8 @@ function formatDate(input?: string | null) {
   });
 }
 
-export default function ThanksForBookingPage() {
+// Separate the component that uses useSearchParams
+function ThanksContent() {
   const params = useSearchParams();
 
   // Support both ?order= and ?bookingId=
@@ -167,5 +168,23 @@ export default function ThanksForBookingPage() {
         </motion.div>
       </div>
     </div>
+  );
+}
+
+// Main component with Suspense boundary
+export default function ThanksForBookingPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen w-full bg-background pt-16 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4" />
+            <p className="text-foreground/60">Laddar...</p>
+          </div>
+        </div>
+      }
+    >
+      <ThanksContent />
+    </Suspense>
   );
 }
