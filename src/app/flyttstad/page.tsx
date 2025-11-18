@@ -21,10 +21,12 @@ const CleaningPage = () => {
     extras,
     setExtras,
     fetchCleaningPrices,
+    postPhoneNumber,
     resetToken,
   } = useCleaningStore();
 
   const sizeRef = useRef<HTMLInputElement>(null);
+  const phoneRef = useRef<HTMLInputElement>(null);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -36,6 +38,7 @@ const CleaningPage = () => {
     // Get current values
     const sz = Number(sizeRef.current?.value || 0);
     const fromPostcode = address.postcode || "";
+    const phone = phoneRef.current?.value || "";
 
     // Validate
     const result = initialCleaningSchema.safeParse({
@@ -54,17 +57,35 @@ const CleaningPage = () => {
       return;
     }
 
+    // Validate phone number (basic validation)
+    if (!phone || phone.trim() === "") {
+      setErrors({ phone: "Telefonnummer krävs" });
+      return;
+    }
+
+    // Basic phone validation (Swedish format)
+    const phoneRegex = /^[\d\s\-\+\(\)]{8,}$/;
+    if (!phoneRegex.test(phone)) {
+      setErrors({ phone: "Ogiltigt telefonnummer" });
+      return;
+    }
+
     // All valid - proceed
     setIsLoading(true);
     try {
       setSize(sz);
+
+      // Call postPhoneNumber first
+      await postPhoneNumber(phone, process.env.NEXT_PUBLIC_API_KEY!);
+
+      // Then fetch cleaning prices
       await fetchCleaningPrices(process.env.NEXT_PUBLIC_API_KEY!);
+      setVisible(true);
     } catch (error) {
-      console.error("Failed to fetch prices:", error);
+      console.error("Failed to process request:", error);
       setErrors({ general: "Kunde inte hämta priser. Försök igen." });
     } finally {
       setIsLoading(false);
-      setVisible(true);
     }
   };
 
@@ -121,6 +142,30 @@ const CleaningPage = () => {
               <p className="text-xs sm:text-sm text-red-500">
                 {errors.fromPostcode}
               </p>
+            )}
+          </div>
+
+          {/* Phone Number Input */}
+          <div className="space-y-1 sm:col-span-2">
+            <Input
+              ref={phoneRef}
+              type="tel"
+              placeholder="Telefonnummer"
+              className={`w-full h-10 sm:h-11 text-sm sm:text-base ${
+                errors.phone ? "border-red-500" : ""
+              }`}
+              onChange={() => {
+                if (errors.phone) {
+                  setErrors((prev) => {
+                    const next = { ...prev };
+                    delete next.phone;
+                    return next;
+                  });
+                }
+              }}
+            />
+            {errors.phone && (
+              <p className="text-xs sm:text-sm text-red-500">{errors.phone}</p>
             )}
           </div>
         </div>

@@ -148,6 +148,7 @@ type CleaningState = {
   setDiscountCode: (code: string) => void;
   validateAndApplyDiscount: (apiBase: string) => Promise<void>;
   removeDiscount: () => void;
+  postPhoneNumber: (phone: string, apiBase: string) => Promise<void>;
 
   fetchCleaningPrices: (apiBase: string) => Promise<void>;
   postCleaningBooking: (
@@ -179,6 +180,7 @@ function makeInitialState(): Omit<
   | "removeDiscount"
   | "fetchCleaningPrices"
   | "postCleaningBooking"
+  | "postPhoneNumber"
   | "resetCleaning"
 > {
   return {
@@ -361,6 +363,20 @@ export const useCleaningStore = create<CleaningState>()(
         });
       },
 
+      postPhoneNumber: async (phone, apiBase) => {
+        const res = await fetch(`${apiBase}/phone`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ phone, service: "Flyttstädning" }),
+        });
+        if (!res.ok) {
+          console.log(phone);
+          const json = await res.json().catch(() => ({}));
+          const msg =
+            json?.message || json?.error || res.statusText || "Request failed";
+          throw new Error(msg);
+        }
+      },
       postCleaningBooking: async (apiBase, customer) => {
         const s = get();
 

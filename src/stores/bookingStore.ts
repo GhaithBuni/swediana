@@ -223,6 +223,7 @@ type BookingState = {
   setDiscountCode: (code: string) => void;
   validateAndApplyDiscount: (apiBase: string) => Promise<void>;
   removeDiscount: () => void;
+  postPhoneNumber: (phone: string, apiBase: string) => Promise<void>;
 
   fetchPrices: (apiBase: string) => Promise<void>;
   postBooking: (
@@ -257,6 +258,7 @@ function makeInitialState(): Omit<
   | "removeDiscount"
   | "fetchPrices"
   | "postBooking"
+  | "postPhoneNumber"
   | "resetBooking"
 > {
   return {
@@ -513,6 +515,20 @@ export const useBookingStore = create<BookingState>()(
           });
           return next;
         });
+      },
+      postPhoneNumber: async (phone, apiBase) => {
+        const res = await fetch(`${apiBase}/phone`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ phone, service: "Flytthjälp" }),
+        });
+        if (!res.ok) {
+          console.log(phone);
+          const json = await res.json().catch(() => ({}));
+          const msg =
+            json?.message || json?.error || res.statusText || "Request failed";
+          throw new Error(msg);
+        }
       },
 
       postBooking: async (apiBase, customer) => {
