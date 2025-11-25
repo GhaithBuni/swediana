@@ -48,7 +48,7 @@ export const metadata: Metadata = {
       "Professionell flytthjälp, flyttstäd, byggstäd och företagsstädning i Uppsala.",
     images: [
       {
-        url: "/og-image.jpg", // Replace with your actual image
+        url: "/og_image.png", // Replace with your actual image
         width: 1200,
         height: 630,
         alt: "Swediana - Flytthjälp och Städning i Uppsala",
@@ -60,7 +60,7 @@ export const metadata: Metadata = {
     title: "Swediana - Flytthjälp, Städning & Bygg i Uppsala",
     description:
       "Professionell flytthjälp, flyttstäd, byggstäd och företagsstädning i Uppsala.",
-    images: ["/og-image.jpg"], // Replace with your actual image
+    images: ["/og_image.png"], // Replace with your actual image
   },
   alternates: {
     canonical: "https://www.swediana.se",
