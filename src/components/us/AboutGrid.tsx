@@ -81,19 +81,7 @@ export default function AboutGrid() {
             <p className="mt-1 text-teal-700/70">Nöjda kunder</p>
           </div>
 
-          <ul className="mt-6 flex -space-x-2">
-            {["1", "2", "3", "4", "5"].map((n) => (
-              <li key={n} className="inline-block">
-                <Image
-                  src={`/avatars/a${n}.jpg`}
-                  alt={`Kund ${n}`}
-                  width={40}
-                  height={40}
-                  className="h-10 w-10 rounded-full ring-2 ring-white object-cover"
-                />
-              </li>
-            ))}
-          </ul>
+          
         </div>
       </div>
     </section>

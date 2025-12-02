@@ -140,7 +140,6 @@ export default function ByggSummaryCard() {
           </p>
         </CardFooter>
       </Card>
-      <CleaningIncludes />
     </aside>
   );
 }

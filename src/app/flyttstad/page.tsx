@@ -97,7 +97,7 @@ const CleaningPage = () => {
           Boka <span className="font-bold text-primary">Flyttstäd</span>
         </h1>
         <p className="text-foreground pb-3 sm:pb-4 text-base sm:text-lg md:text-xl max-w-2xl">
-          text om varför ska man boka hos oss
+     
         </p>
       </header>
 

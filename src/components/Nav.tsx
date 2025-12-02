@@ -60,19 +60,7 @@ const MobileNav = () => {
         "
       >
         {/* Header */}
-        <SheetHeader className="px-4 pb-4 pt-5 border-b border-white/10">
-          <div className="flex items-center gap-3">
-            <Image
-              src="/logo.svg"
-              alt="Swediana"
-              width={28}
-              height={28}
-              className="h-7 w-auto"
-              priority
-            />
-            <SheetTitle className="text-white/95 tracking-tight"></SheetTitle>
-          </div>
-        </SheetHeader>
+        <SheetHeader className="px-4 pb-4 pt-5 border-b border-white/10 mt-5"></SheetHeader>
 
         {/* Scrollable links */}
         <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
@@ -145,7 +133,7 @@ const MobileNav = () => {
                     </Link>
                   </SheetClose>
                 </li>
-                  <li>
+                <li>
                   <SheetClose asChild>
                     <Link
                       href="/fonsterputs"
@@ -182,17 +170,6 @@ const MobileNav = () => {
             </Link>
           </SheetClose>
         </nav>
-
-        {/* Sticky CTA */}
-        <div className="p-4 border-t border-white/10 bg-gradient-to-t from-white/5 to-transparent pb-[env(safe-area-inset-bottom)]">
-          <SheetClose asChild>
-            <Button className="w-full bg-teal-500 hover:bg-teal-600 text-white rounded-xl shadow-lg shadow-teal-900/20">
-              <Link href="/boka" className="w-full text-center">
-                Boka nu
-              </Link>
-            </Button>
-          </SheetClose>
-        </div>
       </SheetContent>
     </Sheet>
   );
@@ -260,7 +237,7 @@ const Nav = () => {
                           </Link>
                         </NavigationMenuLink>
                       </li>
-                       <li>
+                      <li>
                         <NavigationMenuLink asChild>
                           <Link
                             href="/foretagstad"
@@ -336,7 +313,7 @@ const Nav = () => {
               className="bg-teal-500 hover:bg-teal-600 text-white px-6 py-2  rounded-full shadow-md"
               asChild
             >
-              <Link href="/boka" aria-label="Boka nu">
+              <Link href="/flytthjalp" aria-label="Boka nu">
                 Boka nu
               </Link>
             </Button>
