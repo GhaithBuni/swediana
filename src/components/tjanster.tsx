@@ -17,21 +17,21 @@ const items: Item[] = [
     icon: "/flyttstadning.png",
     body:
       "Vår flyttstädning gör din flytt enkel, smidig och stressfri. Vi lämnar bostaden skinande ren och redo för nästa boende, enligt mäklarnas och hyresvärdarnas krav.",
-    href: "/flyttstadning", // Add your actual routes here
+    href: "/flyttstadinfo", // Add your actual routes here
   },
   {
     title: "Flytthjälp",
     icon: "/flytthjalp.png",
     body:
       "Behöver du hjälp med flytten? Vår pålitliga flytthjälp gör det enkelt att byta boende utan stress. Vi hjälper med packning, transport och städning så att du kan fokusera på ditt nya hem.",
-    href: "/flytthjalp",
+    href: "/flytthjalpinfo",
   },
   {
-    title: "Företagsstädning",
+    title: "Företagstädning",
     icon: "/foretagsstadning.png",
     body:
       "Håll din arbetsplats representativ och trivsam med vår professionella företagsstädning. Vi anpassar städschemat efter ditt företags behov, oavsett om du har kontor, butik eller annan verksamhet.",
-    href: "/foretagsstadning",
+    href: "/foretagstad",
   },
   {
     title: "Fönsterputs",
@@ -91,7 +91,7 @@ export default function Services() {
           priority
         />
         <Link 
-          href="/byggstadning" 
+          href="/byggstadinfo" 
           className="transition-colors duration-300 hover:text-[#95fff8]"
         >
           <h1 className="text-2xl md:text-3xl mt-3">Byggstädning</h1>

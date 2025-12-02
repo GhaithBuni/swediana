@@ -17,12 +17,7 @@ export default function SlappnaAvPage() {
                 Du slappnar av
               </h1>
 
-              <Link
-                href="/priser"
-                className="mt-4 inline-block underline underline-offset-4 text-white/90 hover:text-white transition"
-              >
-                Läs mer om våra fantastiska priser →
-              </Link>
+              
             </div>
           </div>
 

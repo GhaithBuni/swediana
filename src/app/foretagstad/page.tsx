@@ -88,13 +88,35 @@ export default function Page() {
           Företagsstädning
         </h1>
       </div>
+      <section className=" py-16 px-6 text-center">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold  leading-tight max-w-4xl mx-auto">
+          Swediana AB: Din Partner för Professionell Företags- & Flyttstädning
+        </h2>
+        <p className="mt-6 text-base sm:text-lg md:text-xl  max-w-3xl mx-auto leading-relaxed">
+          Söker du en pålitlig städfirma som levererar skinande rena resultat,
+          varje gång? Swediana AB är experter på att skapa rena, fräscha och
+          representativa miljöer. Oavsett om ni behöver skräddarsydd
+          företagsstädning för kontoret eller en garanti-godkänd flyttstäd vid
+          byte av lokal, har vi lösningen för er.
+        </p>
+        <p className="mt-4 text-base sm:text-lg  max-w-3xl mx-auto leading-relaxed">
+          <strong>
+            Professionell Företagsstädning: En Investering i Produktivitet
+          </strong>
+          <br />
+          Företagsstädning är mer än bara renlighet – det är en grundläggande
+          del av en hälsosam och produktiv arbetsmiljö. Vi anpassar våra
+          städtjänster exakt efter er verksamhets unika behov och omfattning,
+          oavsett om det gäller daglig, veckovis eller månadsvis service.
+        </p>
+      </section>
 
       {/* Vad ingår i kontorsstädning */}
       <section className="mx-auto w-[90%] md:w-[85%] lg:w-[80%] py-10 md:py-14">
         <div className="grid grid-cols-1 lg:grid-cols-2">
           {/* Vänster: bild */}
           <div
-            className="relative h-[300px] sm:h-[360px] md:h-[420px] lg:h-[520px]"
+            className="relative h-[300px] sm:h-[360px] md:h-[500px] lg:h-[800px]"
             style={{
               backgroundImage: "url('/Elegance.png')",
               backgroundSize: "cover",
@@ -107,51 +129,45 @@ export default function Page() {
           <div className="bg-[#00ada1] text-white ">
             <div className="px-5 sm:px-8 md:px-10 py-8 sm:py-10 md:py-12">
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold">
-                Vad ingår i en kontorsstädning?
+               Vad Ingår i Vår Omfattande Företagsstädning?
               </h2>
+              <h4 className="mt-5 font-semibold max-w-xl ">Omfattningen av städningen bestäms i samråd, men våra vanliga moment för att säkerställa en fräsch lokal inkluderar:</h4>
 
               <div className="mt-6 sm:mt-8 max-w-xl">
                 <Accordion type="single" collapsible className="w-full">
                   <AccordionItem value="item-1" className="border-white/30">
                     <AccordionTrigger className="text-white hover:text-white/90 py-4 font-medium text-left hover:no-underline [&[data-state=open]>svg]:rotate-180 [&>svg]:text-white">
-                      Kontor & mötesrum
+                      Golvvård
                     </AccordionTrigger>
                     <AccordionContent className="text-white/90 pb-4">
-                      Dammtorkning av fria ytor, tömning av papperskorgar,
-                      avtorkning av bord/stolar, dammsugning och våttorkning av
-                      golv, puts av glasytor vid behov.
+                    Dammsugning och våttorkning av alla golvytor.
                     </AccordionContent>
                   </AccordionItem>
 
                   <AccordionItem value="item-2" className="border-white/30">
                     <AccordionTrigger className="text-white hover:text-white/90 py-4 font-medium text-left hover:no-underline [&[data-state=open]>svg]:rotate-180 [&>svg]:text-white">
-                      Kök / pentry
+                      Ytrengöring
                     </AccordionTrigger>
                     <AccordionContent className="text-white/90 pb-4">
-                      Rengöring av bänkar, diskho, mikrovågsugn utvändigt,
-                      kyl/frys handtag, avtorkning av skåpsluckor och vitvaror,
-                      golvstädning.
+                     Dammtorkning av möbler, avsatser, fönsterbrädor och andra ytor
                     </AccordionContent>
                   </AccordionItem>
 
                   <AccordionItem value="item-3" className="border-white/30">
                     <AccordionTrigger className="text-white hover:text-white/90 py-4 font-medium text-left hover:no-underline [&[data-state=open]>svg]:rotate-180 [&>svg]:text-white">
-                      Badrum / toaletter
+                      Sanitära Utrymmen
                     </AccordionTrigger>
                     <AccordionContent className="text-white/90 pb-4">
-                      Rengöring av porslin och blandare, avtorkning av kakel där
-                      det kommer åt, påfyllning av förbrukningsmaterial, speglar
-                      och golv.
+                     Grundlig rengöring och desinficering av toaletter, duschar och omklädningsrum.
                     </AccordionContent>
                   </AccordionItem>
 
                   <AccordionItem value="item-4" className="border-white/30">
                     <AccordionTrigger className="text-white hover:text-white/90 py-4 font-medium text-left hover:no-underline [&[data-state=open]>svg]:rotate-180 [&>svg]:text-white">
-                      Tilläggstjänster
+                      Köks-/Pentrystäd
                     </AccordionTrigger>
                     <AccordionContent className="text-white/90 pb-4">
-                      Fönsterputs, storstäd, mattvätt, höghöjdsstädning,
-                      maskinstädning m.m.
+                       Rengöring av köksytor, diskbänkar och maskiner.
                     </AccordionContent>
                   </AccordionItem>
 
@@ -160,15 +176,27 @@ export default function Page() {
                     className="border-white/30 border-b"
                   >
                     <AccordionTrigger className="text-white hover:text-white/90 py-4 font-medium text-left hover:no-underline [&[data-state=open]>svg]:rotate-180 [&>svg]:text-white">
-                      Städmaterial
+                      Avfallshantering
                     </AccordionTrigger>
                     <AccordionContent className="text-white/90 pb-4">
-                      Allt basmaterial kan ingå efter överenskommelse – vi
-                      använder miljömärkta kemikalier och mikrofiber.
+                      Tömning av papperskorgar och hantering av källsortering.
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem
+                    value="item-6"
+                    className="border-white/30 border-b"
+                  >
+                    <AccordionTrigger className="text-white hover:text-white/90 py-4 font-medium text-left hover:no-underline [&[data-state=open]>svg]:rotate-180 [&>svg]:text-white">
+                      Hygienfokus
+                    </AccordionTrigger>
+                    <AccordionContent className="text-white/90 pb-4">
+                      Rengöring och desinficering av kontaktytor som dörrhandtag, ljusknappar och telefoner för att minska smittspridning.
+
                     </AccordionContent>
                   </AccordionItem>
                 </Accordion>
               </div>
+              <h4 className="mt-10 font-semibold max-w-xl">Tilläggstjänster som fönsterputsning och mattvätt erbjuds givetvis vid behov.</h4>
             </div>
           </div>
         </div>
@@ -181,8 +209,8 @@ export default function Page() {
             <div className="bg-[#00ada1] text-white p-6 sm:p-8 md:p-10 lg:p-12 flex items-center">
               <div className="max-w-xl">
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold leading-tight">
-                  Behöver ditt företag hjälp
-                  <br /> med städningen?
+                Varför Välja Swediana AB?
+
                 </h2>
 
                 <div className="mt-5 space-y-4 text-white/95 text-base md:text-lg leading-relaxed">
