@@ -45,24 +45,38 @@ export const faqItemsFlyttstad = [
 
 export const faqItemsByggstad = [
   {
-    question: "Vad kostar byggstäd?",
+    question: "Vad är skillnaden mellan byggstäd och vanlig städ?",
     answer:
-      "Antingen kan du lämna in nyckeln på vårt kontor tre vardagar innan städningen eller så löser vi det på annat sätt.",
+      "Byggstäd är en mycket mer intensiv städning som är utformad för att ta bort byggdamm, spill och skräp från ett nybyggt eller renoverat utrymme. Den inkluderar ofta grovstädning och fönsterputsning. Vanlig städ (eller veckostäd) fokuserar på dagligt/veckovist underhåll och smuts. Kort sagt: byggstäd eller vanlig städ är inte samma sak – de har helt olika syften och metoder.",
   },
   {
-    question: "Är Flyttstäd avdragsgillt?",
-    answer: "Ja, RUT kan gälla i många fall.",
+    question: "Vad kostar byggstäd?",
+    answer: "Priset för byggstäd varierar beroende på flera faktorer, inklusive ytan som ska städas, byggdammens mängd och tillgången till vatten/ström. Vårt byggstäd pris per kvm är konkurrenskraftigt, men vi rekommenderar alltid att du begär en offert. Då får du ett fast pris som inkluderar alla arbetsmoment i byggstäd.",
   },
   {
-    question: "Behöver jag vara med under flytten?",
-    answer: "Nej, men vi behöver tillgång.",
+    question: "Är byggstäd och flyttstäd samma sak?",
+    answer: "Nej, även om de båda är grundliga städningar inför flytt eller besiktning. Flyttstäd byggstäd skiljer sig åt genom att flyttstäd fokuserar på att rengöra ett bebott utrymme enligt en strikt checklista som ska godkännas av köparen/hyresvärden. Byggstäd fokuserar på att avlägsna byggdamm och byggskräp efter hantverkare.",
   },
   {
-    question: "Ingår garanti på Flyttstäd?",
-    answer: "Ja, vi har nöjd-kund-garanti.",
+    question: "Byggstäd eller vanlig städ – är det samma avtal?",
+    answer: "Nej. På grund av den stora skillnaden i arbetsmoment, tidsåtgång och utrustning hanteras byggstädning och vanlig städning oftast via separata avtal.",
+  },
+  
+  
+];
+export const faqItemsFonsterPuts = [
+  {
+    question: "Vad kostar fönsterputs?",
+    answer:
+      "Priset för fönsterputs beror på flera faktorer:Antal Rutor: Hur många fönster och rutor som ska putsas.Typ av Fönster: Hur många sidor som behöver putsas (standard är 2 eller 4 sidor).Tillgänglighet: Fönster på hög höjd kan kräva specialutrustning.För att ge dig ett exakt och konkurrenskraftigt pris ger Swediana AB dig alltid en fast offert baserad på din specifika bostad eller lokal, istället för ett rörligt pris per timme. Kontakta oss för din kostnadsfria prisuppgift!",
   },
   {
-    question: "Vad händer om jag avbokar?",
-    answer: "Se våra avbokningsvillkor.",
+    question: "Kan jag använda RUT-avdrag för fönsterputs?",
+    answer: "Ja! Fönsterputs i din bostad är en tjänst som ger rätt till RUT-avdrag från Skatteverket. Du betalar endast 50% av arbetskostnaden, och vi hanterar all administration med Skatteverket.",
   },
+  {
+    question: "Hur får jag ett perfekt resultat, eller Vad är bästa fönsterputs företaget?",
+    answer: "Hemligheten bakom ett perfekt resultat ligger i tekniken, inte enbart i medlet. Bästa fönsterputs företagen som Swediana AB använder:Rätt Utrustning: Professionella redskap som skapar optimalt tryck.Vattenkvalitet: Användning av avjoniserat vatten eller avkalkat vatten för att undvika mineralfläckar.Professionella Medel: Vi använder biologiskt nedbrytbara medel som är effektiva mot smuts utan att lämna rester.",
+  },
+  
 ];
