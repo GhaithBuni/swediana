@@ -4,6 +4,7 @@ import "./globals.css";
 import Nav from "../components/Nav";
 import Footer from "@/components/ui/Footer";
 import { Toaster } from "sonner";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title: {
@@ -48,7 +49,7 @@ export const metadata: Metadata = {
       "Professionell flytthjälp, flyttstäd, byggstäd och företagsstädning i Uppsala.",
     images: [
       {
-        url: "/og_image.png", // Replace with your actual image
+        url: "/og_image.png",
         width: 1200,
         height: 630,
         alt: "Swediana - Flytthjälp och Städning i Uppsala",
@@ -60,7 +61,7 @@ export const metadata: Metadata = {
     title: "Swediana - Flytthjälp, Städning & Bygg i Uppsala",
     description:
       "Professionell flytthjälp, flyttstäd, byggstäd och företagsstädning i Uppsala.",
-    images: ["/og_image.png"], // Replace with your actual image
+    images: ["/og_image.png"],
   },
   alternates: {
     canonical: "https://www.swediana.se",
@@ -72,10 +73,49 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className="h-full">
+    <html lang="sv" className="h-full">
+      <head>
+        <meta name="apple-mobile-web-app-title" content="Swediana" />
+        {/* Google Tag Manager script */}
+        <Script id="gtm-script" strategy="afterInteractive">
+          {`
+            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','GTM-P4B23ZJP');
+          `}
+        </Script>
+
+        {/* Google Tag (gtag.js) */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-X6VVYMMNEC"
+          strategy="afterInteractive"
+        />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-X6VVYMMNEC');
+          `}
+        </Script>
+      </head>
+
       <body
         className={`${alata.variable} ${manrope.variable} antialiased min-h-dvh flex flex-col`}
       >
+        {/* Google Tag Manager (noscript) */}
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-P4B23ZJP"
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+          />
+        </noscript>
+        {/* End GTM noscript */}
+
         <Nav />
         <main className="flex-1">{children}</main>
         <Footer />

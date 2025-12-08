@@ -14,7 +14,7 @@ const benefits = [
 
 export default function VarforPage() {
   return (
-    <main className="">
+    <main className=" py-10">
       {/* HERO med bakgrundsbild */}
       <section className="relative  w-full h-full">
         {/* Bakgrund */}
@@ -63,7 +63,7 @@ export default function VarforPage() {
             {/* CTA + Illustration */}
             <div className="mt-8 flex items-end justify-between">
               <Link
-                href="#boka"
+                href="/flytthjalp"
                 className="inline-flex items-center justify-center rounded-md bg-teal-500 px-8 py-3 text-white font-semibold shadow hover:bg-teal-600 transition"
               >
                 Boka nu

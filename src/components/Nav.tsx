@@ -3,7 +3,17 @@
 import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, ChevronDown } from "lucide-react";
+import { 
+  Menu, 
+  ChevronDown, 
+  Truck, 
+  Sparkles, 
+  Building2, 
+  HardHat, 
+  Droplet,
+  Phone,
+  X
+} from "lucide-react";
 import { usePathname } from "next/navigation";
 import Container from "@/components/Container";
 import {
@@ -25,150 +35,229 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 
+// Service items with icons
+const services = [
+  {
+    href: "/flytthjalpinfo",
+    label: "Flytthjälp",
+    icon: Truck,
+    description: "Professionell hjälp med er flytt"
+  },
+  {
+    href: "/flyttstadinfo",
+    label: "Flyttstädning",
+    icon: Sparkles,
+    description: "Totalstädning efter flytt"
+  },
+  {
+    href: "/foretagstad",
+    label: "Företagstädning",
+    icon: Building2,
+    description: "Regelbunden städning för företag"
+  },
+  {
+    href: "/byggstadinfo",
+    label: "Byggstädning",
+    icon: HardHat,
+    description: "Efterstädning av byggprojekt"
+  },
+  {
+    href: "/fonsterputs",
+    label: "Fönsterputs",
+    icon: Droplet,
+    description: "Kristallklara fönster"
+  }
+];
+
 const MobileNav = () => {
   const pathname = usePathname();
   const [openServices, setOpenServices] = React.useState(false);
+  const [isOpen, setIsOpen] = React.useState(false);
 
-  const linkBase =
-    "flex items-center justify-between px-3 py-3 rounded-lg text-white/90 hover:text-white hover:bg-white/10 transition-colors";
-  const isActive = (href: string) =>
-    pathname === href
-      ? "bg-white/10 text-white ring-1 ring-white/10"
-      : "text-white/90";
+  const isActive = (href: string) => pathname === href;
 
   return (
-    <Sheet>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         <Button
-          variant="outline"
+          variant="ghost"
           size="icon"
-          className="border-white/30 bg-transparent hover:bg-white/10"
+          className="hover:bg-white/10 text-white"
           aria-label="Öppna meny"
         >
-          <Menu className="h-6 w-6 text-white" />
+          <Menu className="h-6 w-6" />
         </Button>
       </SheetTrigger>
 
       <SheetContent
         side="right"
-        className="
-          w-[82vw] max-w-sm p-0
-          bg-slate-900/90 backdrop-blur
-          border-l border-white/10
-          text-white
-          flex flex-col
-        "
+        className="w-full sm:w-[400px] p-0 bg-gradient-to-br from-slate-900 via-slate-900 to-teal-900 border-l border-white/10"
       >
-        {/* Header */}
-        <SheetHeader className="px-4 pb-4 pt-5 border-b border-white/10 mt-5"></SheetHeader>
-
-        {/* Scrollable links */}
-        <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
-          {/* Tjänster (collapsible) */}
-          <button
-            type="button"
-            onClick={() => setOpenServices((v) => !v)}
-            className={`${linkBase} w-full`}
-            aria-expanded={openServices}
-            aria-controls="services-submenu"
-          >
-            <span className="font-medium">Tjänster</span>
-            <ChevronDown
-              className={`h-4 w-4 transition-transform ${
-                openServices ? "rotate-180" : ""
-              }`}
+        {/* Header with logo and close */}
+        <SheetHeader className="px-6 py-6 border-b border-white/10 flex flex-row items-center justify-between">
+          <Link href="/" onClick={() => setIsOpen(false)}>
+            <Image
+              src="/logo.svg"
+              alt="Swediana"
+              width={150}
+              height={75}
+              className="h-8 w-auto"
             />
-          </button>
-          <div
-            id="services-submenu"
-            className={`grid overflow-hidden transition-[grid-template-rows] duration-300 ${
-              openServices ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-            }`}
-          >
-            <div className="min-h-0">
-              <ul className="mt-1 pl-2 space-y-1">
-                <li>
-                  <SheetClose asChild>
-                    <Link
-                      href="/flytthjalpinfo"
-                      className={`block ${linkBase} ${isActive("/flytthjalp")}`}
-                    >
-                      Flytthjälp
-                    </Link>
-                  </SheetClose>
-                </li>
-                <li>
-                  <SheetClose asChild>
-                    <Link
-                      href="/flyttstadinfo"
-                      className={`block ${linkBase} ${isActive(
-                        "/services/cleaning"
-                      )}`}
-                    >
-                      FlyttStädning
-                    </Link>
-                  </SheetClose>
-                </li>
-                <li>
-                  <SheetClose asChild>
-                    <Link
-                      href="/foretagstad"
-                      className={`block ${linkBase} ${isActive(
-                        "/services/cleaning"
-                      )}`}
-                    >
-                      Företagstädning
-                    </Link>
-                  </SheetClose>
-                </li>
-                <li>
-                  <SheetClose asChild>
-                    <Link
-                      href="/byggstadinfo"
-                      className={`block ${linkBase} ${isActive(
-                        "/services/cleaning"
-                      )}`}
-                    >
-                      Byggstäadning
-                    </Link>
-                  </SheetClose>
-                </li>
-                <li>
-                  <SheetClose asChild>
-                    <Link
-                      href="/fonsterputs"
-                      className={`block ${linkBase} ${isActive(
-                        "/services/cleaning"
-                      )}`}
-                    >
-                      Fönsterputs
-                    </Link>
-                  </SheetClose>
-                </li>
-              </ul>
+          </Link>
+        </SheetHeader>
+
+        {/* Navigation */}
+        <nav className="flex-1 overflow-y-auto px-4 py-6">
+          <div className="space-y-1">
+            {/* Services Accordion */}
+            <div className="mb-2">
+              <button
+                type="button"
+                onClick={() => setOpenServices(!openServices)}
+                className={`
+                  w-full flex items-center justify-between 
+                  px-4 py-3 rounded-xl
+                  text-white font-medium
+                  transition-all duration-200
+                  ${openServices ? 'bg-white/10' : 'hover:bg-white/5'}
+                `}
+              >
+                <span className="text-base">Våra Tjänster</span>
+                <ChevronDown
+                  className={`h-5 w-5 transition-transform duration-300 ${
+                    openServices ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+              
+              {/* Services submenu with animation */}
+              <div
+                className={`
+                  overflow-hidden transition-all duration-300 ease-in-out
+                  ${openServices ? 'max-h-[500px] opacity-100 mt-2' : 'max-h-0 opacity-0'}
+                `}
+              >
+                <div className="space-y-1 pl-2">
+                  {services.map((service) => {
+                    const Icon = service.icon;
+                    return (
+                      <SheetClose asChild key={service.href}>
+                        <Link
+                          href={service.href}
+                          className={`
+                            flex items-center gap-3 px-4 py-3 rounded-lg
+                            transition-all duration-200
+                            ${
+                              isActive(service.href)
+                                ? "bg-teal-500/20 text-teal-300 ring-1 ring-teal-500/30"
+                                : "text-white/80 hover:text-white hover:bg-white/5"
+                            }
+                          `}
+                        >
+                          <Icon className="h-5 w-5 flex-shrink-0" />
+                          <div className="flex-1 text-left">
+                            <div className="font-medium text-sm">{service.label}</div>
+                            <div className="text-xs text-white/60 mt-0.5">
+                              {service.description}
+                            </div>
+                          </div>
+                        </Link>
+                      </SheetClose>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
+
+            {/* Other menu items */}
+            <SheetClose asChild>
+              <Link
+                href="/omOss"
+                className={`
+                  flex items-center gap-3 px-4 py-3 rounded-xl
+                  font-medium transition-all duration-200
+                  ${
+                    isActive("/omOss")
+                      ? "bg-white/10 text-white"
+                      : "text-white/80 hover:text-white hover:bg-white/5"
+                  }
+                `}
+              >
+                Om Oss
+              </Link>
+            </SheetClose>
+
+            <SheetClose asChild>
+              <Link
+                href="/faq"
+                className={`
+                  flex items-center gap-3 px-4 py-3 rounded-xl
+                  font-medium transition-all duration-200
+                  ${
+                    isActive("/faq")
+                      ? "bg-white/10 text-white"
+                      : "text-white/80 hover:text-white hover:bg-white/5"
+                  }
+                `}
+              >
+                Vanliga Frågor
+              </Link>
+            </SheetClose>
+
+            <SheetClose asChild>
+              <Link
+                href="/kontakt"
+                className={`
+                  flex items-center gap-3 px-4 py-3 rounded-xl
+                  font-medium transition-all duration-200
+                  ${
+                    isActive("/kontakt")
+                      ? "bg-white/10 text-white"
+                      : "text-white/80 hover:text-white hover:bg-white/5"
+                  }
+                `}
+              >
+                Kontakt
+              </Link>
+            </SheetClose>
           </div>
 
-          <SheetClose asChild>
-            <Link href="/omOss" className={`${linkBase} ${isActive("/omOss")}`}>
-              Om oss
-            </Link>
-          </SheetClose>
-
-          <SheetClose asChild>
-            <Link href="/faq" className={`${linkBase} ${isActive("/faq")}`}>
-              FAQ
-            </Link>
-          </SheetClose>
-
-          <SheetClose asChild>
-            <Link
-              href="/kontakt"
-              className={`${linkBase} ${isActive("/kontakt")}`}
-            >
-              Kontakt
-            </Link>
-          </SheetClose>
+          {/* CTA Section */}
+          <div className="mt-8 pt-6 border-t border-white/10">
+            <SheetClose asChild>
+              <Link 
+                href="/#tjanster"
+                className="block"
+                onClick={(e) => {
+                  // Om vi redan är på startsidan, scrolla smooth
+                  if (window.location.pathname === '/') {
+                    e.preventDefault();
+                    setIsOpen(false);
+                    setTimeout(() => {
+                      document.getElementById('tjanster')?.scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                      });
+                    }, 300); // Vänta på att menyn ska stängas
+                  }
+                }}
+              >
+                <Button className="w-full bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white font-semibold py-6 rounded-xl shadow-lg shadow-teal-500/25 transition-all duration-200 hover:shadow-xl hover:shadow-teal-500/30">
+                  <Phone className="mr-2 h-5 w-5" />
+                  Boka Nu
+                </Button>
+              </Link>
+            </SheetClose>
+            
+            <div className="mt-4 text-center">
+              <a 
+                href="tel:+46108085625" 
+                className="text-teal-300 hover:text-teal-200 font-medium text-sm transition-colors"
+              >
+                Ring oss: 10-808 5625
+              </a>
+            </div>
+          </div>
         </nav>
       </SheetContent>
     </Sheet>
@@ -177,107 +266,115 @@ const MobileNav = () => {
 
 const Nav = () => {
   const [scrolled, setScrolled] = React.useState(false);
+  const pathname = usePathname();
 
   React.useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 0);
+      setScrolled(window.scrollY > 20);
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const isActive = (href: string) => pathname === href;
+
   return (
     <header
-      className={`w-full fixed top-0 z-50 transition-colors duration-300 ${
-        scrolled ? "bg-[#007a7b]" : "bg-transparent"
-      }`}
+      className={`
+        w-full fixed top-0 z-50 
+        transition-all duration-300 ease-in-out
+        ${
+          scrolled
+            ? "bg-gradient-to-r from-[#007a7b]/90 to-teal-600/90 backdrop-blur-md shadow-lg"
+            : "bg-transparent"
+        }
+      `}
     >
       <Container>
-        <div className="h-16 flex items-center justify-between gap-4">
+        <div className="h-20 flex items-center justify-between gap-4">
           {/* Logo */}
-          <Link href="/" className="flex-shrink-0" aria-label="Swediana – Hem">
+          <Link 
+            href="/" 
+            className="flex-shrink-0 transition-transform duration-200 hover:scale-105" 
+            aria-label="Swediana – Hem"
+          >
             <Image
               src="/logo.svg"
               alt="Swediana"
               width={200}
               height={100}
-              className="h-10 w-auto"
+              className="h-8 md:h-12 w-auto"
               priority
             />
           </Link>
 
-          {/* Desktop menu (centered) */}
-          <nav className="hidden md:flex flex-1 justify-center">
-            <NavigationMenu className="">
-              <NavigationMenuList className="flex items-center gap-8">
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex flex-1 justify-center">
+            <NavigationMenu>
+              <NavigationMenuList className="flex items-center gap-2">
+                {/* Services Dropdown */}
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="bg-transparent text-white hover:text-teal-400 hover:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-teal-400 ">
+                  <NavigationMenuTrigger 
+                    className="
+                      bg-transparent text-white/90 hover:text-white hover:bg-white/10
+                      data-[state=open]:bg-white/10 data-[state=open]:text-white
+                      font-medium px-4 py-2 rounded-lg
+                      transition-all duration-200
+                    "
+                  >
                     Tjänster
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent className="p-4 w-64">
-                    <ul className="grid gap-2">
-                      <li>
-                        <NavigationMenuLink asChild>
-                          <Link
-                            href="/flytthjalpinfo"
-                            className="block rounded-md px-3 py-2 hover:bg-accent"
-                          >
-                            Flytthjälp
-                          </Link>
-                        </NavigationMenuLink>
-                      </li>
-                      <li>
-                        <NavigationMenuLink asChild>
-                          <Link
-                            href="/flyttstadinfo"
-                            className="block rounded-md px-3 py-2 hover:bg-accent"
-                          >
-                            Flyttstädning
-                          </Link>
-                        </NavigationMenuLink>
-                      </li>
-                      <li>
-                        <NavigationMenuLink asChild>
-                          <Link
-                            href="/foretagstad"
-                            className="block rounded-md px-3 py-2 hover:bg-accent"
-                          >
-                            Företagstädning
-                          </Link>
-                        </NavigationMenuLink>
-                      </li>
-                      <li>
-                        <NavigationMenuLink asChild>
-                          <Link
-                            href="/byggstadinfo"
-                            className="block rounded-md px-3 py-2 hover:bg-accent"
-                          >
-                            Byggstädning
-                          </Link>
-                        </NavigationMenuLink>
-                      </li>
-                      <li>
-                        <NavigationMenuLink asChild>
-                          <Link
-                            href="/fonsterputs"
-                            className="block rounded-md px-3 py-2 hover:bg-accent"
-                          >
-                            Fönsterputs
-                          </Link>
-                        </NavigationMenuLink>
-                      </li>
-                    </ul>
+                  <NavigationMenuContent className="!w-[500px] p-4 bg-white/95 backdrop-blur-md">
+                    <div className="grid grid-cols-1 gap-2">
+                      {services.map((service) => {
+                        const Icon = service.icon;
+                        return (
+                          <NavigationMenuLink asChild key={service.href}>
+                            <Link
+                              href={service.href}
+                              className="
+                                group flex items-start gap-4 p-4 rounded-xl
+                                transition-all duration-200
+                                hover:bg-teal-50 hover:shadow-md
+                                border border-transparent hover:border-teal-100
+                              "
+                            >
+                              <div className="mt-1 p-2 rounded-lg bg-teal-100 text-teal-600 group-hover:bg-teal-500 group-hover:text-white transition-all duration-200">
+                                <Icon className="h-5 w-5" />
+                              </div>
+                              <div className="flex-1">
+                                <div className="font-semibold text-slate-900 group-hover:text-teal-600 transition-colors">
+                                  {service.label}
+                                </div>
+                                <div className="text-sm text-slate-600 mt-1">
+                                  {service.description}
+                                </div>
+                              </div>
+                            </Link>
+                          </NavigationMenuLink>
+                        );
+                      })}
+                    </div>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
 
+                {/* Other Navigation Items */}
                 <NavigationMenuItem>
                   <NavigationMenuLink asChild>
                     <Link
                       href="/omOss"
-                      className="px-3 py-2 text-white hover:text-teal-400"
+                      className={`
+                        px-4 py-2 rounded-lg font-medium
+                        transition-all duration-200
+                        ${
+                          isActive("/omOss")
+                            ? "bg-white/10 text-white"
+                            : "text-white/90 hover:text-white hover:bg-white/10"
+                        }
+                      `}
                     >
-                      Om oss
+                      Om Oss
                     </Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
@@ -286,7 +383,15 @@ const Nav = () => {
                   <NavigationMenuLink asChild>
                     <Link
                       href="/faq"
-                      className="px-3 py-2 text-white hover:text-teal-400"
+                      className={`
+                        px-4 py-2 rounded-lg font-medium
+                        transition-all duration-200
+                        ${
+                          isActive("/faq")
+                            ? "bg-white/10 text-white"
+                            : "text-white/90 hover:text-white hover:bg-white/10"
+                        }
+                      `}
                     >
                       FAQ
                     </Link>
@@ -297,7 +402,15 @@ const Nav = () => {
                   <NavigationMenuLink asChild>
                     <Link
                       href="/kontakt"
-                      className="px-3 py-2 text-white hover:text-teal-400"
+                      className={`
+                        px-4 py-2 rounded-lg font-medium
+                        transition-all duration-200
+                        ${
+                          isActive("/kontakt")
+                            ? "bg-white/10 text-white"
+                            : "text-white/90 hover:text-white hover:bg-white/10"
+                        }
+                      `}
                     >
                       Kontakt
                     </Link>
@@ -307,20 +420,48 @@ const Nav = () => {
             </NavigationMenu>
           </nav>
 
-          {/* CTA (right) */}
-          <div className="hidden md:flex">
+          {/* CTA Button (Desktop) */}
+          <div className="hidden lg:flex items-center gap-3">
             <Button
-              className="bg-teal-500 hover:bg-teal-600 text-white px-6 py-2  rounded-full shadow-md"
+              variant="ghost"
+              className="text-white hover:bg-white/10 font-medium"
               asChild
             >
-              <Link href="/flytthjalp" aria-label="Boka nu">
-                Boka nu
+              <a href="tel:+46108085625">
+                <Phone className="mr-2 h-4 w-4" />
+                Ring Oss
+              </a>
+            </Button>
+            <Button
+              className="
+                bg-white text-teal-600 hover:bg-teal-50
+                font-semibold px-6 py-2 rounded-full
+                shadow-lg shadow-black/10
+                transition-all duration-200
+                hover:shadow-xl hover:scale-105
+              "
+              asChild
+            >
+              <Link 
+                href="/#tjanster"
+                onClick={(e) => {
+                  // Om vi redan är på startsidan, scrolla smooth
+                  if (window.location.pathname === '/') {
+                    e.preventDefault();
+                    document.getElementById('tjanster')?.scrollIntoView({ 
+                      behavior: 'smooth',
+                      block: 'start'
+                    });
+                  }
+                }}
+              >
+                Boka Nu
               </Link>
             </Button>
           </div>
 
-          {/* Mobile menu */}
-          <div className="md:hidden">
+          {/* Mobile Menu Button */}
+          <div className="lg:hidden">
             <MobileNav />
           </div>
         </div>
