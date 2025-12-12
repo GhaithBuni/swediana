@@ -39,7 +39,7 @@ export default function ChecklistSection() {
       {/* TEXT SIDE */}
       <div className="text-left md:pl-4">
         <h2 className="text-3xl md:text-4xl font-bold ">
-          Checklista - vad ingår i en flyttstädning?
+          Tips flyttstädning
         </h2>
 
         <Accordion type="single" collapsible className="mt-6 w-full">

@@ -60,10 +60,7 @@ export default function Page() {
               team
             </span>
           </h1>
-          <p className="mx-auto max-w-2xl text-center text-teal-50 mt-6 text-lg">
-            Vi är här för att hjälpa dig. Skicka oss ett meddelande så
-            återkommer vi inom 24 timmar.
-          </p>
+          
         </div>
 
         {/* Decorative elements */}

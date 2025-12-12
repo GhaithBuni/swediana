@@ -138,7 +138,6 @@ export default function CleaningSummaryCard() {
           </p>
         </CardFooter>
       </Card>
-      <CleaningIncludes />
     </aside>
   );
 }

@@ -21,6 +21,7 @@ function formatDate(input?: string | null) {
 }
 
 // Separate the component that uses useSearchParams
+//Test
 function ThanksContent() {
   const params = useSearchParams();
 

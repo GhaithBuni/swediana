@@ -56,8 +56,8 @@ export default function AboutGrid() {
 
         {/* Right column (two stacked cards) */}
         <div className="grid grid-cols-1 gap-6 md:gap-8">
-          <StatCard value="1000+" label="Bokningar" ctaLabel="Boka nu" href="/boka" />
-          <StatCard value="20+" label="Regioner" ctaLabel="Hitta oss" href="/kontakt" />
+          <StatCard value="500+" label="Bokningar"  />
+          <StatCard value="5+" label="Regioner"  />
         </div>
 
         {/* Big image */}
@@ -76,24 +76,12 @@ export default function AboutGrid() {
         <div className="rounded-3xl bg-teal-50 p-6 md:p-8 flex flex-col justify-between">
           <div>
             <div className="text-4xl md:text-5xl font-semibold text-teal-700 tracking-tight">
-              1500+
+              98%
             </div>
             <p className="mt-1 text-teal-700/70">Nöjda kunder</p>
           </div>
 
-          <ul className="mt-6 flex -space-x-2">
-            {["1", "2", "3", "4", "5"].map((n) => (
-              <li key={n} className="inline-block">
-                <Image
-                  src={`/avatars/a${n}.jpg`}
-                  alt={`Kund ${n}`}
-                  width={40}
-                  height={40}
-                  className="h-10 w-10 rounded-full ring-2 ring-white object-cover"
-                />
-              </li>
-            ))}
-          </ul>
+          
         </div>
       </div>
     </section>

@@ -61,51 +61,81 @@ function Typewriter({
 }
 
 export default function Home() {
+  // Hantera smooth scroll när sidan laddas med hash
+  useEffect(() => {
+    if (window.location.hash) {
+      const id = window.location.hash.replace('#', '');
+      const element = document.getElementById(id);
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
+    }
+  }, []);
+
   return (
     <div>
+      {/* Hero Section */}
       <div
         className="flex flex-col justify-center items-center h-screen bg-cover bg-center"
         style={{ backgroundImage: "url('/land-page.jpg')" }}
       >
         <h1
-  className="
-    text-white
-    font-bold
-    leading-tight
-    text-3xl
-    sm:text-4xl
-    md:text-5xl
-    lg:text-6xl
-    text-center
-    md:text-left
-  "
->
-  Din pålitliga städfirma med{" "}
-</h1>
+          className="
+            text-white
+            font-bold
+            leading-tight
+            text-3xl
+            sm:text-4xl
+            md:text-5xl
+            lg:text-6xl
+            text-center
+            md:text-left
+          "
+        >
+          Din pålitliga städfirma med{" "}
+        </h1>
 
-<h2
-  className="
-    mt-4
-    sm:mt-6
-    text-2xl
-    sm:text-3xl
-    md:text-4xl
-    lg:text-5xl
-    text-center
-    md:text-left
-    text-[#11b6b7]
-    font-bold
-  "
->
-  <Typewriter words={words} />
-</h2>
+        <h2
+          className="
+            mt-4
+            sm:mt-6
+            text-2xl
+            sm:text-3xl
+            md:text-4xl
+            lg:text-5xl
+            text-center
+            md:text-left
+            text-[#11b6b7]
+            font-bold
+          "
+        >
+          <Typewriter words={words} />
+        </h2>
       </div>
-      <Tjanster />
-      <Swediana />
-      <BookingFlowPage />
-      <OmdomePage />
-      <VarforPage />
-      <SlappnaAvPage />
+
+      {/* Tjänster Section - med ID för scroll */}
+      <section id="tjanster" className="scroll-mt-20">
+        <Tjanster />
+      </section>
+
+      {/* Övriga sektioner - lägg till ID:n om du vill länka till dem också */}
+      <section id="swediana" className="scroll-mt-20">
+        <Swediana />
+      </section>
+
+      <section id="booking" className="scroll-mt-20">
+        <BookingFlowPage />
+      </section>
+
+      <section id="slappna-av" className="scroll-mt-20">
+        <SlappnaAvPage />
+      </section>
+
+      <section id="varfor" className="scroll-mt-20">
+        <VarforPage />
+      </section>
     </div>
   );
 }

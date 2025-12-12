@@ -96,14 +96,14 @@ const Page = () => {
   };
 
   return (
-    <div className="pt-12 sm:pt-16">
+    <div className="pt-12 sm:pt-16 mt-20">
       {/* Header Section - Responsive padding and text sizes */}
       <header className="w-full lg:w-4/5 mx-auto px-4 sm:px-6 flex flex-col items-center mt-6 sm:mt-12 text-center">
         <h1 className="pb-3 sm:pb-4 text-2xl sm:text-3xl md:text-4xl text-primary-foreground leading-tight">
           Boka <span className="font-bold text-primary">Flytthjälp</span>
         </h1>
         <p className="text-foreground pb-3 sm:pb-4 text-base sm:text-lg md:text-xl max-w-2xl">
-          text om varför ska man boka hos oss
+          
         </p>
       </header>
 

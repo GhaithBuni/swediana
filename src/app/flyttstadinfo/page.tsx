@@ -61,9 +61,68 @@ export default function Page() {
           </Link>
         </div>
       </section>
+      {/* NEW SECTION: Price, Checklist & Guarantee */}
+<section className="max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+<h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6">
+Flyttstädning – Pris, Checklista & Garanti för Problemfri Flytt
+</h2>
+<p className="text-base sm:text-lg leading-relaxed mb-6">
+Att flytta är stressigt nog. Låt oss ta hand om det sista, men viktigaste, steget: Flyttstädningen. När du väljer en professionell partner säkerställer du att städningen blir godkänd direkt, undviker dyra tvister och får mer tid att fokusera på ditt nya hem.
+</p>
+<p className="text-base sm:text-lg leading-relaxed mb-10">
+Vi på Swediana AB erbjuder en omfattande och garanti-godkänd flyttstädningstjänst för både lägenheter och villor över hela [Ange ert geografiska område].
+</p>
 
-      {/* CHECKLIST (your existing component should already be responsive) */}
-      <ChecklistSectionStad />
+
+<h3 className="text-xl sm:text-2xl font-bold mb-4">Flyttstädning Checklista: Vad Ingår?</h3>
+<p className="mb-6 text-base sm:text-lg leading-relaxed max-w-3xl">
+Vår flyttstädning är total och följer en strikt checklista som uppfyller hyresvärdars, bostadsrättsföreningars och mäklares höga krav. Vi garanterar att varje vrå blir skinande ren.
+</p>
+
+
+{/* Table */}
+<div className="overflow-x-auto">
+<table className="w-full border border-gray-300 text-left text-sm sm:text-base">
+<thead className="bg-gray-100">
+<tr>
+<th className="border p-3 font-semibold">Område</th>
+<th className="border p-3 font-semibold">Vad ingår</th>
+<th className="border p-3 font-semibold">Vad ingår inte (Tilläggstjänster)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td className="border p-3 font-bold">Kök</td>
+<td className="border p-3">Rengöring in- och utvändigt av vitvaror, skåp och lådor.</td>
+<td className="border p-3">Grovrengöring av ugn/spis vid kraftig nedsmutsning. Ej tömda vitvaror.</td>
+</tr>
+<tr>
+<td className="border p-3 font-bold">Badrum/WC</td>
+<td className="border p-3">Kalkborttagning, rengöring av toalett, dusch/badkar och golvbrunnar.</td>
+<td className="border p-3">Borttagning av silikonfog, klistermärken m.m.</td>
+</tr>
+<tr>
+<td className="border p-3 font-bold">Bostadsrum</td>
+<td className="border p-3">Dammsugning, våttorkning, torkning av lister, dörrar och element.</td>
+<td className="border p-3">Tömning av förråd/garage/vind.</td>
+</tr>
+<tr>
+<td className="border p-3 font-bold">Övrigt</td>
+<td className="border p-3">Fönsterputs (samtliga sidor).</td>
+<td className="border p-3">Balkong- och altanstädning.</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+<h3 className="text-xl sm:text-2xl font-bold mt-10 mb-4">Vad gäller vid Flyttstädning?</h3>
+<p className="text-base sm:text-lg leading-relaxed max-w-3xl">
+Det viktigaste är att städningen är komplett och godkänd. Detta innebär att varje yta ska vara rengjord enligt branschstandard så att nästa boende kan flytta in utan anmärkningar. Genom att anlita oss får du en städfirma med garanti, vilket tar bort all oro.
+</p>
+</section>
+
+    
 
       <div className="w-full">
         {/* TEAL PROMO STRIP */}
@@ -219,15 +278,15 @@ export default function Page() {
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 md:gap-12">
           {/* Left title */}
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">
-            Frågor &amp; svar
+            Pris & Kostnader: Svar på Dina Frågor 
             <span className="block text-teal-700">flyttstädning</span>
           </h2>
 
           {/* Right text + arrows */}
           <div className="flex flex-col items-start md:items-end gap-4">
             <p className="text-base sm:text-lg max-w-md font-bold ">
-              Har du frågor om flytthjälp? Här har vi samlat de vanligaste
-              frågorna och svaren som rör flytthjälp.
+             Den vanligaste frågan vid flytt är: Hur mycket kostar flyttstädning?
+
             </p>
           </div>
         </div>
