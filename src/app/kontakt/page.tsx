@@ -45,7 +45,7 @@ const onSubmit = async (data: KontaktFormValues) => {
   try {
     await submitContact(data);
 
-    // ✅ Trigger till Google Tag Manager
+    // Trigger till Google Tag Manager
     if (typeof window !== "undefined") {
       window.dataLayer = window.dataLayer || [];
       window.dataLayer.push({
