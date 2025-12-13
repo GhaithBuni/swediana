@@ -9,6 +9,7 @@ import BookingFlowPage from "../components/BookingFlowPage";
 import OmdomePage from "../components/OmdomePage";
 import VarforPage from "../components/VarforPage";
 import SlappnaAvPage from "../components/SlappnaAvPage";
+import Certifications from "../components/us/Certifications";
 
 const words = [
   "Flyttstäd",
@@ -132,6 +133,7 @@ export default function Home() {
       <section id="slappna-av" className="scroll-mt-20">
         <SlappnaAvPage />
       </section>
+      <Certifications />
 
       <section id="varfor" className="scroll-mt-20">
         <VarforPage />
