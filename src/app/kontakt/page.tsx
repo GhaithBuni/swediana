@@ -1,6 +1,12 @@
 // app/kontakt/page.tsx
 "use client";
 
+declare global {
+  interface Window {
+    dataLayer: Array<Record<string, unknown>>;
+  }
+}
+
 import Image from "next/image";
 import { Instagram, Facebook, Music2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -35,19 +41,24 @@ export default function Page() {
     },
   });
 
-  // Simulate form submission
-  const onSubmit = async (data: KontaktFormValues) => {
-    try {
-      await submitContact(data);
-      console.log("Form submitted successfully");
-      form.reset();
-    } catch (error) {
-      // Error is handled in the store
-      console.log(data);
-      console.error("Form submission error:", error);
-    }
-  };
+const onSubmit = async (data: KontaktFormValues) => {
+  try {
+    await submitContact(data);
 
+    // ✅ Trigger till Google Tag Manager
+    if (typeof window !== "undefined") {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: "contact_form_submit",
+        form_name: "kontakt",
+      });
+    }
+
+    form.reset();
+  } catch (error) {
+    console.error("Form submission error:", error);
+  }
+};
   return (
     <main className="bg-gradient-to-b from-slate-50 to-white">
       {/* HERO SECTION */}
