@@ -29,7 +29,7 @@ export const useContactStore = create<ContactState>((set) => ({
       const token = localStorage.getItem("token"); // Adjust based on your auth implementation
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/contact/submit`,
+        `${process.env.NEXT_PUBLIC_API_KEY}/contact/submit`,
         {
           method: "POST",
           headers: {
@@ -67,7 +67,7 @@ export const useContactStore = create<ContactState>((set) => ({
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/contact`,
+        `${process.env.NEXT_PUBLIC_API_KEY}/contact`,
         {
           method: "GET",
           headers: {
