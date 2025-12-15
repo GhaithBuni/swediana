@@ -30,8 +30,8 @@ function ThanksContent() {
   const service = params.get("service") || "Bokning";
   const date = formatDate(params.get("date"));
   const name = params.get("name") || "Kund";
-  const email = params.get("email") || undefined;
-  const phone = params.get("phone") || undefined;
+  const email = "info@swediana.se";
+  const phone = "+46 10 808 56 25";
 
   return (
     <div className="min-h-screen w-full bg-background pt-16">
