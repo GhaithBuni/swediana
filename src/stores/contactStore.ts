@@ -24,20 +24,21 @@ export const useContactStore = create<ContactState>((set) => ({
   submitContact: async (data: ContactFormData) => {
     set({ isSubmitting: true });
 
-    const api = process.env.NEXT_PUBLIC_API_URL;
-
     try {
       // Get JWT token from localStorage or your auth store
       const token = localStorage.getItem("token"); // Adjust based on your auth implementation
 
-      const response = await fetch(`${api}/contact/submit`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/contact/submit`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to submit contact");
