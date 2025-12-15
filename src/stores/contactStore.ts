@@ -24,7 +24,7 @@ export const useContactStore = create<ContactState>((set) => ({
   submitContact: async (data: ContactFormData) => {
     set({ isSubmitting: true });
 
-    const api = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+    const api = process.env.NEXT_PUBLIC_API_URL;
 
     try {
       // Get JWT token from localStorage or your auth store
