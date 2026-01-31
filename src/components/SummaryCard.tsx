@@ -141,7 +141,7 @@ export default function SummaryCard() {
         </CardFooter>
       </Card>
 
-      <CleaningIncludes />
+      
     </aside>
   );
 }

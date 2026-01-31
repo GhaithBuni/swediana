@@ -37,11 +37,7 @@ const Footer = () => (
         <div>
           <h4 className="text-2xl font-semibold mb-2">Om oss</h4>
           <ul className="space-y-2">
-            <li>
-              <Link href="/priser" className="hover:text-[#00ada1]">
-                Priser
-              </Link>
-            </li>
+          
             <li>
               <Link href="/faq" className="hover:text-[#00ada1]">
                 FAQ

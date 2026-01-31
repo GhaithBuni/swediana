@@ -14,7 +14,7 @@ const benefits = [
 
 export default function VarforPage() {
   return (
-    <main className="">
+    <main className=" py-10">
       {/* HERO med bakgrundsbild */}
       <section className="relative  w-full h-full">
         {/* Bakgrund */}
@@ -63,10 +63,20 @@ export default function VarforPage() {
             {/* CTA + Illustration */}
             <div className="mt-8 flex items-end justify-between">
               <Link
-                href="#boka"
+                href="/#tjanster"
                 className="inline-flex items-center justify-center rounded-md bg-teal-500 px-8 py-3 text-white font-semibold shadow hover:bg-teal-600 transition"
+                onClick={(e) => {
+                  // Om vi redan är på startsidan, scrolla smooth
+                  if (window.location.pathname === "/") {
+                    e.preventDefault();
+                    document.getElementById("tjanster")?.scrollIntoView({
+                      behavior: "smooth",
+                      block: "start",
+                    });
+                  }
+                }}
               >
-                Boka nu
+                Boka Nu
               </Link>
 
               <div className="relative h-24 w-28 md:h-30 md:w-40">

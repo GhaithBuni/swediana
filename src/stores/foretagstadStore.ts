@@ -18,7 +18,7 @@ interface ForetagstadState {
   isSubmitting: boolean;
   submitForetagstad: (data: ForetagstadFormData) => Promise<void>;
 }
-const api = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+const api = process.env.NEXT_PUBLIC_API_KEY || "http://localhost:4000";
 
 export const useForetagstadStore = create<ForetagstadState>((set) => ({
   isSubmitting: false,
