@@ -83,7 +83,7 @@ const Footer = () => (
           <h4 className="text-2xl font-semibold mb-2">Social media</h4>
           <div className="flex flex-col items-center gap-3 mt-3">
             <Link
-              href="https://instagram.com"
+              href="https://www.instagram.com/reel/DULhxS_j4A0/?igsh=djRna2Mxb2twMWk3"
               className="flex items-center gap-2 p-2 hover:text-[#00ada1] transition-colors"
               target="_blank"
               rel="noopener noreferrer"
@@ -92,7 +92,7 @@ const Footer = () => (
               <span>Instagram</span>
             </Link>
             <Link
-              href="https://facebook.com"
+              href="https://www.facebook.com/share/r/1GQ1GwntQ3/?mibextid=wwXIfr"
               className="flex items-center gap-2 p-2 hover:text-[#00ada1] transition-colors"
               target="_blank"
               rel="noopener noreferrer"
@@ -101,7 +101,7 @@ const Footer = () => (
               <span>Facebook</span>
             </Link>
             <Link
-              href="https://tiktok.com"
+              href="https://vm.tiktok.com/ZNRAK88b1/"
               className="flex items-center gap-2 p-2 hover:text-[#00ada1] transition-colors"
               target="_blank"
               rel="noopener noreferrer"
