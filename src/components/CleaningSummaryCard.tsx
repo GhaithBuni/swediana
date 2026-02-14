@@ -18,7 +18,7 @@ const API_BASE = process.env.NEXT_PUBLIC_API_KEY || "";
 
 const kr = (n: number) =>
   new Intl.NumberFormat("sv-SE", { maximumFractionDigits: 0 }).format(
-    Math.round(Number(n) || 0)
+    Math.round(Number(n) || 0),
   ) + " kr";
 
 export default function CleaningSummaryCard() {
@@ -138,6 +138,7 @@ export default function CleaningSummaryCard() {
           </p>
         </CardFooter>
       </Card>
+      <CleaningIncludes />
     </aside>
   );
 }

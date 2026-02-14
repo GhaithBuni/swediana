@@ -36,7 +36,7 @@ export default function BookingDetailsCleaning() {
   const resetCleaning = useCleaningStore((s) => s.resetCleaning);
 
   const [cleanType, setCleanType] = React.useState<"typical" | "inspection">(
-    "typical"
+    "typical",
   );
 
   const [apartmentKeys, setApartmentKeys] = React.useState<string>("");
@@ -63,7 +63,7 @@ export default function BookingDetailsCleaning() {
           `${process.env.NEXT_PUBLIC_API_KEY}/cleaning/locked-dates/all`,
           {
             cache: "no-store",
-          }
+          },
         );
 
         const data = await res.json();
@@ -71,11 +71,11 @@ export default function BookingDetailsCleaning() {
 
         const arr: string[] = Array.isArray(data)
           ? data.map((x: any) =>
-              typeof x === "string" ? x : x?.ymd ?? x?.date ?? ""
+              typeof x === "string" ? x : (x?.ymd ?? x?.date ?? ""),
             )
           : Array.isArray(data?.date)
-          ? data.dates
-          : [];
+            ? data.dates
+            : [];
 
         setLockedSet(new Set(arr.map(normalizeYmd)));
         console.log(lockedSet);
@@ -236,7 +236,7 @@ export default function BookingDetailsCleaning() {
                   date: selectedYmd,
                   addressStreet: String(f.addressStreet || ""),
                   cleanType: cleanType as "typical" | "inspection" | undefined,
-                }
+                },
               );
 
               const bookingId = res?.data?.bookingNumber;
@@ -312,7 +312,7 @@ export default function BookingDetailsCleaning() {
                     className={`w-full flex items-center justify-between rounded-xl border bg-background px-3 py-2 text-left shadow-sm hover:bg-accent/40 transition-colors
           ${errors.date ? "border-red-500" : ""}`}
                     onClick={() => {
-                      clearError("date"), setOpen(true);
+                      (clearError("date"), setOpen(true));
                     }}
                     aria-label="Välj datum"
                   >

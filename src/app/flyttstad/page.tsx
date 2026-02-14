@@ -96,9 +96,7 @@ const CleaningPage = () => {
         <h1 className="pb-3 sm:pb-4 text-2xl sm:text-3xl md:text-4xl text-primary-foreground leading-tight">
           Boka <span className="font-bold text-primary">Flyttstäd</span>
         </h1>
-        <p className="text-foreground pb-3 sm:pb-4 text-base sm:text-lg md:text-xl max-w-2xl">
-     
-        </p>
+        <p className="text-foreground pb-3 sm:pb-4 text-base sm:text-lg md:text-xl max-w-2xl"></p>
       </header>
 
       {/* Input Section - Responsive grid and spacing */}
@@ -193,21 +191,21 @@ const CleaningPage = () => {
           <div className="grid gap-6 sm:gap-8 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_380px] max-w-full">
             {/* Left Column - Form sections */}
             <div className="space-y-6 sm:space-y-8 md:space-y-10 w-full min-w-0 pb-8">
-              <AddressSection
+              {/* <AddressSection
                 key={`addr-${resetToken}`}
                 title="Adress"
                 value={address}
                 onChange={setAddress}
                 showDistance={true}
-              />
+              /> */}
 
-              <section>
+              {/* <section>
                 <ExtraServicesCleaning
                   key={`extras-${resetToken}`}
                   value={extras}
                   onChange={setExtras}
                 />
-              </section>
+              </section> */}
 
               {/* Summary Card - Shows here on mobile */}
               <div className="lg:hidden w-full max-w-full space-y-6">
